@@ -9,6 +9,8 @@ st.title("📈 Dashboard Analisi Small Cap")
 # ---- CARICAMENTO DATI ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
 df = pd.read_csv(SHEET_URL)
+st.write("📊 Anteprima dati", df.head())
+
 
 # ---- PULIZIA DATI ----
 df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
