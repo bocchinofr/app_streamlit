@@ -15,11 +15,11 @@ df = pd.read_csv(SHEET_URL)
 # Funzione robusta per parse date
 def parse_date(x):
     try:
-        return parser.parse(str(x), dayfirst=False)
+        return parser.parse(str(x), dayfirst=True).date()  # .date() to strip time
     except:
         return pd.NaT
 
-df["Date"] = df["Date"].apply(parse_date)
+df["Date"] = df["Date"].apply(parse_date).dt.date
 df["Chiusura"] = df["Chiusura"].str.upper()
 
 # Funzione per convertire percentuali da stringhe con virgola e %
