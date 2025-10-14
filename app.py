@@ -11,16 +11,29 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 df = pd.read_csv(SHEET_URL)
 st.write("📊 Anteprima dati", df.head())
 
-
 # ---- PULIZIA DATI ----
 df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-df["GAP"] = pd.to_numeric(df["GAP"], errors="coerce")
-df["Float"] = pd.to_numeric(df["Float"], errors="coerce")
-df["OPEN"] = pd.to_numeric(df["OPEN"], errors="coerce")
-df["%Open_PMH"] = pd.to_numeric(df["%Open_PMH"], errors="coerce")
-df["%OH"] = pd.to_numeric(df["%OH"], errors="coerce")
-df["%OL"] = pd.to_numeric(df["%OL"], errors="coerce")
-df["break"] = pd.to_numeric(df["break"], errors="coerce")
+df["Chiusura"] = df["Chiusura"].str.upper()
+
+# Funzione per convertire percentuali da stringhe con virgola e %
+def parse_percent(x):
+    try:
+        if pd.isna(x):
+            return np.nan
+        x = str(x).replace('%', '').replace(',', '.')
+        return float(x)
+    except:
+        return np.nan
+
+# Pulizia colonne percentuali
+percent_cols = ["GAP", "%Open_PMH", "%OH", "%OL"]
+for col in percent_cols:
+    df[col] = df[col].apply(parse_percent)
+
+# Pulizia colonne numeriche con virgola
+num_cols = ["OPEN", "Float", "break"]
+for col in num_cols:
+    df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors="coerce")
 
 # ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
@@ -43,23 +56,23 @@ if len(date_range) == 2:
 
 # ---- KPI BOX ----
 total = len(filtered)
-red_close = np.mean(filtered["Chiusura"].str.upper() == "RED") * 100 if total > 0 else 0
-gap_mean = filtered["GAP"].mean()
-gap_median = filtered["GAP"].median()
-open_pmh_mean = filtered["%Open_PMH"].mean()
-spinta = filtered["%OH"].mean() - filtered["%OL"].mean()
-pmbreak = filtered["break"].mean()
+red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
+gap_mean = filtered["GAP"].mean() if total > 0 else 0
+gap_median = filtered["GAP"].median() if total > 0 else 0
+open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
+spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
+pmbreak = filtered["break"].mean() if total > 0 else 0
 
 col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric("Totale titoli", total)
 col2.metric("Chiusura RED", f"{red_close:.0f}%")
 col3.metric("GAP medio", f"{gap_mean:.0f}%", delta=f"mediana {gap_median:.0f}%")
-col4.metric("%Open_PMH medio", f"{open_pmh_mean:.0f}%")
-col5.metric("PMbreak medio", f"{pmbreak:.0f}")
+col4.metric("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
+col5.metric("PMbreak medio", f"{pmbreak:.1f}")
 
 # ---- KPI secondari ----
 col6, col7, col8 = st.columns(3)
-col6.metric("Spinta", f"{spinta:.0f}%")
+col6.metric("Spinta", f"{spinta:.1f}%")
 if "Orario High(timeH)" in filtered.columns:
     def parse_hour(x):
         try:
@@ -74,5 +87,4 @@ if "Orario High(timeH)" in filtered.columns:
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 st.dataframe(filtered.sort_values("Date", ascending=False), use_container_width=True)
-
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
