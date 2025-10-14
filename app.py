@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from dateutil import parser
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Dashboard Analisi", layout="wide")
@@ -11,7 +12,14 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 df = pd.read_csv(SHEET_URL)
 
 # ---- PULIZIA DATI ----
-df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+# Funzione robusta per parse date
+def parse_date(x):
+    try:
+        return parser.parse(str(x), dayfirst=False)
+    except:
+        return pd.NaT
+
+df["Date"] = df["Date"].apply(parse_date)
 df["Chiusura"] = df["Chiusura"].str.upper()
 
 # Funzione per convertire percentuali da stringhe con virgola e %
@@ -85,5 +93,5 @@ if "Orario High(timeH)" in filtered.columns:
 
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
-st.dataframe(filtered.sort_values("Date", ascending=False), use_container_width=True)
+st.dataframe(filtered.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
