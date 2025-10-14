@@ -12,18 +12,20 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 df = pd.read_csv(SHEET_URL)
 
 # ---- PULIZIA DATI ----
+# Rimuovo eventuali spazi nei nomi colonne
+df.columns = df.columns.str.strip()
+
 # Funzione robusta per parse date con dayfirst
 def parse_date(x):
     try:
-        return parser.parse(str(x), dayfirst=True)
+        return parser.parse(str(x).strip(), dayfirst=True)
     except:
         return pd.NaT
 
-# Converto in datetime e poi estraggo solo la data
 df["Date"] = df["Date"].apply(parse_date)
 df["Date"] = df["Date"].apply(lambda x: x.date() if pd.notna(x) else pd.NaT)
 
-df["Chiusura"] = df["Chiusura"].str.upper()
+df["Chiusura"] = df["Chiusura"].str.upper().str.strip()
 
 # Funzione per convertire percentuali da stringhe con virgola e %
 def parse_percent(x):
@@ -38,12 +40,23 @@ def parse_percent(x):
 # Pulizia colonne percentuali
 percent_cols = ["GAP", "%Open_PMH", "%OH", "%OL"]
 for col in percent_cols:
-    df[col] = df[col].apply(parse_percent)
+    if col in df.columns:
+        df[col] = df[col].apply(parse_percent)
 
 # Pulizia colonne numeriche con virgola
 num_cols = ["OPEN", "Float", "break"]
 for col in num_cols:
-    df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors="coerce")
+    if col in df.columns:
+        df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors="coerce")
+
+# Sostituisco NaN con valori neutri per non perdere righe
+df["GAP"] = df.get("GAP", pd.Series([0]*len(df))).fillna(0)
+df["Float"] = df.get("Float", pd.Series([0]*len(df))).fillna(0)
+df["%Open_PMH"] = df.get("%Open_PMH", pd.Series([0]*len(df))).fillna(0)
+df["OPEN"] = df.get("OPEN", pd.Series([0]*len(df))).fillna(0)
+df["%OH"] = df.get("%OH", pd.Series([0]*len(df))).fillna(0)
+df["%OL"] = df.get("%OL", pd.Series([0]*len(df))).fillna(0)
+df["break"] = df.get("break", pd.Series([0]*len(df))).fillna(0)
 
 # ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
@@ -83,12 +96,11 @@ col5.metric("PMbreak medio", f"{pmbreak:.1f}")
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 
-# Rimuovo qualsiasi colonna che contiene "high_v1" (indipendentemente da spazi/maiuscole)
+# Rimuovo qualsiasi colonna che contiene "high_v1" nel nome
 cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
 if cols_to_drop:
     filtered = filtered.drop(columns=cols_to_drop)
 
-# Mostro la tabella senza l'indice extra
+# Mostro la tabella senza indice extra
 st.dataframe(filtered.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
-
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
