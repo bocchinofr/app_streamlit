@@ -10,16 +10,20 @@ st.title("📈 Dashboard Analisi Small Cap")
 # ---- CARICAMENTO DATI ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
 df = pd.read_csv(SHEET_URL)
+st.write("📊 Anteprima dati", df.head())
 
 # ---- PULIZIA DATI ----
-# Funzione robusta per parse date
+# Funzione robusta per parse date con dayfirst
 def parse_date(x):
     try:
-        return parser.parse(str(x), dayfirst=True).date()  # .date() to strip time
+        return parser.parse(str(x), dayfirst=True)
     except:
         return pd.NaT
 
-df["Date"] = df["Date"].apply(parse_date).dt.date
+# Converto in datetime e poi estraggo solo la data
+df["Date"] = df["Date"].apply(parse_date)
+df["Date"] = df["Date"].apply(lambda x: x.date() if pd.notna(x) else pd.NaT)
+
 df["Chiusura"] = df["Chiusura"].str.upper()
 
 # Funzione per convertire percentuali da stringhe con virgola e %
@@ -59,7 +63,7 @@ filtered = filtered[(filtered["GAP"] >= min_gap) & (filtered["Float"] <= max_flo
 filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh) & (filtered["OPEN"] >= min_open)]
 if len(date_range) == 2:
     start, end = date_range
-    filtered = filtered[(filtered["Date"] >= pd.to_datetime(start)) & (filtered["Date"] <= pd.to_datetime(end))]
+    filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
 # ---- KPI BOX ----
 total = len(filtered)
@@ -77,24 +81,13 @@ col3.metric("GAP medio", f"{gap_mean:.0f}%", delta=f"mediana {gap_median:.0f}%")
 col4.metric("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
 col5.metric("PMbreak medio", f"{pmbreak:.1f}")
 
-# ---- KPI secondari ----
-col6, col7, col8 = st.columns(3)
-col6.metric("Spinta", f"{spinta:.1f}%")
-if "Orario High(timeH)" in filtered.columns:
-    def parse_hour(x):
-        try:
-            h, m = str(x).split(":")
-            return int(h) + int(m)/60
-        except:
-            return np.nan
-    filtered["z_ora_num"] = filtered["Orario High(timeH)"].apply(parse_hour)
-    col7.metric("z_ora_num medio", f"{filtered['z_ora_num'].mean():.1f}")
-    col8.metric("z_ora_num mediana", f"{filtered['z_ora_num'].median():.1f}")
-
-
-
-
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
+
+# Rimuovo la colonna Orario High_v1 se presente
+if "Orario High_v1" in filtered.columns:
+    filtered = filtered.drop(columns=["Orario High_v1"])
+
+# Mostro la tabella senza l'indice extra
 st.dataframe(filtered.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
