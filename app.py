@@ -59,6 +59,29 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         df[col] = df[col].fillna(0)
 
+
+# ---- VERIFICA VALORI NON CONVERTITI ----
+# Date non valide
+invalid_dates = df[df["Date"].isna()]
+if not invalid_dates.empty:
+    st.warning(f"⚠️ Attenzione: {len(invalid_dates)} righe con date non valide")
+    st.write(invalid_dates[["Ticker", "Date"]])
+
+# Numeri non validi nelle colonne numeriche principali
+for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
+    if col in df.columns:
+        invalid_nums = df[df[col].isna()]
+        if not invalid_nums.empty:
+            st.warning(f"⚠️ Attenzione: {len(invalid_nums)} righe con valori non numerici in '{col}'")
+            st.write(invalid_nums[["Ticker", col]])
+
+
+
+
+
+
+
+
 # ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
 
