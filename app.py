@@ -83,10 +83,12 @@ col5.metric("PMbreak medio", f"{pmbreak:.1f}")
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 
-# Rimuovo la colonna Orario High_v1 se presente
-if "Orario High_v1" in filtered.columns:
-    filtered = filtered.drop(columns=["Orario High_v1"])
+# Rimuovo qualsiasi colonna che contiene "high_v1" (indipendentemente da spazi/maiuscole)
+cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
+if cols_to_drop:
+    filtered = filtered.drop(columns=cols_to_drop)
 
 # Mostro la tabella senza l'indice extra
 st.dataframe(filtered.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
+
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
