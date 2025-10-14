@@ -43,20 +43,21 @@ for col in percent_cols:
     if col in df.columns:
         df[col] = df[col].apply(parse_percent)
 
-# Pulizia colonne numeriche con virgola
+# Pulizia colonne numeriche con virgola e separatore migliaia
 num_cols = ["OPEN", "Float", "break"]
 for col in num_cols:
     if col in df.columns:
-        df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors="coerce")
+        df[col] = pd.to_numeric(
+            df[col].astype(str)
+            .str.replace('.', '', regex=False)   # rimuove punti migliaia
+            .str.replace(',', '.', regex=False), # converte virgole decimali
+            errors="coerce"
+        )
 
 # Sostituisco NaN con valori neutri per non perdere righe
-df["GAP"] = df.get("GAP", pd.Series([0]*len(df))).fillna(0)
-df["Float"] = df.get("Float", pd.Series([0]*len(df))).fillna(0)
-df["%Open_PMH"] = df.get("%Open_PMH", pd.Series([0]*len(df))).fillna(0)
-df["OPEN"] = df.get("OPEN", pd.Series([0]*len(df))).fillna(0)
-df["%OH"] = df.get("%OH", pd.Series([0]*len(df))).fillna(0)
-df["%OL"] = df.get("%OL", pd.Series([0]*len(df))).fillna(0)
-df["break"] = df.get("break", pd.Series([0]*len(df))).fillna(0)
+for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
+    if col in df.columns:
+        df[col] = df[col].fillna(0)
 
 # ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
