@@ -91,6 +91,9 @@ if "Orario High(timeH)" in filtered.columns:
     col7.metric("z_ora_num medio", f"{filtered['z_ora_num'].mean():.1f}")
     col8.metric("z_ora_num mediana", f"{filtered['z_ora_num'].median():.1f}")
 
+
+
+
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 st.dataframe(filtered.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
