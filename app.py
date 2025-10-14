@@ -60,12 +60,15 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
         df[col] = df[col].fillna(0)
 
 
-# ---- VERIFICA VALORI NON CONVERTITI ----
+
+# ---- CONTROLLO DATI ----
+st.markdown("### 🛠️ Controllo dati")
+
 # Date non valide
 invalid_dates = df[df["Date"].isna()]
 if not invalid_dates.empty:
     st.warning(f"⚠️ Attenzione: {len(invalid_dates)} righe con date non valide")
-    st.write(invalid_dates[["Ticker", "Date"]])
+    st.dataframe(invalid_dates[["Ticker", "Date"]])
 
 # Numeri non validi nelle colonne numeriche principali
 for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
@@ -73,12 +76,7 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
         invalid_nums = df[df[col].isna()]
         if not invalid_nums.empty:
             st.warning(f"⚠️ Attenzione: {len(invalid_nums)} righe con valori non numerici in '{col}'")
-            st.write(invalid_nums[["Ticker", col]])
-
-
-
-
-
+            st.dataframe(invalid_nums[["Ticker", col]])
 
 
 
