@@ -166,7 +166,7 @@ st.markdown(
 
     /* TITOLI */
     h1 {
-        font-size: 36px;   /* titolo generale */
+        font-size: 12px;   /* titolo generale */
         color: #FFFFFF;
     }
     h2 {
