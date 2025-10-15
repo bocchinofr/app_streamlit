@@ -156,15 +156,30 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ---- FUNZIONE BOX KPI ----
-def kpi_box(label, value, subvalue=None):
-    html = f"""
-    <div class="kpi-box">
-        <div class="kpi-label">{label}</div>
-        <div class="kpi-value">{value}"""
-    if subvalue:
-        html += f"<span class='kpi-subvalue'>{subvalue}</span>"
-    html += "</div></div>"
+def kpi_box(label, value, sublabel=None, subvalue=None):
+    """Genera box KPI (versione con possibile sub-metrica accanto)"""
+    if sublabel and subvalue:
+        html = f"""
+        <div class="kpi-box">
+            <div class="gap-subbox">
+                <div>
+                    <div class="kpi-label">{label}</div>
+                    <div class="kpi-value">{value}</div>
+                </div>
+                <div>
+                    <div class="kpi-label">{sublabel}</div>
+                    <div class="kpi-subvalue">{subvalue}</div>
+                </div>
+            </div>
+        </div>
+        """
+    else:
+        html = f"""
+        <div class="kpi-box">
+            <div class="kpi-label">{label}</div>
+            <div class="kpi-value">{value}</div>
+        </div>
+        """
     st.markdown(html, unsafe_allow_html=True)
 
 # ---- VISUALIZZO I KPI ----
@@ -200,4 +215,4 @@ if "Chiusura" in filtered_sorted.columns:
 
 # Mostro la tabella
 st.dataframe(filtered_sorted, use_container_width=True)
-st.caption(f"Mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
+st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
