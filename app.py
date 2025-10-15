@@ -108,13 +108,12 @@ gap_median = filtered["GAP"].median() if total > 0 else 0
 open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
-
 # ---- KPI BOX STILIZZATI ----
 st.markdown(
     """
     <style>
     body {
-        background-color: #0E4354;
+        background-color: #07171C !important;
     }
 
     /* KPI BOX */
@@ -161,7 +160,7 @@ st.markdown(
 
     /* TABELLA DI DETTAGLIO - effetto blur */
     section[data-testid="stDataFrame"] {
-        background: rgba(255,255,255,0.80);
+        background: rgba(255,255,255,0.08);
         backdrop-filter: blur(6px);
         border-radius: 10px;
         padding: 10px;
