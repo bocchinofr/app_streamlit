@@ -114,11 +114,6 @@ pmbreak = filtered["break"].mean() if total > 0 else 0
 st.markdown(
     f"""
     <style>
-
-        /* Sfondo generale pagina */
-    .stApp {
-        background-color: #03121A !important;
-    }
     
     /* Contenitore scrollabile orizzontalmente */
     .kpi-container {{
