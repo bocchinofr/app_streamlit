@@ -206,33 +206,6 @@ with col5:
 
 
 
-
-
-
-# ---- STILE TABELLA ----
-st.markdown(
-    """
-    <style>
-    /* Colore di sfondo area tabella */
-    section[data-testid="stDataFrame"] {
-        background-color: #1B4D57 !important;  /* colore di sfondo tabella */
-        border-radius: 10px;
-        padding: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
-
-
-
-
-
-
-
-
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 
@@ -251,6 +224,25 @@ if "Chiusura" in filtered_sorted.columns:
         "GREEN": "🟢 GREEN"
     })
 
+# Applico sfondo tabella e header colorato senza alterare i valori
+styled_df = filtered_sorted.style.set_table_styles([
+    {
+        'selector': 'thead',
+        'props': [
+            ('background-color', '#184F5F'),  # colore header
+            ('color', 'white'),
+            ('font-weight', 'bold')
+        ]
+    },
+    {
+        'selector': 'tbody',
+        'props': [
+            ('background-color', '#1B4D57'),  # colore body
+            ('color', 'white')
+        ]
+    }
+])
+
 # Mostro la tabella
-st.dataframe(filtered_sorted, use_container_width=True)
+st.dataframe(styled_df, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
