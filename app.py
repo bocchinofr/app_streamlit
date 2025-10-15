@@ -205,19 +205,6 @@ with col5:
     kpi_box("PMbreak medio", f"{pmbreak:.1f}")
 
 
-st.markdown(
-    """
-    <style>
-    /* Ridurre il font del titolo Tabella di dettaglio */
-    h3 {
-        font-size: 14px !important;  /* modifica a piacere */
-        margin-top: 30px;             /* spazio sopra, se vuoi separarlo dai KPI */
-        margin-bottom: 10px;          /* spazio sotto */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
