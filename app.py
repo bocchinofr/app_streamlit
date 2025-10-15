@@ -163,6 +163,23 @@ st.markdown(
         justify-content: center;
         text-align: center;
     }
+
+    /* TITOLI */
+    h1 {
+        font-size: 36px;   /* titolo generale */
+        color: #FFFFFF;
+    }
+    h2 {
+        font-size: 24px;   /* titoli sezioni come controllo dati */
+        color: #FFFFFF;
+    }
+    h3 {
+        font-size: 20px;   /* tabella di dettaglio */
+        color: #FFFFFF;
+    }
+
+
+
     </style>
     """,
     unsafe_allow_html=True
