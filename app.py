@@ -115,7 +115,7 @@ st.markdown(
     <style>
     /* Sfondo generale pagina */
     .stApp {
-        background-color: #092D37 !important;
+        background-color: #05171C !important;
     }
 
     /* Box KPI uniformi */
