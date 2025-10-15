@@ -117,40 +117,49 @@ st.markdown(
     .stApp {
         background-color: #03121A !important;
     }
-
-    /* Box KPI uniformi */
+    
+    /* KPI BOX */
+    .kpi-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
     .kpi-box {
         background-color: #184F5F;
         color: white;
-        padding: 15px 10px;
+        padding: 20px;
         border-radius: 15px;
         text-align: center;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.25);
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        flex: 1;
         min-height: 130px;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
-
     .kpi-label {
         font-size: 16px;
-        font-weight: 500;
         opacity: 0.9;
-        margin-bottom: 6px;
     }
-
     .kpi-value {
         font-size: 28px;
         font-weight: bold;
-        line-height: 1.2;
+        margin-top: 8px;
     }
-
     .kpi-subvalue {
-        font-size: 22px;
-        font-weight: 600;
-        margin-left: 8px;
-        opacity: 0.85;
+        font-size: 18px;
+        font-weight: bold;
+        opacity: 0.8;
     }
+    .gap-subbox {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 30px;
+        margin-top: 10px;
+    }
+    
     </style>
     """,
     unsafe_allow_html=True
