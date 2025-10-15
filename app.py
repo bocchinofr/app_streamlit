@@ -164,22 +164,6 @@ st.markdown(
         text-align: center;
     }
 
-    /* TITOLI */
-    h1 {
-        font-size: 12px;   /* titolo generale */
-        color: #FFFFFF;
-    }
-    h2 {
-        font-size: 12px;   /* titoli sezioni come controllo dati */
-        color: #FFFFFF;
-    }
-    h3 {
-        font-size: 10px;   /* tabella di dettaglio */
-        color: #FFFFFF;
-    }
-
-
-
     </style>
     """,
     unsafe_allow_html=True
@@ -224,7 +208,7 @@ st.markdown(html_kpis, unsafe_allow_html=True)
 
 
 # ---- TAB E TABELLA ----
-st.markdown("### 📋 Tabella di dettaglio")
+st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella di dettaglio</h3>', unsafe_allow_html=True)
 
 cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
 if cols_to_drop:
