@@ -100,6 +100,15 @@ if len(date_range) == 2:
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
 
+# ---- KPI BOX ----
+total = len(filtered)
+red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
+gap_mean = filtered["GAP"].mean() if total > 0 else 0
+gap_median = filtered["GAP"].median() if total > 0 else 0
+open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
+spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
+pmbreak = filtered["break"].mean() if total > 0 else 0
+
 # ---- KPI BOX STILIZZATI ----
 st.markdown(
     """
