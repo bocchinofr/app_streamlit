@@ -159,14 +159,6 @@ st.markdown(
         gap: 30px;
         margin-top: 10px;
     }
-
-
-    /* Colore di sfondo area tabella */
-    section[data-testid="stDataFrame"] {
-        background-color: #0E4854 !important;  /* colore di sfondo tabella */
-        border-radius: 10px;
-        padding: 10px;
-    }
     
     </style>
     """,
@@ -211,6 +203,31 @@ with col4:
     kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
 with col5:
     kpi_box("PMbreak medio", f"{pmbreak:.1f}")
+
+
+# ---- STILE TABELLA ----
+st.markdown(
+    """
+    <style>
+    /* Colore di sfondo area tabella */
+    section[data-testid="stDataFrame"] {
+        background-color: #184F5F !important;  /* colore di sfondo tabella */
+        border-radius: 10px;
+        padding: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+
+
+
+
+
+
+
 
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
