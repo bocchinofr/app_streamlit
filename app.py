@@ -159,7 +159,7 @@ st.markdown(
         gap: 30px;
         margin-top: 10px;
     }
-    
+
     </style>
     """,
     unsafe_allow_html=True
@@ -204,6 +204,8 @@ with col4:
 with col5:
     kpi_box("PMbreak medio", f"{pmbreak:.1f}")
 
+
+
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 
@@ -222,6 +224,12 @@ if "Chiusura" in filtered_sorted.columns:
         "GREEN": "🟢 GREEN"
     })
 
+# Applico colore di sfondo pieno alla tabella
+styled_df = filtered_sorted.style.set_properties(**{
+    'background-color': '#184F5F',  # sfondo pieno della tabella
+    'color': 'white'                 # colore testo
+})
+
 # Mostro la tabella
-st.dataframe(filtered_sorted, use_container_width=True)
+st.dataframe(styled_df, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
