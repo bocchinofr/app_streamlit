@@ -124,12 +124,12 @@ st.markdown(
         display: flex;
         gap: 20px;
         overflow-x: auto;        /* scroll orizzontale se la pagina è stretta */
-        padding-bottom: 10px;    /* spazio sotto i KPI */
+        padding-bottom: 20px;    /* spazio sotto i KPI */
     }
 
     /* Box KPI */
     .kpi-box {
-        flex: 0 0 180px;         /* larghezza fissa */
+        flex: 0 0 100px;         /* larghezza fissa */
         min-height: 130px;
         background-color: #184F5F;
         color: white;
