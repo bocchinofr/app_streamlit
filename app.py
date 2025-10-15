@@ -101,6 +101,19 @@ if len(date_range) == 2:
 
 # ---- KPI BOX ----
 total = len(filtered)
+red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
+gap_mean = filtered["GAP"].mean() if total > 0 else 0
+gap_median = filtered["GAP"].median() if total > 0 else 0
+open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
+spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
+pmbreak = filtered["break"].mean() if total > 0 else 0
+
+col1, col2, col3, col4, col5 = st.columns(5)
+col1.metric("Totale titoli", total)
+col2.metric("Chiusura RED", f"{red_close:.0f}%")
+col3.metric("GAP medio", f"{gap_mean:.0f}%", delta=f"mediana {gap_median:.0f}%")
+col4.metric("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
+col5.metric("PMbreak medio", f"{pmbreak:.1f}")
 
 
 # ---- KPI BOX STILIZZATI ----
@@ -176,6 +189,7 @@ else:
 # Mostro la tabella senza indice extra
 st.dataframe(styled_df.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
+
 
 
 
