@@ -100,7 +100,6 @@ if len(date_range) == 2:
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
 
-
 # ---- KPI BOX ----
 total = len(filtered)
 red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
@@ -110,85 +109,95 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
-# ---- KPI BOX STILIZZATI ----
+# ---- STILE GLOBALE ----
 st.markdown(
     """
     <style>
+    /* Sfondo generale pagina */
+    .stApp {
+        background-color: #092D37 !important;
+    }
+
+    /* Box KPI uniformi */
     .kpi-box {
         background-color: #184F5F;
         color: white;
-        padding: 20px;
+        padding: 15px 10px;
         border-radius: 15px;
         text-align: center;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-        margin-bottom: 10px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.25);
+        min-height: 130px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
+
+    .kpi-label {
+        font-size: 16px;
+        font-weight: 500;
+        opacity: 0.9;
+        margin-bottom: 6px;
+    }
+
     .kpi-value {
         font-size: 28px;
         font-weight: bold;
+        line-height: 1.2;
     }
-    .kpi-label {
-        font-size: 16px;
-        opacity: 0.9;
+
+    .kpi-subvalue {
+        font-size: 22px;
+        font-weight: 600;
+        margin-left: 8px;
+        opacity: 0.85;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# ---- FUNZIONE BOX KPI ----
 def kpi_box(label, value, subvalue=None):
     html = f"""
     <div class="kpi-box">
-        <div class="kpi-value">{value}</div>
         <div class="kpi-label">{label}</div>
-    """
+        <div class="kpi-value">{value}"""
     if subvalue:
-        html += f"<div style='font-size:13px;opacity:0.8;'>{subvalue}</div>"
-    html += "</div>"
+        html += f"<span class='kpi-subvalue'>{subvalue}</span>"
+    html += "</div></div>"
     st.markdown(html, unsafe_allow_html=True)
 
-# Mostra i box KPI
+# ---- VISUALIZZO I KPI ----
 col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     kpi_box("Totale titoli", total)
 with col2:
     kpi_box("Chiusura RED", f"{red_close:.0f}%")
 with col3:
-    kpi_box("GAP medio", f"{gap_mean:.0f}%", f"mediana {gap_median:.0f}%")
+    kpi_box("GAP medio", f"{gap_mean:.0f}%", f"(mediana {gap_median:.0f}%)")
 with col4:
     kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
 with col5:
     kpi_box("PMbreak medio", f"{pmbreak:.1f}")
 
-
-
-
-    
-
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 
-# Rimuovo eventuali colonne inutili (come Orario High_v1)
+# Rimuovo colonne inutili (es. Orario High_v1)
 cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
 if cols_to_drop:
     filtered = filtered.drop(columns=cols_to_drop)
 
-# Applico colorazione condizionale alla colonna Chiusura
-def color_chiusura(val):
-    if val == "RED":
-        return 'background-color: #FF6B6B; color: white; font-weight: bold;'
-    elif val == "GREEN":
-        return 'background-color: #4CAF50; color: white; font-weight: bold;'
-    return ''
-
-# Ordino i dati PRIMA di stilizzarli
+# Ordino i dati
 filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
 
-# Se la colonna Chiusura esiste, applico lo stile
+# Sostituisco la colonna “Chiusura” con emoji 🔴🟢
 if "Chiusura" in filtered_sorted.columns:
-    styled_df = filtered_sorted.style.applymap(color_chiusura, subset=["Chiusura"])
-    st.dataframe(styled_df, use_container_width=True)
-else:
-    st.dataframe(filtered_sorted, use_container_width=True)
+    filtered_sorted["Chiusura"] = filtered_sorted["Chiusura"].replace({
+        "RED": "🔴 RED",
+        "GREEN": "🟢 GREEN"
+    })
 
+# Mostro la tabella
+st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
