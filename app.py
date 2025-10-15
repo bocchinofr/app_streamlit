@@ -113,7 +113,7 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #07171C !important;
+        background-color: #1A5769 !important;
     }
 
     /* KPI BOX */
