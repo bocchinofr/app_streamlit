@@ -170,7 +170,7 @@ st.markdown(
         color: #FFFFFF;
     }
     h2 {
-        font-size: 24px;   /* titoli sezioni come controllo dati */
+        font-size: 12px;   /* titoli sezioni come controllo dati */
         color: #FFFFFF;
     }
     h3 {
