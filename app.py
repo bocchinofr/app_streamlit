@@ -112,7 +112,7 @@ pmbreak = filtered["break"].mean() if total > 0 else 0
 
 
 st.markdown(
-    """
+    f"""
     <style>
 
         /* Sfondo generale pagina */
