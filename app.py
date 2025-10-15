@@ -152,7 +152,7 @@ st.markdown(
     .gap-subbox {
         display: flex;
         justify-content: center;
-        align-items: center;  /* centra verticalmente GAP e Mediana */
+        align-items: flex-start;  /* centra verticalmente GAP e Mediana */
         gap: 20px;
         margin-top: 0;
     }
