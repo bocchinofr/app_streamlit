@@ -226,7 +226,7 @@ if "Chiusura" in filtered_sorted.columns:
 
 # Applico colore di sfondo pieno alla tabella
 styled_df = filtered_sorted.style.set_properties(**{
-    'background-color': '#184F5F',  # sfondo pieno della tabella
+    'background-color': '#002B33',  # sfondo pieno della tabella
     'color': 'white'                 # colore testo
 })
 
