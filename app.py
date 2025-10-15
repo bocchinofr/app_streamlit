@@ -109,6 +109,7 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
+
 # ---- STILE GLOBALE ----
 st.markdown(
     """
@@ -122,13 +123,13 @@ st.markdown(
     .kpi-container {
         display: flex;
         gap: 20px;
-        overflow-x: auto;        /* scroll orizzontale se la pagina è stretta */
-        padding-bottom: 10px;    /* spazio sotto i KPI */
+        overflow-x: auto;      /* scroll orizzontale se pagina stretta */
+        padding-bottom: 10px;
     }
 
     /* Box KPI */
     .kpi-box {
-        flex: 0 0 180px;         /* larghezza fissa */
+        flex: 0 0 180px;       /* larghezza fissa */
         min-height: 130px;
         background-color: #184F5F;
         color: white;
@@ -161,9 +162,8 @@ st.markdown(
     .gap-subbox {
         display: flex;
         justify-content: center;
-        align-items: flex-start;
+        align-items: flex-end;  /* allinea i valori in altezza */
         gap: 30px;
-        margin-top: 10px;
     }
     </style>
     """,
@@ -172,7 +172,7 @@ st.markdown(
 
 # ---- FUNZIONE KPI BOX ----
 def kpi_box_html(label, value, sublabel=None, subvalue=None):
-    """Genera il markup HTML per un box KPI"""
+    """Genera HTML per un box KPI, con eventuale sub-metrica accanto"""
     if sublabel and subvalue:
         return f"""
         <div class="kpi-box">
@@ -206,6 +206,7 @@ html_kpi += kpi_box_html("PMbreak medio", f"{pmbreak:.1f}")
 html_kpi += "</div>"
 
 st.markdown(html_kpi, unsafe_allow_html=True)
+
 
 
 
