@@ -111,6 +111,7 @@ pmbreak = filtered["break"].mean() if total > 0 else 0
 
 
 
+# ---- STILE GLOBALE ----
 st.markdown(
     """
     <style>
@@ -123,14 +124,14 @@ st.markdown(
     .kpi-container {
         display: flex;
         gap: 20px;
-        overflow-x: auto;
+        overflow-x: auto;  /* scroll se pagina stretta */
         padding-bottom: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 40px;  /* spazio tra KPI e tabella */
     }
 
     /* Singolo box KPI */
     .kpi-box {
-        flex: 0 0 auto;
+        flex: 0 0 auto;       /* larghezza fissa */
         min-width: 180px;
         min-height: 130px;
         background-color: #184F5F;
@@ -144,21 +145,9 @@ st.markdown(
         justify-content: center;
     }
 
-    .kpi-label {
-        font-size: 16px;
-        opacity: 0.9;
-    }
-
-    .kpi-value {
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .kpi-subvalue {
-        font-size: 18px;
-        font-weight: bold;
-        opacity: 0.8;
-    }
+    .kpi-label { font-size: 16px; opacity: 0.9; }
+    .kpi-value { font-size: 28px; font-weight: bold; }
+    .kpi-subvalue { font-size: 18px; font-weight: bold; opacity: 0.8; }
 
     .gap-subbox {
         display: flex;
@@ -174,12 +163,45 @@ st.markdown(
         justify-content: center;
         text-align: center;
     }
-
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# ---- KPI BOX SCROLLABILI ----
+html_kpis = f"""
+<div class="kpi-container">
+    <div class="kpi-box">
+        <div class="kpi-label">Totale titoli</div>
+        <div class="kpi-value">{total}</div>
+    </div>
+    <div class="kpi-box">
+        <div class="kpi-label">Chiusura RED</div>
+        <div class="kpi-value">{red_close:.0f}%</div>
+    </div>
+    <div class="kpi-box">
+        <div class="gap-subbox">
+            <div>
+                <div class="kpi-label">GAP medio</div>
+                <div class="kpi-value">{gap_mean:.0f}%</div>
+            </div>
+            <div>
+                <div class="kpi-label">Mediana</div>
+                <div class="kpi-subvalue">{gap_median:.0f}%</div>
+            </div>
+        </div>
+    </div>
+    <div class="kpi-box">
+        <div class="kpi-label">%Open_PMH medio</div>
+        <div class="kpi-value">{open_pmh_mean:.1f}%</div>
+    </div>
+    <div class="kpi-box">
+        <div class="kpi-label">PMbreak medio</div>
+        <div class="kpi-value">{pmbreak:.1f}</div>
+    </div>
+</div>
+"""
+st.markdown(html_kpis, unsafe_allow_html=True)
 
 
 
