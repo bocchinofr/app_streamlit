@@ -119,7 +119,7 @@ st.markdown(
         display: flex;
         gap: 20px;
         overflow-x: auto;
-        padding-bottom: 10px;
+        padding-bottom: 20px;
     }}
 
     /* Singolo box KPI */
