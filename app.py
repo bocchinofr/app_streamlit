@@ -12,10 +12,8 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 df = pd.read_csv(SHEET_URL)
 
 # ---- PULIZIA DATI ----
-# Rimuovo eventuali spazi nei nomi colonne
 df.columns = df.columns.str.strip()
 
-# Funzione robusta per parse date con dayfirst
 def parse_date(x):
     try:
         return parser.parse(str(x).strip(), dayfirst=True)
@@ -24,53 +22,41 @@ def parse_date(x):
 
 df["Date"] = df["Date"].apply(parse_date)
 df["Date"] = df["Date"].apply(lambda x: x.date() if pd.notna(x) else pd.NaT)
-
 df["Chiusura"] = df["Chiusura"].str.upper().str.strip()
 
-# Funzione per convertire percentuali da stringhe con virgola e %
 def parse_percent(x):
     try:
         if pd.isna(x):
             return np.nan
-        x = str(x).replace('%', '').replace(',', '.')
+        x = str(x).replace('%','').replace(',', '.')
         return float(x)
     except:
         return np.nan
 
-# Pulizia colonne percentuali
 percent_cols = ["GAP", "%Open_PMH", "%OH", "%OL"]
 for col in percent_cols:
     if col in df.columns:
         df[col] = df[col].apply(parse_percent)
 
-# Pulizia colonne numeriche con virgola e separatore migliaia
 num_cols = ["OPEN", "Float", "break"]
 for col in num_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(
-            df[col].astype(str)
-            .str.replace('.', '', regex=False)   # rimuove punti migliaia
-            .str.replace(',', '.', regex=False), # converte virgole decimali
+            df[col].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False),
             errors="coerce"
         )
 
-# Sostituisco NaN con valori neutri per non perdere righe
 for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         df[col] = df[col].fillna(0)
 
-
-
 # ---- CONTROLLO DATI ----
 st.markdown("### 🛠️ Controllo dati")
-
-# Date non valide
 invalid_dates = df[df["Date"].isna()]
 if not invalid_dates.empty:
     st.warning(f"⚠️ Attenzione: {len(invalid_dates)} righe con date non valide")
     st.dataframe(invalid_dates[["Ticker", "Date"]])
 
-# Numeri non validi nelle colonne numeriche principali
 for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         invalid_nums = df[df[col].isna()]
@@ -78,11 +64,8 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
             st.warning(f"⚠️ Attenzione: {len(invalid_nums)} righe con valori non numerici in '{col}'")
             st.dataframe(invalid_nums[["Ticker", col]])
 
-
-
 # ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
-
 tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
 min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 0)
 max_float = st.sidebar.number_input("Float massimo", 0, 1_000_000_000, 5_000_000)
@@ -99,118 +82,103 @@ if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
-
 # ---- KPI BOX ----
 total = len(filtered)
-red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
-gap_mean = filtered["GAP"].mean() if total > 0 else 0
-gap_median = filtered["GAP"].median() if total > 0 else 0
-open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
-spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
-pmbreak = filtered["break"].mean() if total > 0 else 0
-
+red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total>0 else 0
+gap_mean = filtered["GAP"].mean() if total>0 else 0
+gap_median = filtered["GAP"].median() if total>0 else 0
+open_pmh_mean = filtered["%Open_PMH"].mean() if total>0 else 0
+pmbreak = filtered["break"].mean() if total>0 else 0
 
 # ---- STILE GLOBALE ----
-st.markdown(
-    """
-    <style>
-    /* Sfondo generale pagina */
-    .stApp {
-        background-color: #03121A !important;
-    }
+st.markdown("""
+<style>
+/* Sfondo generale pagina */
+.stApp {
+    background-color: #03121A !important;
+}
 
-    /* Contenitore KPI con scroll orizzontale */
-    .kpi-container {
-        display: flex;
-        gap: 20px;
-        overflow-x: auto;      /* scroll orizzontale se pagina stretta */
-        padding-bottom: 10px;
-    }
+/* KPI BOX */
+.kpi-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+.kpi-box {
+    background-color: #184F5F;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 160px;
+    min-height: 130px;
+    text-align: center;
+    flex: 0 0 auto;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+}
+.kpi-label { font-size:16px; opacity:0.9; margin-bottom:5px; }
+.kpi-value { font-size:28px; font-weight:bold; }
+.kpi-subvalue { font-size:18px; font-weight:bold; opacity:0.8; }
+.gap-subbox { display:flex; justify-content:center; align-items:center; gap:30px; }
+</style>
+""", unsafe_allow_html=True)
 
-    /* Box KPI */
-    .kpi-box {
-        flex: 0 0 180px;       /* larghezza fissa */
-        min-height: 130px;
-        background-color: #184F5F;
-        color: white;
-        border-radius: 15px;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-        padding: 20px;
-    }
+# ---- KPI DISPLAY ----
+st.markdown('<div class="kpi-container">', unsafe_allow_html=True)
 
-    .kpi-label {
-        font-size: 16px;
-        opacity: 0.9;
-    }
+# Totale titoli
+st.markdown(f"""
+<div class="kpi-box">
+  <div class="kpi-label">Totale titoli</div>
+  <div class="kpi-value">{total}</div>
+</div>
+""", unsafe_allow_html=True)
 
-    .kpi-value {
-        font-size: 28px;
-        font-weight: bold;
-        margin-top: 8px;
-    }
+# Chiusura RED
+st.markdown(f"""
+<div class="kpi-box">
+  <div class="kpi-label">Chiusura RED</div>
+  <div class="kpi-value">{red_close:.0f}%</div>
+</div>
+""", unsafe_allow_html=True)
 
-    .kpi-subvalue {
-        font-size: 18px;
-        font-weight: bold;
-        opacity: 0.8;
-    }
+# GAP medio + mediana
+st.markdown(f"""
+<div class="kpi-box">
+  <div class="gap-subbox">
+    <div>
+      <div class="kpi-label">GAP medio</div>
+      <div class="kpi-value">{gap_mean:.0f}%</div>
+    </div>
+    <div>
+      <div class="kpi-label">Mediana</div>
+      <div class="kpi-subvalue">{gap_median:.0f}%</div>
+    </div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
-    .gap-subbox {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;  /* allinea i valori in altezza */
-        gap: 30px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# %Open_PMH medio
+st.markdown(f"""
+<div class="kpi-box">
+  <div class="kpi-label">%Open_PMH medio</div>
+  <div class="kpi-value">{open_pmh_mean:.1f}%</div>
+</div>
+""", unsafe_allow_html=True)
 
-# ---- FUNZIONE KPI BOX ----
-def kpi_box_html(label, value, sublabel=None, subvalue=None):
-    """Genera HTML per un box KPI, con eventuale sub-metrica accanto"""
-    if sublabel and subvalue:
-        return f"""
-        <div class="kpi-box">
-            <div class="gap-subbox">
-                <div>
-                    <div class="kpi-label">{label}</div>
-                    <div class="kpi-value">{value}</div>
-                </div>
-                <div>
-                    <div class="kpi-label">{sublabel}</div>
-                    <div class="kpi-subvalue">{subvalue}</div>
-                </div>
-            </div>
-        </div>
-        """
-    else:
-        return f"""
-        <div class="kpi-box">
-            <div class="kpi-label">{label}</div>
-            <div class="kpi-value">{value}</div>
-        </div>
-        """
+# PMbreak medio
+st.markdown(f"""
+<div class="kpi-box">
+  <div class="kpi-label">PMbreak medio</div>
+  <div class="kpi-value">{pmbreak:.1f}</div>
+</div>
+""", unsafe_allow_html=True)
 
-# ---- DISPLAY KPI ----
-html_kpi = '<div class="kpi-container">'
-html_kpi += kpi_box_html("Totale titoli", total)
-html_kpi += kpi_box_html("Chiusura RED", f"{red_close:.0f}%")
-html_kpi += kpi_box_html("GAP medio", f"{gap_mean:.0f}%", "Mediana", f"{gap_median:.0f}%")
-html_kpi += kpi_box_html("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
-html_kpi += kpi_box_html("PMbreak medio", f"{pmbreak:.1f}")
-html_kpi += "</div>"
-
-st.markdown(html_kpi, unsafe_allow_html=True)
-
-
-
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ---- TAB E TABELLA ----
+st.markdown("<br><br>")  # spazio tra KPI e tabella
 st.markdown("### 📋 Tabella di dettaglio")
 
 cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
