@@ -119,11 +119,12 @@ st.markdown(
     }
     
     /* KPI BOX */
+
     .kpi-container {
         display: flex;
         justify-content: space-between;
         gap: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 20px; /* puoi cambiare lo spazio qui */
     }
     .kpi-box {
         background-color: #184F5F;
@@ -139,13 +140,13 @@ st.markdown(
         justify-content: center;
     }
     .kpi-label {
-        font-size: 16px;
+        font-size: 14px;
         opacity: 0.9;
     }
     .kpi-value {
-        font-size: 28px;
+        font-size: 24px;
         font-weight: bold;
-        margin-top: 8px;
+        margin-top: 4px;
     }
     .kpi-subvalue {
         font-size: 18px;
@@ -155,27 +156,32 @@ st.markdown(
     .gap-subbox {
         display: flex;
         justify-content: center;
-        align-items: flex-start;
         gap: 30px;
         margin-top: 10px;
+        align-items: flex-start; /* allinea in alto i due blocchi */
     }
-    
+    .gap-subblock {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* titolo sopra, valore sotto */
+        align-items: center;         /* centrato orizzontalmente */
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
 def kpi_box(label, value, sublabel=None, subvalue=None):
-    """Genera box KPI (versione con possibile sub-metrica accanto)"""
+    """Genera box KPI con possibile sub-metrica accanto"""
     if sublabel and subvalue:
         html = f"""
         <div class="kpi-box">
             <div class="gap-subbox">
-                <div>
+                <div class="gap-subblock">
                     <div class="kpi-label">{label}</div>
                     <div class="kpi-value">{value}</div>
                 </div>
-                <div>
+                <div class="gap-subblock">
                     <div class="kpi-label">{sublabel}</div>
                     <div class="kpi-subvalue">{subvalue}</div>
                 </div>
@@ -191,6 +197,8 @@ def kpi_box(label, value, sublabel=None, subvalue=None):
         """
     st.markdown(html, unsafe_allow_html=True)
 
+
+
 # ---- VISUALIZZO I KPI ----
 col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
@@ -205,6 +213,19 @@ with col5:
     kpi_box("PMbreak medio", f"{pmbreak:.1f}")
 
 
+st.markdown(
+    """
+    <style>
+    /* Ridurre il font del titolo Tabella di dettaglio */
+    h3 {
+        font-size: 14px !important;  /* modifica a piacere */
+        margin-top: 30px;             /* spazio sopra, se vuoi separarlo dai KPI */
+        margin-bottom: 10px;          /* spazio sotto */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
