@@ -109,6 +109,7 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
+
 # ---- STILE GLOBALE ----
 st.markdown(
     """
@@ -121,8 +122,10 @@ st.markdown(
     /* KPI BOX */
     .kpi-container {
         display: flex;
-        justify-content: space-between;
+        flex-wrap: nowrap;          /* niente wrap, scroll se serve */
+        overflow-x: auto;           /* scroll orizzontale */
         gap: 20px;
+        padding-bottom: 10px;
         margin-bottom: 20px;
     }
     .kpi-box {
@@ -132,7 +135,7 @@ st.markdown(
         border-radius: 15px;
         text-align: center;
         box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-        flex: 1;
+        flex: 0 0 180px;            /* larghezza fissa 180px */
         min-height: 130px;
         display: flex;
         flex-direction: column;
@@ -155,54 +158,25 @@ st.markdown(
     .gap-subbox {
         display: flex;
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;        /* allinea in altezza */
         gap: 30px;
         margin-top: 10px;
     }
-    
     </style>
     """,
     unsafe_allow_html=True
 )
 
-def kpi_box(label, value, sublabel=None, subvalue=None):
-    """Genera box KPI (versione con possibile sub-metrica accanto)"""
-    if sublabel and subvalue:
-        html = f"""
-        <div class="kpi-box">
-            <div class="gap-subbox">
-                <div>
-                    <div class="kpi-label">{label}</div>
-                    <div class="kpi-value">{value}</div>
-                </div>
-                <div>
-                    <div class="kpi-label">{sublabel}</div>
-                    <div class="kpi-subvalue">{subvalue}</div>
-                </div>
-            </div>
-        </div>
-        """
-    else:
-        html = f"""
-        <div class="kpi-box">
-            <div class="kpi-label">{label}</div>
-            <div class="kpi-value">{value}</div>
-        </div>
-        """
-    st.markdown(html, unsafe_allow_html=True)
-
 # ---- VISUALIZZO I KPI ----
-col1, col2, col3, col4, col5 = st.columns(5)
-with col1:
-    kpi_box("Totale titoli", total)
-with col2:
-    kpi_box("Chiusura RED", f"{red_close:.0f}%")
-with col3:
-    kpi_box("GAP medio", f"{gap_mean:.0f}%", "Mediana", f"{gap_median:.0f}%")
-with col4:
-    kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
-with col5:
-    kpi_box("PMbreak medio", f"{pmbreak:.1f}")
+st.markdown('<div class="kpi-container">', unsafe_allow_html=True)
+
+kpi_box("Totale titoli", total)
+kpi_box("Chiusura RED", f"{red_close:.0f}%")
+kpi_box("GAP medio", f"{gap_mean:.0f}%", "Mediana", f"{gap_median:.0f}%")
+kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
+kpi_box("PMbreak medio", f"{pmbreak:.1f}")
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 
