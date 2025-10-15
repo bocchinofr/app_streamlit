@@ -189,7 +189,7 @@ with col1:
 with col2:
     kpi_box("Chiusura RED", f"{red_close:.0f}%")
 with col3:
-    kpi_box("GAP medio", f"{gap_mean:.0f}%", f"(mediana {gap_median:.0f}%)")
+    kpi_box("GAP medio", f"{gap_mean:.0f}%", "Mediana", f"{gap_median:.0f}%")
 with col4:
     kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
 with col5:
