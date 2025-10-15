@@ -62,7 +62,9 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 
 
 # ---- CONTROLLO DATI ----
-st.markdown("### 🛠️ Controllo dati")
+
+st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">🛠️ Controllo dati</h3>', unsafe_allow_html=True)
+
 
 # Date non valide
 invalid_dates = df[df["Date"].isna()]
