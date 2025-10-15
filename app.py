@@ -209,22 +209,17 @@ with col5:
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 
-# Rimuovo colonne inutili (es. Orario High_v1)
 cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
 if cols_to_drop:
     filtered = filtered.drop(columns=cols_to_drop)
 
-# Ordino i dati
 filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
 
-# Sostituisco la colonna “Chiusura” con emoji 🔴🟢
 if "Chiusura" in filtered_sorted.columns:
     filtered_sorted["Chiusura"] = filtered_sorted["Chiusura"].replace({
         "RED": "🔴 RED",
         "GREEN": "🟢 GREEN"
     })
 
-
-# Mostro la tabella
-st.dataframe(styled_df, use_container_width=True)
+st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
