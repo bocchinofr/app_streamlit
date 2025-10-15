@@ -205,13 +205,17 @@ with col5:
     kpi_box("PMbreak medio", f"{pmbreak:.1f}")
 
 
+
+
+
+
 # ---- STILE TABELLA ----
 st.markdown(
     """
     <style>
     /* Colore di sfondo area tabella */
     section[data-testid="stDataFrame"] {
-        background-color: #184F5F !important;  /* colore di sfondo tabella */
+        background-color: #1B4D57 !important;  /* colore di sfondo tabella */
         border-radius: 10px;
         padding: 10px;
     }
