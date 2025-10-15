@@ -129,7 +129,7 @@ st.markdown(
 
     /* Box KPI */
     .kpi-box {
-        flex: 0 0 100px;         /* larghezza fissa */
+        flex: 0 0 20px;         /* larghezza fissa */
         min-height: 130px;
         background-color: #184F5F;
         color: white;
