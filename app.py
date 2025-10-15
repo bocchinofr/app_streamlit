@@ -110,45 +110,42 @@ spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
 
-# ---- KPI BOX SCROLLABILI ----
-kpi_html = f"""
-<div style='display:flex; gap:20px; overflow-x:auto; padding-bottom:10px;'>
-
-    <div style='flex:0 0 auto; min-width:180px; min-height:130px; background:#184F5F; color:white; padding:20px; border-radius:15px; text-align:center; box-shadow:0px 4px 10px rgba(0,0,0,0.2);'>
-        <div style='font-size:16px;'>Totale titoli</div>
-        <div style='font-size:28px; font-weight:bold; margin-top:8px;'>{total}</div>
+# ---- VISUALIZZO KPI IN CONTAINER SCROLLABILE ----
+html_kpis = f"""
+<div class="kpi-container">
+    <div class="kpi-box">
+        <div class="kpi-label">Totale titoli</div>
+        <div class="kpi-value">{total}</div>
     </div>
-
-    <div style='flex:0 0 auto; min-width:180px; min-height:130px; background:#184F5F; color:white; padding:20px; border-radius:15px; text-align:center; box-shadow:0px 4px 10px rgba(0,0,0,0.2);'>
-        <div style='font-size:16px;'>Chiusura RED</div>
-        <div style='font-size:28px; font-weight:bold; margin-top:8px;'>{red_close:.0f}%</div>
+    <div class="kpi-box">
+        <div class="kpi-label">Chiusura RED</div>
+        <div class="kpi-value">{red_close:.0f}%</div>
     </div>
-
-    <div style='flex:0 0 auto; min-width:220px; min-height:130px; background:#184F5F; color:white; padding:20px; border-radius:15px; text-align:center; box-shadow:0px 4px 10px rgba(0,0,0,0.2); display:flex; justify-content:center; align-items:center; gap:20px;'>
-        <div>
-            <div style='font-size:16px;'>GAP medio</div>
-            <div style='font-size:28px; font-weight:bold; margin-top:5px;'>{gap_mean:.0f}%</div>
+    <div class="kpi-box">
+        <div class="gap-subbox">
+            <div>
+                <div class="kpi-label">GAP medio</div>
+                <div class="kpi-value">{gap_mean:.0f}%</div>
+            </div>
+            <div>
+                <div class="kpi-label">Mediana</div>
+                <div class="kpi-subvalue">{gap_median:.0f}%</div>
+            </div>
         </div>
-        <div>
-            <div style='font-size:14px;'>Mediana</div>
-            <div style='font-size:22px; font-weight:bold; margin-top:5px;'>{gap_median:.0f}%</div>
-        </div>
     </div>
-
-    <div style='flex:0 0 auto; min-width:180px; min-height:130px; background:#184F5F; color:white; padding:20px; border-radius:15px; text-align:center; box-shadow:0px 4px 10px rgba(0,0,0,0.2);'>
-        <div style='font-size:16px;'>%Open_PMH medio</div>
-        <div style='font-size:28px; font-weight:bold; margin-top:8px;'>{open_pmh_mean:.1f}%</div>
+    <div class="kpi-box">
+        <div class="kpi-label">%Open_PMH medio</div>
+        <div class="kpi-value">{open_pmh_mean:.1f}%</div>
     </div>
-
-    <div style='flex:0 0 auto; min-width:180px; min-height:130px; background:#184F5F; color:white; padding:20px; border-radius:15px; text-align:center; box-shadow:0px 4px 10px rgba(0,0,0,0.2);'>
-        <div style='font-size:16px;'>PMbreak medio</div>
-        <div style='font-size:28px; font-weight:bold; margin-top:8px;'>{pmbreak:.1f}</div>
+    <div class="kpi-box">
+        <div class="kpi-label">PMbreak medio</div>
+        <div class="kpi-value">{pmbreak:.1f}</div>
     </div>
-
 </div>
 """
 
-st.markdown(kpi_html, unsafe_allow_html=True)
+st.markdown(html_kpis, unsafe_allow_html=True)
+
 
 
 
