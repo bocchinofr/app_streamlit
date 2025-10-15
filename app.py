@@ -109,6 +109,32 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
+# ---- DEFINIZIONE FUNZIONE KPI BOX ----
+def kpi_box(label, value, sublabel=None, subvalue=None):
+    """Genera box KPI (versione con possibile sub-metrica accanto)"""
+    if sublabel and subvalue:
+        html = f"""
+        <div class="kpi-box">
+            <div class="gap-subbox">
+                <div>
+                    <div class="kpi-label">{label}</div>
+                    <div class="kpi-value">{value}</div>
+                </div>
+                <div>
+                    <div class="kpi-label">{sublabel}</div>
+                    <div class="kpi-subvalue">{subvalue}</div>
+                </div>
+            </div>
+        </div>
+        """
+    else:
+        html = f"""
+        <div class="kpi-box">
+            <div class="kpi-label">{label}</div>
+            <div class="kpi-value">{value}</div>
+        </div>
+        """
+    st.markdown(html, unsafe_allow_html=True)
 
 # ---- STILE GLOBALE ----
 st.markdown(
