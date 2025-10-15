@@ -109,7 +109,6 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
-
 # ---- STILE GLOBALE ----
 st.markdown(
     """
@@ -124,12 +123,12 @@ st.markdown(
         display: flex;
         gap: 20px;
         overflow-x: auto;        /* scroll orizzontale se la pagina è stretta */
-        padding-bottom: 20px;    /* spazio sotto i KPI */
+        padding-bottom: 10px;    /* spazio sotto i KPI */
     }
 
     /* Box KPI */
     .kpi-box {
-        flex: 0 0 20px;         /* larghezza fissa */
+        flex: 0 0 180px;         /* larghezza fissa */
         min-height: 130px;
         background-color: #184F5F;
         color: white;
@@ -172,10 +171,10 @@ st.markdown(
 )
 
 # ---- FUNZIONE KPI BOX ----
-def kpi_box(label, value, sublabel=None, subvalue=None):
-    """Genera box KPI (con possibile sub-metrica accanto)"""
+def kpi_box_html(label, value, sublabel=None, subvalue=None):
+    """Genera il markup HTML per un box KPI"""
     if sublabel and subvalue:
-        html = f"""
+        return f"""
         <div class="kpi-box">
             <div class="gap-subbox">
                 <div>
@@ -190,22 +189,23 @@ def kpi_box(label, value, sublabel=None, subvalue=None):
         </div>
         """
     else:
-        html = f"""
+        return f"""
         <div class="kpi-box">
             <div class="kpi-label">{label}</div>
             <div class="kpi-value">{value}</div>
         </div>
         """
-    st.markdown(html, unsafe_allow_html=True)
 
 # ---- DISPLAY KPI ----
-st.markdown('<div class="kpi-container">', unsafe_allow_html=True)
-kpi_box("Totale titoli", total)
-kpi_box("Chiusura RED", f"{red_close:.0f}%")
-kpi_box("GAP medio", f"{gap_mean:.0f}%", "Mediana", f"{gap_median:.0f}%")
-kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
-kpi_box("PMbreak medio", f"{pmbreak:.1f}")
-st.markdown('</div>', unsafe_allow_html=True)
+html_kpi = '<div class="kpi-container">'
+html_kpi += kpi_box_html("Totale titoli", total)
+html_kpi += kpi_box_html("Chiusura RED", f"{red_close:.0f}%")
+html_kpi += kpi_box_html("GAP medio", f"{gap_mean:.0f}%", "Mediana", f"{gap_median:.0f}%")
+html_kpi += kpi_box_html("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
+html_kpi += kpi_box_html("PMbreak medio", f"{pmbreak:.1f}")
+html_kpi += "</div>"
+
+st.markdown(html_kpi, unsafe_allow_html=True)
 
 
 
