@@ -99,8 +99,8 @@ if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
-
-
+# ---- KPI BOX ----
+total = len(filtered)
 
 
 # ---- KPI BOX STILIZZATI ----
@@ -176,11 +176,6 @@ else:
 # Mostro la tabella senza indice extra
 st.dataframe(styled_df.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
-
-
-
-
-
 
 
 
