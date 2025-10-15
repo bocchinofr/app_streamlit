@@ -108,102 +108,73 @@ gap_median = filtered["GAP"].median() if total > 0 else 0
 open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
-# ---- KPI BOX STILIZZATI ----
+
+# ---- STILE GLOBALE ----
 st.markdown(
     """
     <style>
-    body {
-        background-color: #1A5769 !important;
+    /* Sfondo generale pagina */
+    .stApp {
+        background-color: #07171C !important;
     }
 
-    /* KPI BOX */
-    .kpi-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
+    /* Box KPI uniformi */
     .kpi-box {
         background-color: #184F5F;
         color: white;
-        padding: 20px;
+        padding: 15px 10px;
         border-radius: 15px;
         text-align: center;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-        flex: 1;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.25);
         min-height: 130px;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
+
     .kpi-label {
         font-size: 16px;
+        font-weight: 500;
         opacity: 0.9;
+        margin-bottom: 6px;
     }
+
     .kpi-value {
         font-size: 28px;
         font-weight: bold;
-        margin-top: 8px;
-    }
-    .kpi-subvalue {
-        font-size: 18px;
-        font-weight: bold;
-        opacity: 0.8;
-    }
-    .gap-subbox {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 30px;
-        margin-top: 10px;
+        line-height: 1.2;
     }
 
-    /* TABELLA DI DETTAGLIO - effetto blur */
-    section[data-testid="stDataFrame"] {
-        background: rgba(255,255,255,0.08);
-        backdrop-filter: blur(6px);
-        border-radius: 10px;
-        padding: 10px;
+    .kpi-subvalue {
+        font-size: 22px;
+        font-weight: 600;
+        margin-left: 8px;
+        opacity: 0.85;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-def kpi_box(label, value, sublabel=None, subvalue=None):
-    """Genera box KPI (versione con possibile sub-metrica accanto)"""
-    if sublabel and subvalue:
-        html = f"""
-        <div class="kpi-box">
-            <div class="gap-subbox">
-                <div>
-                    <div class="kpi-label">{label}</div>
-                    <div class="kpi-value">{value}</div>
-                </div>
-                <div>
-                    <div class="kpi-label">{sublabel}</div>
-                    <div class="kpi-subvalue">{subvalue}</div>
-                </div>
-            </div>
-        </div>
-        """
-    else:
-        html = f"""
-        <div class="kpi-box">
-            <div class="kpi-label">{label}</div>
-            <div class="kpi-value">{value}</div>
-        </div>
-        """
+# ---- FUNZIONE BOX KPI ----
+def kpi_box(label, value, subvalue=None):
+    html = f"""
+    <div class="kpi-box">
+        <div class="kpi-label">{label}</div>
+        <div class="kpi-value">{value}"""
+    if subvalue:
+        html += f"<span class='kpi-subvalue'>{subvalue}</span>"
+    html += "</div></div>"
     st.markdown(html, unsafe_allow_html=True)
 
-# ---- KPI DISPLAY ----
+# ---- VISUALIZZO I KPI ----
 col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     kpi_box("Totale titoli", total)
 with col2:
     kpi_box("Chiusura RED", f"{red_close:.0f}%")
 with col3:
-    kpi_box("GAP medio", f"{gap_mean:.0f}%", "Mediana", f"{gap_median:.0f}%")
+    kpi_box("GAP medio", f"{gap_mean:.0f}%", f"(mediana {gap_median:.0f}%)")
 with col4:
     kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
 with col5:
@@ -212,22 +183,21 @@ with col5:
 # ---- TAB E TABELLA ----
 st.markdown("### 📋 Tabella di dettaglio")
 
-# Emoji per la colonna Chiusura
-def add_emoji(val):
-    if val == "RED":
-        return "🔴 RED"
-    elif val == "GREEN":
-        return "🟢 GREEN"
-    return val
-
-if "Chiusura" in filtered.columns:
-    filtered["Chiusura"] = filtered["Chiusura"].apply(add_emoji)
-
-# Rimuovo eventuali colonne inutili
+# Rimuovo colonne inutili (es. Orario High_v1)
 cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
 if cols_to_drop:
     filtered = filtered.drop(columns=cols_to_drop)
 
-# Mostro la tabella con effetto blur
-st.dataframe(filtered.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
-st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
+# Ordino i dati
+filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
+
+# Sostituisco la colonna “Chiusura” con emoji 🔴🟢
+if "Chiusura" in filtered_sorted.columns:
+    filtered_sorted["Chiusura"] = filtered_sorted["Chiusura"].replace({
+        "RED": "🔴 RED",
+        "GREEN": "🟢 GREEN"
+    })
+
+# Mostro la tabella
+st.dataframe(filtered_sorted, use_container_width=True)
+st.caption(f"Mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
