@@ -161,7 +161,7 @@ st.markdown(
 
     /* TABELLA DI DETTAGLIO - effetto blur */
     section[data-testid="stDataFrame"] {
-        background: rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.80);
         backdrop-filter: blur(6px);
         border-radius: 10px;
         padding: 10px;
