@@ -109,9 +109,67 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
-# ---- DEFINIZIONE FUNZIONE KPI BOX ----
+
+# ---- STILE KPI SCROLLABILI ----
+st.markdown(
+    """
+    <style>
+    /* Contenitore scrollabile orizzontalmente */
+    .kpi-container {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;      /* scroll orizzontale se finestra stretta */
+        padding-bottom: 10px;
+    }
+
+    /* Singolo box KPI */
+    .kpi-box {
+        flex: 0 0 auto;       /* larghezza fissa, non si ridimensiona */
+        min-width: 180px;     /* puoi modificare la larghezza fissa */
+        min-height: 130px;
+        background-color: #184F5F;
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .kpi-label {
+        font-size: 16px;
+        opacity: 0.9;
+    }
+
+    .kpi-value {
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 8px;
+    }
+
+    .kpi-subvalue {
+        font-size: 18px;
+        font-weight: bold;
+        opacity: 0.8;
+    }
+
+    .gap-subbox {
+        display: flex;
+        justify-content: center;
+        align-items: center;   /* allinea verticalmente GAP medio e Mediana */
+        gap: 30px;
+        margin-top: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ---- FUNZIONE KPI BOX ----
 def kpi_box(label, value, sublabel=None, subvalue=None):
-    """Genera box KPI (versione con possibile sub-metrica accanto)"""
+    """Genera un box KPI con eventuale sub-metrica accanto"""
     if sublabel and subvalue:
         html = f"""
         <div class="kpi-box">
@@ -136,64 +194,7 @@ def kpi_box(label, value, sublabel=None, subvalue=None):
         """
     st.markdown(html, unsafe_allow_html=True)
 
-# ---- STILE GLOBALE ----
-st.markdown(
-    """
-    <style>
-    /* Sfondo generale pagina */
-    .stApp {
-        background-color: #03121A !important;
-    }
-    
-    /* KPI BOX */
-    .kpi-container {
-        display: flex;
-        flex-wrap: nowrap;          /* niente wrap, scroll se serve */
-        overflow-x: auto;           /* scroll orizzontale */
-        gap: 20px;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-    }
-    .kpi-box {
-        background-color: #184F5F;
-        color: white;
-        padding: 20px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-        flex: 0 0 180px;            /* larghezza fissa 180px */
-        min-height: 130px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .kpi-label {
-        font-size: 16px;
-        opacity: 0.9;
-    }
-    .kpi-value {
-        font-size: 28px;
-        font-weight: bold;
-        margin-top: 8px;
-    }
-    .kpi-subvalue {
-        font-size: 18px;
-        font-weight: bold;
-        opacity: 0.8;
-    }
-    .gap-subbox {
-        display: flex;
-        justify-content: center;
-        align-items: center;        /* allinea in altezza */
-        gap: 30px;
-        margin-top: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# ---- VISUALIZZO I KPI ----
+# ---- VISUALIZZO KPI IN CONTAINER SCROLLABILE ----
 st.markdown('<div class="kpi-container">', unsafe_allow_html=True)
 
 kpi_box("Totale titoli", total)
@@ -203,6 +204,7 @@ kpi_box("%Open_PMH medio", f"{open_pmh_mean:.1f}%")
 kpi_box("PMbreak medio", f"{pmbreak:.1f}")
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
