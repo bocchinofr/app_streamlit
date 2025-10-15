@@ -174,7 +174,7 @@ st.markdown(
         color: #FFFFFF;
     }
     h3 {
-        font-size: 20px;   /* tabella di dettaglio */
+        font-size: 10px;   /* tabella di dettaglio */
         color: #FFFFFF;
     }
 
