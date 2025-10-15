@@ -109,21 +109,16 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
-# ---- STILE GLOBALE ----
+# ---- KPI BOX STILIZZATI ----
 st.markdown(
     """
     <style>
-    /* Sfondo generale pagina */
-    .stApp {
-        background-color: #03121A !important;
-    }
-    
-    /* KPI BOX */
+    /* Contenitore KPI */
     .kpi-container {
         display: flex;
         justify-content: space-between;
         gap: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 30px; /* spazio tra KPI e titolo tabella */
     }
     .kpi-box {
         background-color: #184F5F;
@@ -139,27 +134,26 @@ st.markdown(
         justify-content: center;
     }
     .kpi-label {
-        font-size: 16px;
+        font-size: 14px; /* dimensione titolo KPI */
         opacity: 0.9;
     }
     .kpi-value {
-        font-size: 28px;
+        font-size: 24px; /* dimensione valore KPI */
         font-weight: bold;
-        margin-top: 8px;
+        margin-top: 4px;
     }
     .kpi-subvalue {
-        font-size: 18px;
+        font-size: 18px; /* dimensione mediana più piccola */
         font-weight: bold;
         opacity: 0.8;
     }
     .gap-subbox {
         display: flex;
         justify-content: center;
-        align-items: flex-start;
+        align-items: flex-end; /* allinea i valori in altezza */
         gap: 30px;
         margin-top: 10px;
     }
-    
     </style>
     """,
     unsafe_allow_html=True
@@ -190,6 +184,7 @@ def kpi_box(label, value, sublabel=None, subvalue=None):
         </div>
         """
     st.markdown(html, unsafe_allow_html=True)
+
 
 # ---- VISUALIZZO I KPI ----
 col1, col2, col3, col4, col5 = st.columns(5)
