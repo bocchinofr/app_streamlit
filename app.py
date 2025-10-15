@@ -224,24 +224,6 @@ if "Chiusura" in filtered_sorted.columns:
         "GREEN": "🟢 GREEN"
     })
 
-# Applico sfondo tabella e header colorato senza alterare i valori
-styled_df = filtered_sorted.style.set_table_styles([
-    {
-        'selector': 'thead',
-        'props': [
-            ('background-color', '#184F5F'),  # colore header
-            ('color', 'white'),
-            ('font-weight', 'bold')
-        ]
-    },
-    {
-        'selector': 'tbody',
-        'props': [
-            ('background-color', '#1B4D57'),  # colore body
-            ('color', 'white')
-        ]
-    }
-])
 
 # Mostro la tabella
 st.dataframe(styled_df, use_container_width=True)
