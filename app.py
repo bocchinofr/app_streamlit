@@ -163,7 +163,7 @@ st.markdown(
 
     /* Colore di sfondo area tabella */
     section[data-testid="stDataFrame"] {
-        background-color: #184F5F !important;  /* colore di sfondo tabella */
+        background-color: #0E4854 !important;  /* colore di sfondo tabella */
         border-radius: 10px;
         padding: 10px;
     }
