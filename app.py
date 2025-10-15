@@ -189,18 +189,3 @@ else:
 # Mostro la tabella senza indice extra
 st.dataframe(styled_df.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
-
-
-
-
-# ---- TAB E TABELLA ----
-st.markdown("### 📋 Tabella di dettaglio")
-
-# Rimuovo qualsiasi colonna che contiene "high_v1" nel nome
-cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
-if cols_to_drop:
-    filtered = filtered.drop(columns=cols_to_drop)
-
-# Mostro la tabella senza indice extra
-st.dataframe(filtered.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
-st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
