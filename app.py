@@ -125,12 +125,12 @@ open_pmh_green = (
 
 # Medie per red e green per PMbreak
 pmbreak_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "break"].mean()
+    filtered.loc[filtered["Chiusura"] == "RED", "break"].mean()*100
     if not filtered.loc[filtered["Chiusura"] == "RED"].empty
     else 0
 )
 pmbreak_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "break"].mean()
+    filtered.loc[filtered["Chiusura"] == "GREEN", "break"].mean()*100
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
