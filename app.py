@@ -263,10 +263,10 @@ html_kpis = f"""
         <div class="redgreen-subbox">
             <div>
                 <div class="label red">chiusure red</div>
-                <div class="label red">{pmbreak_red:.0f}%</div>
+                <div class="value red">{pmbreak_red:.0f}%</div>
             </div>
             <div>
-                <div class="labe green">chiusure green</div>
+                <div class="label green">chiusure green</div>
                 <div class="value green">{pmbreak_green:.0f}%</div>
             </div>
         </div>
