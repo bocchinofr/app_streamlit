@@ -273,7 +273,7 @@ html_kpis = f"""
     </div>
     <div class="kpi-box">
         <div class="kpi-label">Spinta</div>
-        <div class="kpi-value">{spinta}</div>
+        <div class="kpi-value">{spinta:.0f}</div>
     </div>
 </div>
 """
