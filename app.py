@@ -137,6 +137,18 @@ pmbreak_green = (
 )
 
 
+# Medie per red e green per Spinta
+spinta_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "spinta"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+spinta_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "spinta"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
+
 # ---- STILE GLOBALE ----
 st.markdown(
     """
@@ -281,6 +293,16 @@ html_kpis = f"""
             <div>
                 <div class="kpi-label">Mediana</div>
                 <div class="kpi-subvalue">{spinta_median:.0f}%</div>
+            </div>
+        </div>
+        <div class="redgreen-subbox">
+            <div>
+                <div class="label red">chiusure red</div>
+                <div class="value red">{spinta_red:.0f}%</div>
+            </div>
+            <div>
+                <div class="label green">chiusure green</div>
+                <div class="value green">{spinta_green:.0f}%</div>
             </div>
         </div>
     </div>
