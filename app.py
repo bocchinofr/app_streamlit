@@ -188,6 +188,7 @@ st.markdown(
 
     .openpmh-subbox div {
         text-align: center;
+        font-size: 13px;
     }
 
     .openpmh-subbox .red {
