@@ -190,7 +190,7 @@ st.markdown(
     }
 
     /* Sub-box per chiusure red/green */
-    .openpmh-subbox {
+    .redgreen-subbox {
         display: flex;
         justify-content: center;
         gap: 25px;
@@ -199,15 +199,15 @@ st.markdown(
         padding-top: 8px;
     }
 
-    .openpmh-subbox div {
+    .redgreen-subbox div {
         text-align: center;
     }
 
-    .openpmh-subbox .red {
+    .redgreen-subbox .red {
         color: #FF4C4C;
     }
 
-    .openpmh-subbox .green {
+    .operedgreennpmh-subbox .green {
         color: #4CFF4C;
     }
 
@@ -242,7 +242,7 @@ html_kpis = f"""
     <div class="kpi-box">
         <div class="kpi-label">%Open_PMH medio</div>
         <div class="kpi-value">{open_pmh_mean:.0f}%</div>
-        <div class="openpmh-subbox">
+        <div class="redgreen-subbox">
             <div>
                 <div style="font-size:10px;" class="red">chiusure red</div>
                 <div style="font-size:20px; font-weight:bold;" class="red">{open_pmh_red:.0f}%</div>
