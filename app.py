@@ -254,8 +254,18 @@ html_kpis = f"""
         </div>
     </div>
     <div class="kpi-box">
-        <div class="kpi-label">PMbreak medio</div>
+        <div class="kpi-label">%Open_PMH medio</div>
         <div class="kpi-value">{pmbreak:.0f}%</div>
+        <div class="redgreen-subbox">
+            <div>
+                <div style="font-size:10px;" class="red">chiusure red</div>
+                <div style="font-size:20px; font-weight:bold;" class="red">{pmbreak_red:.0f}%</div>
+            </div>
+            <div>
+                <div style="font-size:10px;" class="green">chiusure green</div>
+                <div style="font-size:20px; font-weight:bold;" class="green">{pmbreak_green:.0f}%</div>
+            </div>
+        </div>
     </div>
 </div>
 """
