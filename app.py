@@ -108,7 +108,8 @@ red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
 gap_mean = filtered["GAP"].mean() if total > 0 else 0
 gap_median = filtered["GAP"].median() if total > 0 else 0
 open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
-spinta = filtered["%OH"].mean() if total > 0 else 0
+spinta_mean = filtered["%OH"].mean() if total > 0 else 0
+spinta_median = filtered["%OH"].median() if total > 0 else 0
 pmbreak = filtered["break"].mean() *100 if total > 0 else 0
 
 # Medie per red e green per OPENvsPMH
@@ -184,7 +185,7 @@ st.markdown(
 
     .gap-subbox div {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: center;
         text-align: center;
     }
@@ -273,7 +274,7 @@ html_kpis = f"""
     </div>
     <div class="kpi-box">
         <div class="kpi-label">Spinta</div>
-        <div class="kpi-value">{spinta:.0f}</div>
+        <div class="kpi-value">{spinta_mean:.0f}%</div>
     </div>
 </div>
 """
