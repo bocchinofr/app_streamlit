@@ -228,15 +228,15 @@ html_kpis = f"""
     </div>
     <div class="kpi-box">
         <div class="kpi-label">%Open_PMH medio</div>
-        <div class="kpi-value">{open_pmh_mean:.1f}%</div>
+        <div class="kpi-value">{open_pmh_mean:.0f}%</div>
         <div class="openpmh-subbox">
             <div>
                 <div style="font-size:10px;" class="red">chiusure red</div>
-                <div style="font-size:20px; font-weight:bold;" class="red">{open_pmh_red:.1f}%</div>
+                <div style="font-size:20px; font-weight:bold;" class="red">{open_pmh_red:.0f}%</div>
             </div>
             <div>
                 <div style="font-size:10px;" class="green">chiusure green</div>
-                <div style="font-size:20px; font-weight:bold;" class="green">{open_pmh_green:.1f}%</div>
+                <div style="font-size:20px; font-weight:bold;" class="green">{open_pmh_green:.0f}%</div>
             </div>
         </div>
     </div>
