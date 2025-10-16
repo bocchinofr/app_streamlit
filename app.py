@@ -139,12 +139,12 @@ pmbreak_green = (
 
 # Medie per red e green per Spinta
 spinta_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "spinta"].mean()
+    filtered.loc[filtered["Chiusura"] == "RED", "%OH"].mean()
     if not filtered.loc[filtered["Chiusura"] == "RED"].empty
     else 0
 )
 spinta_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "spinta"].mean()
+    filtered.loc[filtered["Chiusura"] == "GREEN", "%OH"].mean()
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
