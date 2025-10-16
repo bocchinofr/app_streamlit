@@ -208,7 +208,6 @@ html_kpis = f"""
         </div>
     </div>
 
-    <!-- BOX OPENvsPMH -->
     <div class="kpi-box">
         <div class="kpi-label">OPENvsPMH</div>
         <div class="kpi-value">{open_pmh_mean:.0f}%</div>
