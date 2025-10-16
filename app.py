@@ -111,7 +111,17 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
-
+# Medie per chiusure rosse e verdi
+open_pmh_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "%Open_PMH"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+open_pmh_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "%Open_PMH"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
 
 # ---- STILE GLOBALE ----
 st.markdown(
@@ -166,6 +176,28 @@ st.markdown(
         text-align: center;
     }
 
+    /* Sub-box per chiusure red/green */
+    .openpmh-subbox {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin-top: 6px;
+        border-top: 1px solid rgba(255,255,255,0.2);
+        padding-top: 8px;
+    }
+
+    .openpmh-subbox div {
+        text-align: center;
+    }
+
+    .openpmh-subbox .red {
+        color: #FF4C4C;
+    }
+
+    .openpmh-subbox .green {
+        color: #4CFF4C;
+    }
+
     </style>
     """,
     unsafe_allow_html=True
@@ -197,6 +229,16 @@ html_kpis = f"""
     <div class="kpi-box">
         <div class="kpi-label">%Open_PMH medio</div>
         <div class="kpi-value">{open_pmh_mean:.1f}%</div>
+        <div class="openpmh-subbox">
+            <div>
+                <div style="font-size:13px;" class="red">chiusure<br>red</div>
+                <div style="font-size:15px; font-weight:bold;" class="red">{open_pmh_red:.1f}%</div>
+            </div>
+            <div>
+                <div style="font-size:13px;" class="green">chiusure<br>green</div>
+                <div style="font-size:15px; font-weight:bold;" class="green">{open_pmh_green:.1f}%</div>
+            </div>
+        </div>
     </div>
     <div class="kpi-box">
         <div class="kpi-label">PMbreak medio</div>
