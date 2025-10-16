@@ -207,7 +207,7 @@ st.markdown(
         color: #FF4C4C;
     }
 
-    .operedgreennpmh-subbox .green {
+    .redgreen-subbox .green {
         color: #4CFF4C;
     }
 
