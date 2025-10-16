@@ -191,11 +191,11 @@ st.markdown(
     }
 
     .openpmh-subbox .red {
-        color: #CC0000;
+        color: #FF4C4C;
     }
 
     .openpmh-subbox .green {
-        color: #00994C;
+        color: #4CFF4C;
     }
 
     </style>
