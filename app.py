@@ -203,8 +203,8 @@ st.markdown(
         text-align: center;
     }
 
-    .redgreen-subbox .label { font-size: 13px; }
-    .redgreen-subbox .value { font-size: 15px; font-weight: bold; }
+    .redgreen-subbox .label { font-size: 10px; }
+    .redgreen-subbox .value { font-size: 18px; font-weight: bold; }
 
 
     .redgreen-subbox .red {
