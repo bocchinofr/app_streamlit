@@ -273,8 +273,16 @@ html_kpis = f"""
         </div>
     </div>
     <div class="kpi-box">
-        <div class="kpi-label">Spinta</div>
-        <div class="kpi-value">{spinta_mean:.0f}%</div>
+        <div class="gap-subbox">
+            <div>
+                <div class="kpi-label">Spinta media</div>
+                <div class="kpi-value">{spinta_mean:.0f}%</div>
+            </div>
+            <div>
+                <div class="kpi-label">Mediana</div>
+                <div class="kpi-subvalue">{spinta_median:.0f}%</div>
+            </div>
+        </div>
     </div>
 </div>
 """
