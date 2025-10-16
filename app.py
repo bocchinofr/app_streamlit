@@ -203,6 +203,10 @@ st.markdown(
         text-align: center;
     }
 
+    .redgreen-subbox .label { font-size: 13px; }
+    .redgreen-subbox .value { font-size: 15px; font-weight: bold; }
+
+
     .redgreen-subbox .red {
         color: #FF4C4C;
     }
@@ -244,12 +248,12 @@ html_kpis = f"""
         <div class="kpi-value">{open_pmh_mean:.0f}%</div>
         <div class="redgreen-subbox">
             <div>
-                <div style="font-size:10px;" class="red">chiusure red</div>
-                <div style="font-size:20px; font-weight:bold;" class="red">{open_pmh_red:.0f}%</div>
+                <div class="label red">chiusure red</div>
+                <div class="value red">{open_pmh_red:.0f}%</div>
             </div>
             <div>
-                <div style="font-size:10px;" class="green">chiusure green</div>
-                <div style="font-size:20px; font-weight:bold;" class="green">{open_pmh_green:.0f}%</div>
+                <div class="label green">chiusure green</div>
+                <div class="value green">{open_pmh_green:.0f}%</div>
             </div>
         </div>
     </div>
@@ -258,12 +262,12 @@ html_kpis = f"""
         <div class="kpi-value">{pmbreak:.0f}%</div>
         <div class="redgreen-subbox">
             <div>
-                <div style="font-size:10px;" class="red">chiusure red</div>
-                <div style="font-size:20px; font-weight:bold;" class="red">{pmbreak_red:.0f}%</div>
+                <div class="label red">chiusure red</div>
+                <div class="label red">{pmbreak_red:.0f}%</div>
             </div>
             <div>
-                <div style="font-size:10px;" class="green">chiusure green</div>
-                <div style="font-size:20px; font-weight:bold;" class="green">{pmbreak_green:.0f}%</div>
+                <div class="labe green">chiusure green</div>
+                <div class="value green">{pmbreak_green:.0f}%</div>
             </div>
         </div>
     </div>
