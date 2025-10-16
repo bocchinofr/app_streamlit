@@ -242,7 +242,7 @@ html_kpis = f"""
     </div>
     <div class="kpi-box">
         <div class="kpi-label">PMbreak medio</div>
-        <div class="kpi-value">{pmbreak:.1f}</div>
+        <div class="kpi-value">{pmbreak:.0f}%</div>
     </div>
 </div>
 """
