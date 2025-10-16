@@ -271,6 +271,10 @@ html_kpis = f"""
             </div>
         </div>
     </div>
+    <div class="kpi-box">
+        <div class="kpi-label">Spinta</div>
+        <div class="kpi-value">{spinta}</div>
+    </div>
 </div>
 """
 st.markdown(html_kpis, unsafe_allow_html=True)
