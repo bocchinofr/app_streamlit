@@ -188,7 +188,6 @@ st.markdown(
 
     .openpmh-subbox div {
         text-align: center;
-        font-size: 30px;
     }
 
     .openpmh-subbox .red {
@@ -232,12 +231,12 @@ html_kpis = f"""
         <div class="kpi-value">{open_pmh_mean:.1f}%</div>
         <div class="openpmh-subbox">
             <div>
-                <div style="font-size:18px;" class="red">chiusure<br>red</div>
-                <div style="font-size:15px; font-weight:bold;" class="red">{open_pmh_red:.1f}%</div>
+                <div style="font-size:10px;" class="red">chiusure<br>red</div>
+                <div style="font-size:18px; font-weight:bold;" class="red">{open_pmh_red:.1f}%</div>
             </div>
             <div>
-                <div style="font-size:13px;" class="green">chiusure<br>green</div>
-                <div style="font-size:15px; font-weight:bold;" class="green">{open_pmh_green:.1f}%</div>
+                <div style="font-size:10px;" class="green">chiusure<br>green</div>
+                <div style="font-size:18px; font-weight:bold;" class="green">{open_pmh_green:.1f}%</div>
             </div>
         </div>
     </div>
