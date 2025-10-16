@@ -112,8 +112,18 @@ spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() if total > 0 else 0
 
 # Nuovi KPI per chiusure red/green
-open_pmh_red = filtered.loc[filtered["Chiusura"] == "RED", "%Open_PMH"].mean() if total > 0 else 0
-open_pmh_green = filtered.loc[filtered["Chiusura"] == "GREEN", "%Open_PMH"].mean() if total > 0 else 0
+open_pmh_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "%Open_PMH"].mean()
+    if total > 0 else 0
+)
+open_pmh_red = 0 if np.isnan(open_pmh_red) else open_pmh_red
+
+open_pmh_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "%Open_PMH"].mean()
+    if total > 0 else 0
+)
+open_pmh_green = 0 if np.isnan(open_pmh_green) else open_pmh_green
+
 
 
 # ---- STILE GLOBALE ----
