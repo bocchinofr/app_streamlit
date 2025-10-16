@@ -111,7 +111,7 @@ open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
 pmbreak = filtered["break"].mean() *100 if total > 0 else 0
 
-# Medie per chiusure rosse e verdi
+# Medie per red e green per OPENvsPMH
 open_pmh_red = (
     filtered.loc[filtered["Chiusura"] == "RED", "%Open_PMH"].mean()
     if not filtered.loc[filtered["Chiusura"] == "RED"].empty
@@ -122,6 +122,19 @@ open_pmh_green = (
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
+
+# Medie per red e green per PMbreak
+pmbreak_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "break"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+pmbreak_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "break"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
+
 
 # ---- STILE GLOBALE ----
 st.markdown(
@@ -177,7 +190,7 @@ st.markdown(
     }
 
     /* Sub-box per chiusure red/green */
-    .openpmh-subbox {
+    .red/green-subbox {
         display: flex;
         justify-content: center;
         gap: 25px;
@@ -186,15 +199,15 @@ st.markdown(
         padding-top: 8px;
     }
 
-    .openpmh-subbox div {
+    .red/green-subbox div {
         text-align: center;
     }
 
-    .openpmh-subbox .red {
+    .red/green-subbox .red {
         color: #FF4C4C;
     }
 
-    .openpmh-subbox .green {
+    .red/green-subbox .green {
         color: #4CFF4C;
     }
 
@@ -229,7 +242,7 @@ html_kpis = f"""
     <div class="kpi-box">
         <div class="kpi-label">%Open_PMH medio</div>
         <div class="kpi-value">{open_pmh_mean:.0f}%</div>
-        <div class="openpmh-subbox">
+        <div class="red/green-subbox">
             <div>
                 <div style="font-size:10px;" class="red">chiusure red</div>
                 <div style="font-size:20px; font-weight:bold;" class="red">{open_pmh_red:.0f}%</div>
@@ -243,6 +256,16 @@ html_kpis = f"""
     <div class="kpi-box">
         <div class="kpi-label">PMbreak medio</div>
         <div class="kpi-value">{pmbreak:.0f}%</div>
+        <div class="red/green-subbox">
+            <div>
+                <div style="font-size:10px;" class="red">chiusure red</div>
+                <div style="font-size:20px; font-weight:bold;" class="red">{pmbreak_red:.0f}%</div>
+            </div>
+            <div>
+                <div style="font-size:10px;" class="green">chiusure green</div>
+                <div style="font-size:20px; font-weight:bold;" class="green">{pmbreak_green:.0f}%</div>
+            </div>
+        </div>
     </div>
 </div>
 """
