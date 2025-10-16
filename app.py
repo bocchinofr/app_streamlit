@@ -185,7 +185,7 @@ st.markdown(
 
     .gap-subbox div {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: center;
         text-align: center;
     }
