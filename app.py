@@ -109,7 +109,7 @@ gap_mean = filtered["GAP"].mean() if total > 0 else 0
 gap_median = filtered["GAP"].median() if total > 0 else 0
 open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
 spinta = (filtered["%OH"].mean() - filtered["%OL"].mean()) if total > 0 else 0
-pmbreak = filtered["break"].mean() if total > 0 else 0
+pmbreak = filtered["break"].mean() *100 if total > 0 else 0
 
 # Medie per chiusure rosse e verdi
 open_pmh_red = (
