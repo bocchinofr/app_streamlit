@@ -18,6 +18,7 @@ def load_data():
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
     # Parse date
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.date
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.strftime("%d-%m-%Y")
     return df
 
 df = load_data()
