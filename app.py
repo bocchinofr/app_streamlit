@@ -164,7 +164,7 @@ st.markdown(
     /* Contenitore KPI in griglia (3 per riga) */
     .kpi-container {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);  /* 3 colonne uguali */
+        grid-template-columns: repeat(4, 1fr);  /* 3 colonne uguali */
         gap: 15px;
         padding-bottom: 20px;
         margin-bottom: 40px;
