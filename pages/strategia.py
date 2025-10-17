@@ -88,7 +88,7 @@ cols_to_show = [
 st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella filtrata</h3>', unsafe_allow_html=True)
 
 def style_rows(s):
-    return ['background-color: #f0f8ff' if i % 2 == 0 else '' for i in range(len(s))]
+    return ['background-color: #353131' if i % 2 == 0 else '' for i in range(len(s))]
 
 st.dataframe(
     filtered[cols_to_show].style.apply(style_rows, axis=0),
