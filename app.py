@@ -9,7 +9,7 @@ st.write("Contenuto della cartella pages:", os.listdir("pages"))
 
 
 # ---- CONFIGURAZIONE ----
-st.set_page_config(page_title="Dashboard Analisi", layout="wide")
+st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
 st.title("📈 Dashboard Analisi Small Cap")
 
 # ---- CARICAMENTO DATI ----
