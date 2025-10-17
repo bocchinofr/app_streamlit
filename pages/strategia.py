@@ -83,6 +83,7 @@ close_90m_green = ((filtered["attivazione"] == 1) &
 
 st.markdown(
     f"""
+    <!-- PRIMA RIGA: 4 BOX -->
     <div style="display:flex; gap:15px; margin-bottom:20px;">
         <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
             <div style="font-size:14px; opacity:0.8;">Totale record</div>
@@ -100,6 +101,9 @@ st.markdown(
             <div style="font-size:14px; opacity:0.8;">Numero TP</div>
             <div style="font-size:24px; font-weight:bold;">{numero_TP}</div>
         </div>
+    </div>
+    <!-- SECONDA RIGA: 3 BOX -->
+    <div style="display:flex; gap:15px; margin-bottom:20px;">
         <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
             <div style="font-size:14px; opacity:0.8;">BE profit</div>
             <div style="font-size:24px; font-weight:bold;">{BE_profit}</div>
