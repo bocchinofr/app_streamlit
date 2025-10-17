@@ -95,7 +95,7 @@ def highlight_cells(val, col_name):
     elif col_name == "SL" and val == 1:
         return "background-color: #8B2A06; color:white; font-weight:bold;"
     elif col_name == "TP" and val == 1:
-        return "background-color: green; color:white; font-weight:bold;"
+        return "background-color: #068B06; color:white; font-weight:bold;"
     else:
         return ""
 
