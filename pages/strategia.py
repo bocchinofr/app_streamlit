@@ -86,5 +86,26 @@ cols_to_show = [
 ]
 
 st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella filtrata</h3>', unsafe_allow_html=True)
-st.dataframe(filtered[cols_to_show], use_container_width=True)
+
+def style_rows(s):
+    # righe alternate
+    return ['background-color: #202326' if i % 2 == 0 else '' for i in range(len(s))]
+
+# definizione formato numeri
+format_dict = {}
+for col in filtered[cols_to_show].columns:
+    if col == "Gap%":
+        format_dict[col] = "{:.0f}"  # senza decimali
+    elif filtered[col].dtype in ['float64', 'int64']:
+        format_dict[col] = "{:.2f}"  # 2 decimali
+
+# applica stile e formattazione
+st.dataframe(
+    filtered[cols_to_show]
+    .style.apply(style_rows, axis=0)
+    .format(format_dict),
+    use_container_width=True
+)
+
+
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
