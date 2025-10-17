@@ -5,8 +5,6 @@ import numpy as np
 from dateutil import parser
 import numpy as np
 
-st.write("Contenuto della cartella pages:", os.listdir())
-
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
