@@ -163,31 +163,41 @@ gap_green = (
     else 0
 )
 
-# ---- MEDIA ORARIO HIGH ----
-# Rimuovi eventuali valori NaN e converti in minuti totali
-orari_validi = df["Orario High"].dropna()
+
+# ---- ORARIO HIGH: MEDIA, MEDIANA, FILTRI RED/GREEN ----
 
 def orario_to_minuti(ora_str):
+    """Converte '9:31' -> minuti totali (es. 571)"""
     try:
         h, m = map(int, ora_str.split(":"))
         return h * 60 + m
     except:
         return np.nan
 
-# Converto in minuti
-minuti = orari_validi.apply(orario_to_minuti).dropna()
+def minuti_to_orario(minuti):
+    """Converte minuti -> stringa 'HH:MM'"""
+    if np.isnan(minuti):
+        return "-"
+    h = int(minuti // 60)
+    m = int(round(minuti % 60))
+    return f"{h:02d}:{m:02d}"
 
-# Calcolo media in minuti
-media_minuti = minuti.mean() if not minuti.empty else np.nan
+# Filtra solo valori validi
+orari_validi = df["Orario High"].dropna().apply(orario_to_minuti).dropna()
 
-# Riconverto in hh:mm
-if not np.isnan(media_minuti):
-    h = int(media_minuti // 60)
-    m = int(round(media_minuti % 60))
-    media_orario_high = f"{h:02d}:{m:02d}"
-else:
-    media_orario_high = "-"
+# Media e mediana globali
+media_minuti = orari_validi.mean() if not orari_validi.empty else np.nan
+mediana_minuti = orari_validi.median() if not orari_validi.empty else np.nan
 
+media_orario_high = minuti_to_orario(media_minuti)
+mediana_orario_high = minuti_to_orario(mediana_minuti)
+
+# --- Filtri per chiusure RED / GREEN ---
+red = df[df["Chiusura"] == "RED"]["Orario High"].dropna().apply(orario_to_minuti)
+green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_minuti)
+
+media_red = minuti_to_orario(red.mean()) if not red.empty else "-"
+media_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
 
 
@@ -284,10 +294,6 @@ html_kpis = f"""
         <div class="kpi-value">{total}</div>
     </div>
     <div class="kpi-box">
-        <div class="kpi-label">OrarioHigh medio</div>
-        <div class="kpi-value">{media_orario_high}</div>
-    </div>
-    <div class="kpi-box">
         <div class="kpi-label">Chiusura RED</div>
         <div class="kpi-value">{red_close:.0f}%</div>
     </div>
@@ -332,6 +338,25 @@ html_kpis = f"""
             <div>
                 <div class="label green">chiusure green</div>
                 <div class="value green">{open_pmh_green:.0f}%</div>
+            </div>
+        </div>
+    </div>
+    <div class="kpi-box">
+        <div class="gap-subbox">
+            <div>
+                <div class="kpi-label">🕘 Orario medio High</div>
+                <div class="kpi-value">{media_orario_high}</div>
+                <div class="kpi-subvalue">Mediana: {mediana_orario_high}</div>
+            </div>
+        </div>
+        <div class="redgreen-subbox">
+            <div>
+                <div class="red">chiusure<br>red</div>
+                <div class="red" style="font-weight:bold;">{media_red}</div>
+            </div>
+            <div>
+                <div class="green">chiusure<br>green</div>
+                <div class="green" style="font-weight:bold;">{media_green}</div>
             </div>
         </div>
     </div>
