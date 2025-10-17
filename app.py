@@ -111,6 +111,7 @@ red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
 gap_mean = filtered["GAP"].mean() if total > 0 else 0
 gap_median = filtered["GAP"].median() if total > 0 else 0
 open_pmh_mean = filtered["%Open_PMH"].mean() if total > 0 else 0
+open_pmh_median = filtered["%Open_PMH"].median() if total > 0 else 0
 spinta_mean = filtered["%OH"].mean() if total > 0 else 0
 spinta_median = filtered["%OH"].median() if total > 0 else 0
 pmbreak = filtered["break"].mean() *100 if total > 0 else 0
@@ -283,8 +284,16 @@ html_kpis = f"""
         </div>
     </div>
     <div class="kpi-box">
-        <div class="kpi-label">%Open_PMH medio</div>
-        <div class="kpi-value">{open_pmh_mean:.0f}%</div>
+        <div class="gap-subbox">
+            <div>
+                <div class="kpi-label">openVSmh medio</div>
+                <div class="kpi-value">{open_pmh_mean:.0f}%</div>
+            </div>
+            <div>
+                <div class="kpi-label">Mediana</div>
+                <div class="kpi-subvalue">{open_pmh_median:.0f}%</div>
+            </div>
+        </div>
         <div class="redgreen-subbox">
             <div>
                 <div class="label red">chiusure red</div>
