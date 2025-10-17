@@ -164,7 +164,7 @@ st.markdown(
     /* Contenitore scrollabile KPI */
     .kpi-container {
         display: flex;
-        gap: 10px;
+        gap: 15px;
         overflow-x: auto;  /* scroll se pagina stretta */
         padding-bottom: 20px;
         margin-bottom: 40px;  /* spazio tra KPI e tabella */
