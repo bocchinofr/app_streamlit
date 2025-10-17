@@ -108,7 +108,7 @@ st.markdown(
             <div style="font-size:14px; opacity:0.8;">Close 90m RED</div>
             <div style="font-size:24px; font-weight:bold;">{close_90m_red}</div>
         </div>
-        <div style="flex:1; background-color:#184F5F; color:green; padding:15px; border-radius:12px; text-align:center;">
+        <div style="flex:1; background-color:#184F5F; color:#2EDB2E; padding:15px; border-radius:12px; text-align:center;">
             <div style="font-size:14px; opacity:0.8;">Close 90m GREEN</div>
             <div style="font-size:24px; font-weight:bold;">{close_90m_green}</div>
         </div>
