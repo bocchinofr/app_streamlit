@@ -11,6 +11,7 @@ st.title("📊 Strategia Intraday")
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=xlsx"
 df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday")
 
+
 # ---- PULIZIA DATI ----
 df.columns = df.columns.str.strip()
 
