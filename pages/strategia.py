@@ -91,7 +91,7 @@ def style_rows(s):
 # Funzione per colorare celle condizionalmente
 def highlight_cells(val, col_name):
     if col_name == "attivazione" and val == 1:
-        return "background-color: gold; font-weight:bold;"
+        return "background-color: #C9A700; font-weight:bold;"
     elif col_name == "SL" and val == 1:
         return "background-color: red; color:white; font-weight:bold;"
     elif col_name == "TP" and val == 1:
