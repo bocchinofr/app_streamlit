@@ -1,8 +1,12 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
 from dateutil import parser
 import numpy as np
+
+st.write("Contenuto della cartella pages:", os.listdir("pages"))
+
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Dashboard Analisi", layout="wide")
