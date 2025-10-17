@@ -196,8 +196,8 @@ mediana_orario_high = minuti_to_orario(mediana_minuti)
 red = df[df["Chiusura"] == "RED"]["Orario High"].dropna().apply(orario_to_minuti)
 green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_minuti)
 
-media_red = minuti_to_orario(red.mean()) if not red.empty else "-"
-media_green = minuti_to_orario(green.mean()) if not green.empty else "-"
+mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
+mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
 
 
@@ -344,19 +344,22 @@ html_kpis = f"""
     <div class="kpi-box">
         <div class="gap-subbox">
             <div>
-                <div class="kpi-label">🕘 Orario medio High</div>
-                <div class="kpi-value">{media_orario_high}</div>
-                <div class="kpi-subvalue">Mediana: {mediana_orario_high}</div>
+                <div class="kpi-label">OrarioHigh medio</div>
+                <div class="kpi-value">{media_orario_high:.0f}%</div>
+            </div>
+            <div>
+                <div class="kpi-label">Mediana</div>
+                <div class="kpi-subvalue">{mediana_orario_high:.0f}%</div>
             </div>
         </div>
         <div class="redgreen-subbox">
             <div>
-                <div class="red">chiusure<br>red</div>
-                <div class="red" style="font-weight:bold;">{media_red}</div>
+                <div class="label red">chiusure<br>red</div>
+                <div class="value red"">{mediaorario_red}</div>
             </div>
             <div>
                 <div class="green">chiusure<br>green</div>
-                <div class="green" style="font-weight:bold;">{media_green}</div>
+                <div class="green" style="font-weight:bold;">{mediaorario_green}</div>
             </div>
         </div>
     </div>
