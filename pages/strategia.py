@@ -79,33 +79,45 @@ st.markdown(
 
 
 # ---- TABELLA ----
-cols_to_show = [
-    "Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
-    "High_90m", "Low_90m", "Close_1100",
-    "Entry_price", "SL_price", "TP_price", "attivazione", "SL", "TP"
-]
 
-st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella filtrata</h3>', unsafe_allow_html=True)
+# Colonne da mostrare in tabella
+cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
+                "High_90m", "Low_90m", "Close_1100", "attivazione", "SL", "TP"]
 
+# Funzione per righe alternate
 def style_rows(s):
-    # righe alternate
     return ['background-color: #202326' if i % 2 == 0 else '' for i in range(len(s))]
 
-# definizione formato numeri
-format_dict = {}
-for col in filtered[cols_to_show].columns:
-    if col == "Gap%":
-        format_dict[col] = "{:.0f}"  # senza decimali
-    elif filtered[col].dtype in ['float64', 'int64']:
-        format_dict[col] = "{:.2f}"  # 2 decimali
+# Funzione per colorare celle condizionalmente
+def highlight_cells(val, col_name):
+    if col_name == "attivazione" and val == 1:
+        return "background-color: gold; font-weight:bold;"
+    elif col_name == "SL" and val == 1:
+        return "background-color: red; color:white; font-weight:bold;"
+    elif col_name == "TP" and val == 1:
+        return "background-color: green; color:white; font-weight:bold;"
+    else:
+        return ""
 
-# applica stile e formattazione
-st.dataframe(
+# Definizione formato numeri
+format_dict = {}
+for col in cols_to_show:
+    if col == "Gap%":
+        format_dict[col] = "{:.0f}"
+    elif col in ["attivazione", "SL", "TP"]:
+        format_dict[col] = "{:.0f}"
+    elif filtered[col].dtype in ['float64', 'int64']:
+        format_dict[col] = "{:.2f}"
+
+# Applica formattazione e colori
+styled_df = (
     filtered[cols_to_show]
     .style.apply(style_rows, axis=0)
-    .format(format_dict),
-    use_container_width=True
+    .format(format_dict)
+    .apply(lambda x: [highlight_cells(v, x.name) for v in x], axis=0)
 )
 
-
+st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella filtrata</h3>', unsafe_allow_html=True)
+st.dataframe(styled_df, use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
+
