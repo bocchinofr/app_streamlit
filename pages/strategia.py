@@ -36,7 +36,6 @@ if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 filtered = filtered[(filtered["Open"] >= min_open) & (filtered["Gap%"] >= min_gap)]
-filtered = filtered[(filtered["%SL"] >= param_sl) & (filtered["%TP"] <= param_tp) & (filtered["%entry"] >= param_entry)]
 
 # ---- KPI BOX ----
 total = len(filtered)
