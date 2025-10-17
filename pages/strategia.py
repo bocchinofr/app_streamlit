@@ -86,14 +86,5 @@ cols_to_show = [
 ]
 
 st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella filtrata</h3>', unsafe_allow_html=True)
-
-def style_rows(s):
-    return ['background-color: #313335' if i % 2 == 0 else '' for i in range(len(s))]
-
-st.dataframe(
-    filtered[cols_to_show].style.apply(style_rows, axis=0),
-    use_container_width=True
-)
-
-
+st.dataframe(filtered[cols_to_show], use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
