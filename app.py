@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from dateutil import parser
+import numpy as np
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Dashboard Analisi", layout="wide")
@@ -127,7 +128,6 @@ open_pmh_green = (
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
-
 # Medie per red e green per PMbreak
 pmbreak_red = (
     filtered.loc[filtered["Chiusura"] == "RED", "break"].mean()*100
@@ -139,8 +139,6 @@ pmbreak_green = (
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
-
-
 # Medie per red e green per Spinta
 spinta_red = (
     filtered.loc[filtered["Chiusura"] == "RED", "%OH"].mean()
@@ -164,6 +162,34 @@ gap_green = (
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
+
+# ---- MEDIA ORARIO HIGH ----
+# Rimuovi eventuali valori NaN e converti in minuti totali
+orari_validi = df["Orario High"].dropna()
+
+def orario_to_minuti(ora_str):
+    try:
+        h, m = map(int, ora_str.split(":"))
+        return h * 60 + m
+    except:
+        return np.nan
+
+# Converto in minuti
+minuti = orari_validi.apply(orario_to_minuti).dropna()
+
+# Calcolo media in minuti
+media_minuti = minuti.mean() if not minuti.empty else np.nan
+
+# Riconverto in hh:mm
+if not np.isnan(media_minuti):
+    h = int(media_minuti // 60)
+    m = int(round(media_minuti % 60))
+    media_orario_high = f"{h:02d}:{m:02d}"
+else:
+    media_orario_high = "-"
+
+
+
 
 # ---- STILE GLOBALE ----
 st.markdown(
@@ -256,6 +282,10 @@ html_kpis = f"""
     <div class="kpi-box">
         <div class="kpi-label">Totale titoli</div>
         <div class="kpi-value">{total}</div>
+    </div>
+    <div class="kpi-box">
+        <div class="kpi-label">OrarioHigh medio</div>
+        <div class="kpi-value">{media_orario_high}</div>
     </div>
     <div class="kpi-box">
         <div class="kpi-label">Chiusura RED</div>
