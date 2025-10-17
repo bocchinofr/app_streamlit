@@ -345,11 +345,11 @@ html_kpis = f"""
         <div class="gap-subbox">
             <div>
                 <div class="kpi-label">OrarioHigh medio</div>
-                <div class="kpi-value">{media_orario_high:.0f}%</div>
+                <div class="kpi-value">{media_orario_high}</div>
             </div>
             <div>
                 <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{mediana_orario_high:.0f}%</div>
+                <div class="kpi-subvalue">{mediana_orario_high}</div>
             </div>
         </div>
         <div class="redgreen-subbox">
