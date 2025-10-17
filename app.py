@@ -286,7 +286,7 @@ html_kpis = f"""
     <div class="kpi-box">
         <div class="gap-subbox">
             <div>
-                <div class="kpi-label">openVSmh medio</div>
+                <div class="kpi-label">openVSpmh medio</div>
                 <div class="kpi-value">{open_pmh_mean:.0f}%</div>
             </div>
             <div>
