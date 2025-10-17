@@ -93,7 +93,7 @@ def highlight_cells(val, col_name):
     if col_name == "attivazione" and val == 1:
         return "background-color: #473C06; font-weight:bold;"
     elif col_name == "SL" and val == 1:
-        return "background-color: red; color:white; font-weight:bold;"
+        return "background-color: #8B2A06; color:white; font-weight:bold;"
     elif col_name == "TP" and val == 1:
         return "background-color: green; color:white; font-weight:bold;"
     else:
