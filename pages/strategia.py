@@ -55,26 +55,28 @@ numero_TP = filtered["TP"].sum()
 
 st.markdown(
     f"""
-    <div style="display:flex; gap:20px; padding:15px; background-color:#184F5F; border-radius:15px; color:white;">
-        <div style="text-align:center;">
-            <div style="font-size:16px; opacity:0.9;">Totale record</div>
-            <div style="font-size:28px; font-weight:bold;">{total}</div>
+    <div style="display:flex; gap:15px; margin-bottom:20px;">
+        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">Totale record</div>
+            <div style="font-size:24px; font-weight:bold;">{total}</div>
         </div>
-        <div style="text-align:center;">
-            <div style="font-size:16px; opacity:0.9;">Attivazioni</div>
-            <div style="font-size:28px; font-weight:bold;">{attivazioni}</div>
+        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">Attivazioni</div>
+            <div style="font-size:24px; font-weight:bold;">{attivazioni}</div>
         </div>
-        <div style="text-align:center;">
-            <div style="font-size:16px; opacity:0.9;">Numero SL</div>
-            <div style="font-size:28px; font-weight:bold;">{numero_SL}</div>
+        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">Numero SL</div>
+            <div style="font-size:24px; font-weight:bold;">{numero_SL}</div>
         </div>
-        <div style="text-align:center;">
-            <div style="font-size:16px; opacity:0.9;">Numero TP</div>
-            <div style="font-size:28px; font-weight:bold;">{numero_TP}</div>
+        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">Numero TP</div>
+            <div style="font-size:24px; font-weight:bold;">{numero_TP}</div>
         </div>
     </div>
     """,
     unsafe_allow_html=True
+)
+
 )
 
 # ---- TABELLA ----
