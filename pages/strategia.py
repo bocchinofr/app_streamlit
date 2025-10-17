@@ -77,7 +77,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-)
 
 # ---- TABELLA ----
 cols_to_show = [
