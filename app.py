@@ -354,12 +354,12 @@ html_kpis = f"""
         </div>
         <div class="redgreen-subbox">
             <div>
-                <div class="label red">chiusure<br>red</div>
+                <div class="label red">chiusure red</div>
                 <div class="value red"">{mediaorario_red}</div>
             </div>
             <div>
-                <div class="green">chiusure<br>green</div>
-                <div class="green" style="font-weight:bold;">{mediaorario_green}</div>
+                <div class="label green">chiusure green</div>
+                <div class="value green">{mediaorario_green}</div>
             </div>
         </div>
     </div>
