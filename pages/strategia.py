@@ -67,10 +67,17 @@ attivazioni = filtered["attivazione"].sum()
 numero_SL = filtered["SL"].sum()
 numero_TP = filtered["TP"].sum()
 BE_profit = filtered["BEprofit"].sum()
-close_90m = ((filtered["attivazione"] == 1) & 
+close_90m_red = ((filtered["attivazione"] == 1) & 
              (filtered["SL"] == 0) & 
              (filtered["TP"] == 0) & 
-             (filtered["BEprofit"] == 0)
+             (filtered["BEprofit"] == 0) &
+             (filtered["TP_90m"] >= 0)
+            ).sum()
+close_90m_green = ((filtered["attivazione"] == 1) & 
+             (filtered["SL"] == 0) & 
+             (filtered["TP"] == 0) & 
+             (filtered["BEprofit"] == 0) &
+             (filtered["TP_90m"] < 0)
             ).sum()
 
 
@@ -97,9 +104,13 @@ st.markdown(
             <div style="font-size:14px; opacity:0.8;">BE profit</div>
             <div style="font-size:24px; font-weight:bold;">{BE_profit}</div>
         </div>
-        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">Close 90m</div>
-            <div style="font-size:24px; font-weight:bold;">{close_90m}</div>
+        <div style="flex:1; background-color:#184F5F; color:red; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">Close 90m RED</div>
+            <div style="font-size:24px; font-weight:bold;">{close_90m_red}</div>
+        </div>
+        <div style="flex:1; background-color:#184F5F; color:green; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">Close 90m GREEN</div>
+            <div style="font-size:24px; font-weight:bold;">{close_90m_green}</div>
         </div>
     </div>
     """,
@@ -138,7 +149,7 @@ format_dict = {}
 for col in cols_to_show:
     if col == "Gap%":
         format_dict[col] = "{:.0f}"
-    elif col in ["attivazione", "SL", "TP"]:
+    elif col in ["attivazione", "SL", "TP", "BEprofit"]:
         format_dict[col] = "{:.0f}"
     elif filtered[col].dtype in ['float64', 'int64']:
         format_dict[col] = "{:.2f}"
