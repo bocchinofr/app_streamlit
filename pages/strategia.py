@@ -104,7 +104,7 @@ st.markdown(
             <div style="font-size:14px; opacity:0.8;">BE profit</div>
             <div style="font-size:24px; font-weight:bold;">{BE_profit}</div>
         </div>
-        <div style="flex:1; background-color:#184F5F; color:red; padding:15px; border-radius:12px; text-align:center;">
+        <div style="flex:1; background-color:#184F5F; color:#EE4419; padding:15px; border-radius:12px; text-align:center;">
             <div style="font-size:14px; opacity:0.8;">Close 90m RED</div>
             <div style="font-size:24px; font-weight:bold;">{close_90m_red}</div>
         </div>
