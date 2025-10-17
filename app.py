@@ -161,14 +161,15 @@ st.markdown(
         background-color: #03121A !important;
     }
 
-    /* Contenitore scrollabile KPI */
+    /* Contenitore KPI in griglia (3 per riga) */
     .kpi-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);  /* 3 colonne uguali */
         gap: 15px;
-        overflow-x: auto;  /* scroll se pagina stretta */
         padding-bottom: 20px;
-        margin-bottom: 40px;  /* spazio tra KPI e tabella */
+        margin-bottom: 40px;
     }
+
 
     /* Singolo box KPI */
     .kpi-box {
