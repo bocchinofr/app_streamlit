@@ -71,13 +71,13 @@ close_90m_red = ((filtered["attivazione"] == 1) &
              (filtered["SL"] == 0) & 
              (filtered["TP"] == 0) & 
              (filtered["BEprofit"] == 0) &
-             (filtered["TP_90m"] >= 0)
+             (filtered["TP_90m"] <= 0)
             ).sum()
 close_90m_green = ((filtered["attivazione"] == 1) & 
              (filtered["SL"] == 0) & 
              (filtered["TP"] == 0) & 
              (filtered["BEprofit"] == 0) &
-             (filtered["TP_90m"] < 0)
+             (filtered["TP_90m"] > 0)
             ).sum()
 
 
