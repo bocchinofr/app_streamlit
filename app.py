@@ -152,6 +152,18 @@ spinta_green = (
     else 0
 )
 
+# Medie per red e green per GAP
+gap_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "GAP"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+gap_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "GAP"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
+
 # ---- STILE GLOBALE ----
 st.markdown(
     """
@@ -248,6 +260,7 @@ html_kpis = f"""
         <div class="kpi-label">Chiusura RED</div>
         <div class="kpi-value">{red_close:.0f}%</div>
     </div>
+
     <div class="kpi-box">
         <div class="gap-subbox">
             <div>
@@ -259,7 +272,18 @@ html_kpis = f"""
                 <div class="kpi-subvalue">{gap_median:.0f}%</div>
             </div>
         </div>
+        <div class="redgreen-subbox">
+            <div>
+                <div class="label red">chiusure red</div>
+                <div class="value red">{gap_red:.0f}%</div>
+            </div>
+            <div>
+                <div class="label green">chiusure green</div>
+                <div class="value green">{gap_green:.0f}%</div>
+            </div>
+        </div>
     </div>
+
     <div class="kpi-box">
         <div class="kpi-label">%Open_PMH medio</div>
         <div class="kpi-value">{open_pmh_mean:.0f}%</div>
