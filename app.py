@@ -260,7 +260,6 @@ html_kpis = f"""
         <div class="kpi-label">Chiusura RED</div>
         <div class="kpi-value">{red_close:.0f}%</div>
     </div>
-
     <div class="kpi-box">
         <div class="gap-subbox">
             <div>
@@ -283,7 +282,6 @@ html_kpis = f"""
             </div>
         </div>
     </div>
-
     <div class="kpi-box">
         <div class="kpi-label">%Open_PMH medio</div>
         <div class="kpi-value">{open_pmh_mean:.0f}%</div>
