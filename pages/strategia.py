@@ -31,6 +31,8 @@ min_gap = st.sidebar.number_input("Gap% minimo", value=0.0)
 param_sl = st.sidebar.number_input("%SL", value=30.0)
 param_tp = st.sidebar.number_input("%TP", value=-15.0)
 param_entry = st.sidebar.number_input("%entry", value=15.0)
+param_BE = st.sidebar.number_input("%BEparam", value=5.0)
+
 
 filtered = df.copy()
 if len(date_range) == 2:
@@ -47,11 +49,30 @@ filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).asty
 filtered["SL"] = ((filtered["attivazione"] == 1) & (filtered["High_90m"] >= filtered["SL_price"])).astype(int)
 filtered["TP"] = ((filtered["attivazione"] == 1) & (filtered["SL"] == 0) & (filtered["Low_90m"] <= filtered["TP_price"])).astype(int)
 
+# Calcolo BEprofit
+filtered["BEprofit"] = (
+    (filtered["attivazione"] == 1) &
+    (filtered["SL"] == 0) &
+    (filtered["TP"] == 0) &
+    (filtered["Low_90m"] <= filtered["TP_price"] * (1 + param_BE/100))
+).astype(int)
+
+# Calcolo TP_90m
+filtered["TP_90m"] = filtered["Entry_price"] - filtered["Close_1100"]
+
+
 # ---- KPI BOX ----
 total = len(filtered)
 attivazioni = filtered["attivazione"].sum()
 numero_SL = filtered["SL"].sum()
 numero_TP = filtered["TP"].sum()
+BE_profit = filtered["BEprofit"].sum()
+close_90m = ((filtered["attivazione"] == 1) & 
+             (filtered["SL"] == 0) & 
+             (filtered["TP"] == 0) & 
+             (filtered["BEprofit"] == 0)
+            ).sum()
+
 
 st.markdown(
     f"""
@@ -72,6 +93,14 @@ st.markdown(
             <div style="font-size:14px; opacity:0.8;">Numero TP</div>
             <div style="font-size:24px; font-weight:bold;">{numero_TP}</div>
         </div>
+        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">BE profit</div>
+            <div style="font-size:24px; font-weight:bold;">{BE_profit}</div>
+        </div>
+        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
+            <div style="font-size:14px; opacity:0.8;">Close 90m</div>
+            <div style="font-size:24px; font-weight:bold;">{close_90m}</div>
+        </div>
     </div>
     """,
     unsafe_allow_html=True
@@ -82,7 +111,9 @@ st.markdown(
 
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
-                "High_90m", "Low_90m", "Close_1100", "attivazione", "SL", "TP"]
+                "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
+                "TP_90m", "attivazione", "SL", "TP", "BEprofit"]
+
 
 # Funzione per righe alternate
 def style_rows(s):
@@ -96,6 +127,9 @@ def highlight_cells(val, col_name):
         return "background-color: #8B2A06; color:white; font-weight:bold;"
     elif col_name == "TP" and val == 1:
         return "background-color: #024902; color:white; font-weight:bold;"
+    elif col_name == "BEprofit" and val == 1:
+        return "background-color: #243624; font-weight:bold;" 
+
     else:
         return ""
 
