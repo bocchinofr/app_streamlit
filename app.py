@@ -10,6 +10,29 @@ import numpy as np
 st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
 st.title("📈 Dashboard Analisi Small Cap")
 
+# Header con pulsante per cambiare pagina
+st.markdown("""
+<div style='display:flex; justify-content:space-between; align-items:center;'>
+    <h2 style='color:white;'>📊 Dashboard KPI</h2>
+    <div style='text-align:right;'>
+        <form action="/pages/Analisi" method="get">
+            <button style="
+                background-color:#184F5F;
+                color:white;
+                border:none;
+                border-radius:10px;
+                padding:8px 16px;
+                cursor:pointer;
+                font-weight:bold;
+            ">
+            Vai a Analisi 🔄
+            </button>
+        </form>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
 # ---- CARICAMENTO DATI ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
 df = pd.read_csv(SHEET_URL)
