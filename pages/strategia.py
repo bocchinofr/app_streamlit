@@ -90,6 +90,18 @@ close_90m_green = ((filtered["attivazione"] == 1) &
 
 
 st.markdown(
+    """
+    <style>
+    /* Sfondo generale pagina */
+    .stApp {
+        background-color: #03121A !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
     f"""
     <!-- PRIMA RIGA: 4 BOX -->
     <div style="display:flex; gap:15px; margin-bottom:20px;">
