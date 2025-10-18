@@ -60,6 +60,9 @@ filtered["BEprofit"] = (
 # Calcolo TP_90m
 filtered["TP_90m"] = filtered["Entry_price"] - filtered["Close_1100"]
 
+# Calcolo RR
+filtered["RR"] = (filtered["SL_price"]-filtered["Entry_price"])/(filtered["TP_price"])-filtered["Entry_price"])
+
 
 # ---- KPI BOX ----
 total = len(filtered)
@@ -127,7 +130,7 @@ st.markdown(
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
                 "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
-                "TP_90m", "attivazione", "SL", "TP", "BEprofit"]
+                "TP_90m", "RR", "attivazione", "SL", "TP", "BEprofit"]
 
 
 # Funzione per righe alternate
