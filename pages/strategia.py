@@ -61,7 +61,7 @@ filtered["BEprofit"] = (
 filtered["TP_90m"] = filtered["Entry_price"] - filtered["Close_1100"]
 
 # Calcolo RR
-filtered["RR"] = (filtered["SL_price"]-filtered["Entry_price"])/(filtered["TP_price"]-filtered["Entry_price"])
+filtered["RR"] = (filtered["SL_price"]-filtered["Entry_price"])/(filtered["Entry_price"]-filtered["TP_price"])
 
 
 # ---- KPI BOX ----
