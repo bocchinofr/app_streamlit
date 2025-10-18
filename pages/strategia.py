@@ -62,6 +62,7 @@ filtered["TP_90m"] = filtered["Entry_price"] - filtered["Close_1100"]
 
 # Calcolo RR
 filtered["RR"] = (filtered["Entry_price"]-filtered["TP_price"])/(filtered["SL_price"]-filtered["Entry_price"])
+st.write(filtered[["Entry_price", "SL_price", "TP_price", "RR"]].head(5))
 
 
 # ---- KPI BOX ----
