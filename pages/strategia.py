@@ -56,13 +56,14 @@ filtered["BEprofit"] = (
     (filtered["TP"] == 0) &
     (filtered["Low_90m"] <= filtered["TP_price"] * (1 + param_BE/100))
 ).astype(int)
+filtered["BE_price"] = filtered["TP_price"]*(1+BEparam/100)
 
 # Calcolo TP_90m
 filtered["TP_90m"] = filtered["Entry_price"] - filtered["Close_1100"]
 
 # Calcolo RR
 filtered["RR"] = (filtered["Entry_price"]-filtered["TP_price"])/(filtered["SL_price"]-filtered["Entry_price"])
-st.write(filtered[["Entry_price", "SL_price", "TP_price", "RR"]].head(5))
+filtered["RR_be"] = (filtered["Entry_price"]-filtered["BE_price"])/(filtered["SL_price"]-filtered["Entry_price"])
 
 
 # ---- KPI BOX ----
@@ -131,7 +132,7 @@ st.markdown(
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
                 "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
-                "TP_90m", "RR", "attivazione", "SL", "TP", "BEprofit"]
+                "TP_90m", "RR","RR_be" "attivazione", "SL", "TP", "BEprofit"]
 
 
 # Funzione per righe alternate
