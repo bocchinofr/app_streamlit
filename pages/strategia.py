@@ -142,6 +142,11 @@ st.markdown(
 )
 
 
+# ---- SEZIONE DETTAGLIO SL ----
+with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
+    sl_df = filtered[filtered["SL"] == 1].copy()
+
+
     if not sl_df.empty:
         # Calcoli
         gap_mean = sl_df["Gap%"].mean()
