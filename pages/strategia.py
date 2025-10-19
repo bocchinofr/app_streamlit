@@ -142,29 +142,6 @@ st.markdown(
 )
 
 
-# ---- SEZIONE DETTAGLIO SL ----
-with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
-    sl_df = filtered[filtered["SL"] == 1].copy()
-
-    st.write("📋 Colonne disponibili:", filtered.columns.tolist())
-
-    sl_data = filtered[filtered["SL"] == 1]
-
-    # Controlliamo i valori medi effettivi
-    st.write("🧮 Dati medi SL:")
-    st.write({
-        "gap_mean": sl_data["gap%"].mean() if "gap%" in sl_data.columns else "colonna mancante",
-        "shs_float_mean": sl_data["Shs Float"].mean() if "Shs Float" in sl_data.columns else "colonna mancante",
-        "shares_out_mean": sl_data["Shares Outstanding"].mean() if "Shares Outstanding" in sl_data.columns else "colonna mancante",
-        "timehigh_mean": sl_data["TimeHigh"].mean() if "TimeHigh" in sl_data.columns else "colonna mancante",
-        "openvspmh_mean": (sl_data["Open"] - sl_data["HighPM"]).mean() if all(c in sl_data.columns for c in ["Open", "HighPM"]) else "colonna mancante"
-    })
-
-
-
-
-
-
     if not sl_df.empty:
         # Calcoli
         gap_mean = sl_df["Gap%"].mean()
