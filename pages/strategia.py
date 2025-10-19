@@ -142,6 +142,27 @@ st.markdown(
 )
 
 
+# ---- SEZIONE DETTAGLIO SL ----
+with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
+    st.markdown("### 📊 Analisi Stop Loss")
+    st.write("In questa sezione puoi analizzare in dettaglio i trade che hanno colpito lo Stop Loss.")
+
+    # Filtra solo gli SL
+    sl_df = filtered[filtered["SL"] == 1]
+
+    # Mostra una mini tabella o statistiche
+    st.dataframe(sl_df[["Date", "Ticker", "Entry_price", "SL_price", "RR"]], use_container_width=True)
+
+    # (facoltativo) puoi aggiungere grafici o KPI dedicati
+    avg_rr = sl_df["RR"].mean()
+    st.metric(label="RR medio SL", value=f"{avg_rr:.2f}")
+
+
+
+
+
+
+
 # ---- TABELLA ----
 
 # Colonne da mostrare in tabella
