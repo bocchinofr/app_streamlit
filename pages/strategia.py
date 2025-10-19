@@ -172,8 +172,8 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
             openVSpmh_mean = None
 
         # ✅ Pre-formatto qui i valori in stringhe
-        gap_mean_str = f"{gap_mean:.2f}"
-        gap_median_str = f"{gap_median:.2f}"
+        gap_mean_str = f"{gap_mean:.0f}"
+        gap_median_str = f"{gap_median:.0f}"
         shs_float_str = f"{shs_float_mean:.2f}" if shs_float_mean is not None else "-"
         shs_out_str = f"{shs_out_mean:.2f}" if shs_out_mean is not None else "-"
         openvspmh_str = f"{openVSpmh_mean:.2f}" if openVSpmh_mean is not None else "-"
