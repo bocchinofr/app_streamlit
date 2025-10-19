@@ -144,25 +144,18 @@ st.markdown(
 
 # ---- SEZIONE DETTAGLIO SL ----
 with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
-    # Filtra solo i trade con SL = 1
     sl_df = filtered[filtered["SL"] == 1].copy()
 
     if not sl_df.empty:
-        # Calcoli principali
+        # Calcoli
         gap_mean = sl_df["Gap%"].mean()
         gap_median = sl_df["Gap%"].median()
-
-        # Se le colonne esistono nel dataset
         shs_float_mean = sl_df["Shs Float"].mean() if "Shs Float" in sl_df.columns else None
         shs_out_mean = sl_df["Shares Outstanding"].mean() if "Shares Outstanding" in sl_df.columns else None
 
-        # TimeHigh medio (assumendo che sia nel formato datetime o stringa oraria)
+        # TimeHigh medio
         if "TimeHigh" in sl_df.columns:
-            # Conversione a orario e media in secondi
-            sl_df["TimeHigh_parsed"] = pd.to_datetime(sl_df["TimeHigh"], errors="coerce").dt.time
-            time_seconds = sl_df["TimeHigh"].dropna().apply(
-                lambda x: pd.to_timedelta(str(x)).total_seconds()
-            )
+            time_seconds = sl_df["TimeHigh"].dropna().apply(lambda x: pd.to_timedelta(str(x)).total_seconds())
             time_avg = time_seconds.mean()
             if pd.notna(time_avg):
                 hhmm_avg = f"{int(time_avg//3600):02d}:{int((time_avg%3600)//60):02d}"
@@ -171,32 +164,39 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         else:
             hhmm_avg = "-"
 
-        # openVSpmh = differenza tra Open e HighPM
+        # Open vs HighPM
         if "HighPM" in sl_df.columns:
             sl_df["openVSpmh"] = sl_df["Open"] - sl_df["HighPM"]
             openVSpmh_mean = sl_df["openVSpmh"].mean()
         else:
             openVSpmh_mean = None
 
-        # ---- BOX KPI IN STILE PERSONALIZZATO ----
+        # ✅ Pre-formatto qui i valori in stringhe
+        gap_mean_str = f"{gap_mean:.2f}"
+        gap_median_str = f"{gap_median:.2f}"
+        shs_float_str = f"{shs_float_mean:.2f}" if shs_float_mean is not None else "-"
+        shs_out_str = f"{shs_out_mean:.2f}" if shs_out_mean is not None else "-"
+        openvspmh_str = f"{openVSpmh_mean:.2f}" if openVSpmh_mean is not None else "-"
+
+        # ---- BOX KPI ----
         st.markdown(
             f"""
             <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px;">
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">Gap% medio</div>
-                    <div style="font-size:24px; font-weight:bold;">{gap_mean:.2f}</div>
+                    <div style="font-size:24px; font-weight:bold;">{gap_mean_str}</div>
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">Gap% mediana</div>
-                    <div style="font-size:24px; font-weight:bold;">{gap_median:.2f}</div>
+                    <div style="font-size:24px; font-weight:bold;">{gap_median_str}</div>
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">Shs Float medio</div>
-                    <div style="font-size:24px; font-weight:bold;">{shs_float_mean:.2f if shs_float_mean is not None else '-'}</div>
+                    <div style="font-size:24px; font-weight:bold;">{shs_float_str}</div>
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">Shares Outstanding medio</div>
-                    <div style="font-size:24px; font-weight:bold;">{shs_out_mean:.2f if shs_out_mean is not None else '-'}</div>
+                    <div style="font-size:24px; font-weight:bold;">{shs_out_str}</div>
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">TimeHigh medio</div>
@@ -204,7 +204,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">Open vs HighPM (medio)</div>
-                    <div style="font-size:24px; font-weight:bold;">{openVSpmh_mean:.2f if openVSpmh_mean is not None else '-'}</div>
+                    <div style="font-size:24px; font-weight:bold;">{openvspmh_str}</div>
                 </div>
             </div>
             """,
@@ -213,6 +213,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
 
     else:
         st.info("⚠️ Nessun record con SL = 1 nel dataset filtrato.")
+
 
 
 
