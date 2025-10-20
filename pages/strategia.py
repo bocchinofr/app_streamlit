@@ -163,8 +163,8 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
             high_mean = sl_df["high%"].mean()
             high_median = sl_df["high%"].median()
         else:
-            high:mean = None
-            high:median = None
+            high_mean = None
+            high_median = None
 
         # Converti in datetime in modo sicuro
         sl_df["TimeHigh"] = pd.to_datetime(sl_df["TimeHigh"], errors="coerce")
