@@ -141,8 +141,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.write(sl_df["TimeHigh"].head())
-st.write(sl_df["TimeHigh"].dtype)
+    st.write(sl_df["TimeHigh"].head())
+    st.write(sl_df["TimeHigh"].dtype)
 
 
 # ---- SEZIONE DETTAGLIO SL ----
