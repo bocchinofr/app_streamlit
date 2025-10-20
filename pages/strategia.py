@@ -353,6 +353,108 @@ with st.expander("💚 Dettaglio Take Profit (clicca per espandere)"):
     else:
         st.info("⚠️ Nessun record con TP = 1 nel dataset filtrato.")
 
+# ---- SEZIONE DETTAGLIO BE ----
+with st.expander("💛 Dettaglio Break Even (clicca per espandere)"):
+    be_df = filtered[filtered["BE"] == 1].copy()
+    st.markdown(f"🟡 Numero di righe filtrate : {len(be_df)}")
+
+    if not be_df.empty:
+        # Calcoli
+        gap_mean = be_df["Gap%"].mean()
+        gap_median = be_df["Gap%"].median()
+        shs_float_mean = be_df["Shs Float"].mean() if "Shs Float" in be_df.columns else None
+        shs_float_median = be_df["Shs Float"].median() if "Shs Float" in be_df.columns else None
+        shs_out_mean = be_df["Shares Outstanding"].mean() if "Shares Outstanding" in be_df.columns else None
+        shs_out_median = be_df["Shares Outstanding"].median() if "Shares Outstanding" in be_df.columns else None
+
+        if "High" in be_df.columns:
+            be_df["high%"] = ((be_df["High"] - be_df["Open"]) / be_df["High"]) * 100
+            high_mean = be_df["high%"].mean()
+            high_median = be_df["high%"].median()
+        else:
+            high_mean = None
+            high_median = None
+
+        # Converti in datetime in modo sicuro
+        be_df["TimeHigh"] = pd.to_datetime(be_df["TimeHigh"], errors="coerce")
+
+        # Scarta i valori NaT e calcola il tempo medio in secondi
+        if not be_df["TimeHigh"].dropna().empty:
+            time_seconds = be_df["TimeHigh"].dropna().apply(lambda x: x.hour * 3600 + x.minute * 60)
+            time_avg = time_seconds.mean()
+            time_mean_formatted = f"{int(time_avg // 3600):02d}:{int((time_avg % 3600) // 60):02d}"
+        else:
+            time_mean_formatted = "-"
+
+        # Open vs HighPM
+        if "HighPM" in be_df.columns:
+            be_df["openVSpmh"] = ((be_df["Open"] - be_df["HighPM"]) / be_df["HighPM"]) * 100
+            openVSpmh_mean = be_df["openVSpmh"].mean()
+            openVSpmh_median = be_df["openVSpmh"].median()
+        else:
+            openVSpmh_mean = None
+            openVSpmh_median = None
+
+        # ---- FORMATTAZIONE VALORI ----
+        gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
+        gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
+        shs_float_mean_str = f"{shs_float_mean/1_000_000:.0f}M" if shs_float_mean is not None else "-"
+        shs_float_median_str = f"{shs_float_median/1_000_000:.2f}M" if shs_float_median is not None else "-"
+        shs_out_mean_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
+        shs_out_median_str = f"{shs_out_median/1_000_000:.2f}M" if shs_out_mean is not None else "-"
+        openvspmh_mean_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
+        openvspmh_median_str = f"{openVSpmh_median:.0f}%" if openVSpmh_median is not None else "-"
+        high_mean_str = f"{high_mean:.0f}%" if high_mean is not None else "-"
+        high_median_str = f"{high_median:.0f}%" if high_median is not None else "-"
+
+        # ---- STILE BOX ----
+        BOX_STYLE = "flex:1; background-color:#F9E79F; color:black; padding:15px; border-radius:12px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"
+        LABEL_STYLE = "font-size:14px; opacity:0.85;"
+        VALUE_STYLE = "font-size:24px; font-weight:bold;"
+        SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
+
+        html = f"""
+        <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Gap%</div>
+            <div style="{VALUE_STYLE}">{gap_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {gap_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Shs Float medio</div>
+            <div style="{VALUE_STYLE}">{shs_float_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {shs_float_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Shs Outstanding medio</div>
+            <div style="{VALUE_STYLE}">{shs_out_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {shs_out_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Spinta media</div>
+            <div style="{VALUE_STYLE}">{high_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {high_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">TimeHigh medio</div>
+            <div style="{VALUE_STYLE}">{time_mean_formatted}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">OpenvsPMH (medio)</div>
+            <div style="{VALUE_STYLE}">{openvspmh_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {openvspmh_median_str}</div>
+        </div>
+        </div>
+        """
+
+        st.markdown(html, unsafe_allow_html=True)
+    else:
+        st.info("⚠️ Nessun record con BE = 1 nel dataset filtrato.")
 
 
 
