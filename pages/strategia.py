@@ -234,11 +234,23 @@ def show_kpi_section(df, title, box_color):
         col_count = min(len(boxes), 6)  # numero massimo colonne per riga
         cols = st.columns(col_count, gap="medium")
 
+        BOX_STYLE = f"""
+            background-color:{{}}; 
+            padding:15px; 
+            border-radius:12px; 
+            text-align:center; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
+            display:flex; 
+            flex-direction:column; 
+            justify-content:center; 
+            min-height:150px;
+        """
+
         for i, box in enumerate(boxes):
             col = cols[i % col_count]
             sub_html = f'<div style="{SUBVALUE_STYLE}">{box["sub"]}</div>' if "sub" in box else ""
             col.markdown(
-                f'<div style="background-color:{box_color}; padding:15px; border-radius:12px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">'
+                f'<div style="{BOX_STYLE.format(box_color)}">'
                 f'<div style="{LABEL_STYLE}">{box["label"]}</div>'
                 f'<div style="{VALUE_STYLE}">{box["value"]}</div>'
                 f'{sub_html}'
@@ -254,7 +266,7 @@ tp_df = filtered[filtered["TP"] == 1].copy()
 show_kpi_section(tp_df, "Take Profit", "#1B7F1B")
 
 be_df = filtered[filtered["BEprofit"] == 1].copy()
-show_kpi_section(be_df, "Break Even", "#D1A516")
+show_kpi_section(be_df, "Break Even", "#BD9513")
 
 
 
