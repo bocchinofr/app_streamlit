@@ -164,6 +164,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
             high_median = sl_df["high%"].median()
         else:
             high:mean = None
+            high:median = None
 
         # Converti in datetime in modo sicuro
         sl_df["TimeHigh"] = pd.to_datetime(sl_df["TimeHigh"], errors="coerce")
@@ -183,6 +184,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
             openVSpmh_median = sl_df["openVSpmh"].median()
         else:
             openVSpmh_mean = None
+            openVSpmh_median = None
 
         # ---- FORMATTAZIONE VALORI ----
         gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
