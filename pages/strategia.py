@@ -174,20 +174,6 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         else:
             openVSpmh_mean = None
 
-        # ---- STILE BOX UNIFICATO ----
-        BOX_STYLE = """
-            flex:1; 
-            background-color:#5E2B2B; 
-            color:white; 
-            padding:15px; 
-            border-radius:12px; 
-            text-align:center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        """
-        LABEL_STYLE = "font-size:14px; opacity:0.8;"
-        VALUE_STYLE = "font-size:24px; font-weight:bold;"
-        SUBVALUE_STYLE = "font-size:14px; font-weight:normal; opacity:0.8;"
-
         # ---- FORMATTAZIONE VALORI ----
         gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
         gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
@@ -195,46 +181,45 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         shs_out_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
         openvspmh_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
 
-        # ---- BOX KPI ----
-        st.markdown(
-            f"""
-            <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
-                
-            <!-- GAP% -->
-            <div style="{BOX_STYLE}">
-                <div style="{LABEL_STYLE}">Gap%</div>
-                <div style="{VALUE_STYLE}">{gap_mean_str}</div>
-                <div style="{SUBVALUE_STYLE}">Mediana: {gap_median_str}</div>
-            </div>
-            
-            <!-- SHS FLOAT -->
-            <div style="{BOX_STYLE}">
-                <div style="{LABEL_STYLE}">Shs Float medio</div>
-                <div style="{VALUE_STYLE}">{shs_float_str}</div>
-            </div>
-            
-            <!-- SHARES OUTSTANDING -->
-            <div style="{BOX_STYLE}">
-                <div style="{LABEL_STYLE}">Shares Outstanding medio</div>
-                <div style="{VALUE_STYLE}">{shs_out_str}</div>
-            </div>
+        # ESEMPIO: blocco KPI HTML (usare st.markdown con unsafe_allow_html=True)
+        BOX_STYLE = "flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"
+        LABEL_STYLE = "font-size:14px; opacity:0.85;"
+        VALUE_STYLE = "font-size:24px; font-weight:bold;"
+        SUBVALUE_STYLE = "font-size:13px; font-weight:600; opacity:0.85; margin-top:6px;"
 
-            <!-- TIMEHIGH -->
-            <div style="{BOX_STYLE}">
-                <div style="{LABEL_STYLE}">TimeHigh medio</div>
-                <div style="{VALUE_STYLE}">{time_mean_formatted}</div>
-            </div>
+        html = f"""
+        <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Gap%</div>
+            <div style="{VALUE_STYLE}">{gap_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {gap_median_str}</div>
+        </div>
 
-            <!-- OPEN vs HIGHPM -->
-            <div style="{BOX_STYLE}">
-                <div style="{LABEL_STYLE}">Open vs HighPM medio</div>
-                <div style="{VALUE_STYLE}">{openvspmh_str}</div>
-            </div>
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Shs Float medio</div>
+            <div style="{VALUE_STYLE}">{shs_float_str}</div>
+        </div>
 
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Shares Outstanding medio</div>
+            <div style="{VALUE_STYLE}">{shs_out_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">TimeHigh medio</div>
+            <div style="{VALUE_STYLE}">{time_mean_formatted}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Open vs HighPM (medio)</div>
+            <div style="{VALUE_STYLE}">{openvspmh_str}</div>
+        </div>
+        </div>
+        """
+
+        # MOSTRA l'HTML — attenzione: deve essere st.markdown con unsafe_allow_html=True
+        st.markdown(html, unsafe_allow_html=True)
+
 
 
     else:
