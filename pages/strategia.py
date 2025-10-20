@@ -38,19 +38,20 @@ param_BE = st.sidebar.number_input("%BEparam", value=5.0,
 
 filtered = df.copy()
 
+# Converti Gap% e Open in numerico
+filtered["Gap%"] = pd.to_numeric(filtered["Gap%"], errors="coerce")
+filtered["Open"] = pd.to_numeric(filtered["Open"], errors="coerce")
+
 # --- Filtro date con controllo ---
 if len(date_range) == 2:
     start, end = date_range
     try:
-        # Converti Date in datetime per confronto
         filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
-
         if filtered["Date_dt"].isna().all():
             st.error("⚠️ Impossibile convertire le date del dataset in formato datetime.")
         else:
             filtered = filtered[(filtered["Date_dt"] >= pd.to_datetime(start)) &
                                 (filtered["Date_dt"] <= pd.to_datetime(end))]
-            
             if filtered.empty:
                 st.warning(
                     f"⚠️ Nessun dato disponibile per l'intervallo selezionato ({start.strftime('%d-%m-%Y')} - {end.strftime('%d-%m-%Y')})."
@@ -58,23 +59,31 @@ if len(date_range) == 2:
     except Exception as e:
         st.error(f"Errore nel filtro delle date: {e}")
 
+# --- Filtro Open minimo e Gap% minimo ---
+if min_open > 0:
+    filtered = filtered[filtered["Open"] >= min_open]
+
+if min_gap > 0:
+    filtered = filtered[filtered["Gap%"] >= min_gap]
+
 # ---- Dopo filtraggio ----
 if not filtered.empty:
-    # Converti la colonna Date in datetime (necessario per min/max)
-    filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
     min_date = filtered["Date_dt"].min()
     max_date = filtered["Date_dt"].max()
-
     if pd.notna(min_date) and pd.notna(max_date):
+        # Solo le date colorate e in grassetto
         st.markdown(
-            f"<div style='font-size:16px; font-weight:600; margin-bottom:10px;'>"
-            f"Dati filtrati dal {min_date.strftime('%d-%m-%Y')} al {max_date.strftime('%d-%m-%Y')}"
-            f"</div>",
+            f"""
+            <div style='font-size:16px; font-weight:600; margin-bottom:10px;'>
+                Dati filtrati dal <span style='color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
+                al <span style='color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
+            </div>
+            """,
             unsafe_allow_html=True
         )
-
 else:
     st.info("⚠️ Nessun dato disponibile dopo i filtri.")
+
 
 
 # ---- CALCOLI ENTRY / SL / TP / ATTIVAZIONE ----
