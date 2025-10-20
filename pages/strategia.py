@@ -156,7 +156,7 @@ def show_kpi_section(df, title, box_color):
     box_color: colore dei box (es. "#5E2B2B" per SL, verde per TP, giallo chiaro per BE)
     """
     with st.expander(f"{title} (clicca per espandere)"):
-        st.markdown(f"**{title} - Numero di righe filtrate: {len(df)}**")
+        st.markdown(f"**Numero di righe filtrate: {len(df)}**")
 
         if df.empty:
             st.info(f"⚠️ Nessun record con {title} = 1 nel dataset filtrato.")
@@ -273,13 +273,13 @@ def show_kpi_section(df, title, box_color):
 
 # ---- USO DELLA FUNZIONE ----
 sl_df = filtered[filtered["SL"] == 1].copy()
-show_kpi_section(sl_df, "🔴Stop Loss", "#5E2B2B")
+show_kpi_section(sl_df, "🔴 Stop Loss", "#5E2B2B")
 
 tp_df = filtered[filtered["TP"] == 1].copy()
-show_kpi_section(tp_df, "🟢Take Profit", "#1B7F1B")
+show_kpi_section(tp_df, "🟢 Take Profit", "#1B7F1B")
 
 be_df = filtered[filtered["BEprofit"] == 1].copy()
-show_kpi_section(be_df, "🟡Break Even", "#9E7E14")
+show_kpi_section(be_df, "🟡 Break Even", "#9E7E14")
 
 
 
