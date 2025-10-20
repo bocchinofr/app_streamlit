@@ -355,7 +355,7 @@ with st.expander("💚 Dettaglio Take Profit (clicca per espandere)"):
 
 # ---- SEZIONE DETTAGLIO BE ----
 with st.expander("💛 Dettaglio Break Even (clicca per espandere)"):
-    be_df = filtered[filtered["BE"] == 1].copy()
+    be_df = filtered[filtered["BEprofit"] == 1].copy()
     st.markdown(f"🟡 Numero di righe filtrate : {len(be_df)}")
 
     if not be_df.empty:
