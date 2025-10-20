@@ -200,36 +200,36 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
             f"""
             <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
                 
-                <!-- GAP% -->
-                <div style="{BOX_STYLE}">
-                    <div style="{LABEL_STYLE}">Gap%</div>
-                    <div style="{VALUE_STYLE}">{gap_mean_str}</div>
-                    <div style="{SUBVALUE_STYLE}">Mediana: {gap_median_str}</div>
-                </div>
-                
-                <!-- SHS FLOAT -->
-                <div style="{BOX_STYLE}">
-                    <div style="{LABEL_STYLE}">Shs Float medio</div>
-                    <div style="{VALUE_STYLE}">{shs_float_str}</div>
-                </div>
-                
-                <!-- SHARES OUTSTANDING -->
-                <div style="{BOX_STYLE}">
-                    <div style="{LABEL_STYLE}">Shares Outstanding medio</div>
-                    <div style="{VALUE_STYLE}">{shs_out_str}</div>
-                </div>
+            <!-- GAP% -->
+            <div style="{BOX_STYLE}">
+                <div style="{LABEL_STYLE}">Gap%</div>
+                <div style="{VALUE_STYLE}">{gap_mean_str}</div>
+                <div style="{SUBVALUE_STYLE}">Mediana: {gap_median_str}</div>
+            </div>
+            
+            <!-- SHS FLOAT -->
+            <div style="{BOX_STYLE}">
+                <div style="{LABEL_STYLE}">Shs Float medio</div>
+                <div style="{VALUE_STYLE}">{shs_float_str}</div>
+            </div>
+            
+            <!-- SHARES OUTSTANDING -->
+            <div style="{BOX_STYLE}">
+                <div style="{LABEL_STYLE}">Shares Outstanding medio</div>
+                <div style="{VALUE_STYLE}">{shs_out_str}</div>
+            </div>
 
-                <!-- TIMEHIGH -->
-                <div style="{BOX_STYLE}">
-                    <div style="{LABEL_STYLE}">TimeHigh medio</div>
-                    <div style="{VALUE_STYLE}">{time_mean_formatted}</div>
-                </div>
+            <!-- TIMEHIGH -->
+            <div style="{BOX_STYLE}">
+                <div style="{LABEL_STYLE}">TimeHigh medio</div>
+                <div style="{VALUE_STYLE}">{time_mean_formatted}</div>
+            </div>
 
-                <!-- OPEN vs HIGHPM -->
-                <div style="{BOX_STYLE}">
-                    <div style="{LABEL_STYLE}">Open vs HighPM medio</div>
-                    <div style="{VALUE_STYLE}">{openvspmh_str}</div>
-                </div>
+            <!-- OPEN vs HIGHPM -->
+            <div style="{BOX_STYLE}">
+                <div style="{LABEL_STYLE}">Open vs HighPM medio</div>
+                <div style="{VALUE_STYLE}">{openvspmh_str}</div>
+            </div>
 
             </div>
             """,
