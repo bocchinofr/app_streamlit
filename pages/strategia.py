@@ -185,7 +185,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         BOX_STYLE = "flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"
         LABEL_STYLE = "font-size:14px; opacity:0.85;"
         VALUE_STYLE = "font-size:24px; font-weight:bold;"
-        SUBVALUE_STYLE = "font-size:13px; font-weight:600; opacity:0.85; margin-top:6px;"
+        SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
 
         html = f"""
         <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
