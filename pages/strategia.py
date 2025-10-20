@@ -151,6 +151,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
 
     if not sl_df.empty:
         # Calcoli
+        totalSL = len(filtered)
         gap_mean = sl_df["Gap%"].mean()
         gap_median = sl_df["Gap%"].median()
         shs_float_mean = sl_df["Shs Float"].mean() if "Shs Float" in sl_df.columns else None
@@ -206,6 +207,10 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
 
         html = f"""
         <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">numero SL</div>
+            <div style="{VALUE_STYLE}">{totalSL}</div>
+        </div>
         <div style="{BOX_STYLE}">
             <div style="{LABEL_STYLE}">Gap%</div>
             <div style="{VALUE_STYLE}">{gap_mean_str}</div>
