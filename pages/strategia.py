@@ -169,7 +169,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
 
         # Open vs HighPM
         if "HighPM" in sl_df.columns:
-            sl_df["openVSpmh"] = sl_df["Open"] - sl_df["HighPM"]
+            sl_df["openVSpmh"] = ((sl_df["Open"] - sl_df["HighPM"])/sl_df["HighPM"])*100
             openVSpmh_mean = sl_df["openVSpmh"].mean()
         else:
             openVSpmh_mean = None
@@ -179,7 +179,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         gap_median_str = f"{gap_median:.0f}"
         shs_float_str = f"{shs_float_mean:.2f}" if shs_float_mean is not None else "-"
         shs_out_str = f"{shs_out_mean:.2f}" if shs_out_mean is not None else "-"
-        openvspmh_str = f"{openVSpmh_mean:.2f}" if openVSpmh_mean is not None else "-"
+        openvspmh_str = f"{openVSpmh_mean:.0f}" if openVSpmh_mean is not None else "-"
 
         # ---- BOX KPI ----
         st.markdown(
@@ -207,7 +207,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">Open vs HighPM (medio)</div>
-                    <div style="font-size:24px; font-weight:bold;">{openvspmh_str}</div>
+                    <div style="font-size:24px; font-weight:bold;">{openvspmh_str}%</div>
                 </div>
             </div>
             """,
