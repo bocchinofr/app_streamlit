@@ -151,7 +151,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
 
     if not sl_df.empty:
         # Calcoli
-        totalSL = len(filtered)
+        totalSL = len(sl_df)
         gap_mean = sl_df["Gap%"].mean()
         gap_median = sl_df["Gap%"].median()
         shs_float_mean = sl_df["Shs Float"].mean() if "Shs Float" in sl_df.columns else None
