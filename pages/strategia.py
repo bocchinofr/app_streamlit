@@ -203,7 +203,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">TimeHigh medio</div>
-                    <div style="font-size:24px; font-weight:bold;">{hhmm_avg}</div>
+                    <div style="font-size:24px; font-weight:bold;">{time_mean_formatted}</div>
                 </div>
                 <div style="flex:1; background-color:#5E2B2B; color:white; padding:15px; border-radius:12px; text-align:center;">
                     <div style="font-size:14px; opacity:0.8;">Open vs HighPM (medio)</div>
