@@ -247,17 +247,15 @@ def show_kpi_section(df, title, box_color):
 
 
 # ---- USO DELLA FUNZIONE ----
-with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
-    sl_df = filtered[filtered["SL"] == 1].copy()
-    show_kpi_section(sl_df, "Stop Loss", "#5E2B2B")
+sl_df = filtered[filtered["SL"] == 1].copy()
+show_kpi_section(sl_df, "Stop Loss", "#5E2B2B")
 
-with st.expander("🟢 Dettaglio Take Profit (clicca per espandere)"):
-    tp_df = filtered[filtered["TP"] == 1].copy()
-    show_kpi_section(tp_df, "Take Profit", "#1B7F1B")
+tp_df = filtered[filtered["TP"] == 1].copy()
+show_kpi_section(tp_df, "Take Profit", "#1B7F1B")
 
-with st.expander("💛 Dettaglio Break Even (clicca per espandere)"):
-    be_df = filtered[filtered["BEprofit"] == 1].copy()
-    show_kpi_section(be_df, "Break Even", "#F5D76E")
+be_df = filtered[filtered["BEprofit"] == 1].copy()
+show_kpi_section(be_df, "Break Even", "#F5D76E")
+
 
 
 
