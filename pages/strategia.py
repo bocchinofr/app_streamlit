@@ -247,11 +247,111 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         # MOSTRA l'HTML — attenzione: deve essere st.markdown con unsafe_allow_html=True
         st.markdown(html, unsafe_allow_html=True)
 
-
-
     else:
         st.info("⚠️ Nessun record con SL = 1 nel dataset filtrato.")
 
+# ---- SEZIONE DETTAGLIO TP ----
+with st.expander("💚 Dettaglio Take Profit (clicca per espandere)"):
+    tp_df = filtered[filtered["TP"] == 1].copy()
+    st.markdown(f"🟢 Numero di righe filtrate : {len(tp_df)}")
+
+    if not tp_df.empty:
+        # Calcoli
+        gap_mean = tp_df["Gap%"].mean()
+        gap_median = tp_df["Gap%"].median()
+        shs_float_mean = tp_df["Shs Float"].mean() if "Shs Float" in tp_df.columns else None
+        shs_float_median = tp_df["Shs Float"].median() if "Shs Float" in tp_df.columns else None
+        shs_out_mean = tp_df["Shares Outstanding"].mean() if "Shares Outstanding" in tp_df.columns else None
+        shs_out_median = tp_df["Shares Outstanding"].median() if "Shares Outstanding" in tp_df.columns else None
+
+        if "High" in tp_df.columns:
+            tp_df["high%"] = ((tp_df["High"] - tp_df["Open"]) / tp_df["High"]) * 100
+            high_mean = tp_df["high%"].mean()
+            high_median = tp_df["high%"].median()
+        else:
+            high_mean = None
+            high_median = None
+
+        # Converti in datetime in modo sicuro
+        tp_df["TimeHigh"] = pd.to_datetime(tp_df["TimeHigh"], errors="coerce")
+
+        # Scarta i valori NaT e calcola il tempo medio in secondi
+        if not tp_df["TimeHigh"].dropna().empty:
+            time_seconds = tp_df["TimeHigh"].dropna().apply(lambda x: x.hour * 3600 + x.minute * 60)
+            time_avg = time_seconds.mean()
+            time_mean_formatted = f"{int(time_avg // 3600):02d}:{int((time_avg % 3600) // 60):02d}"
+        else:
+            time_mean_formatted = "-"
+
+        # Open vs HighPM
+        if "HighPM" in tp_df.columns:
+            tp_df["openVSpmh"] = ((tp_df["Open"] - tp_df["HighPM"]) / tp_df["HighPM"]) * 100
+            openVSpmh_mean = tp_df["openVSpmh"].mean()
+            openVSpmh_median = tp_df["openVSpmh"].median()
+        else:
+            openVSpmh_mean = None
+            openVSpmh_median = None
+
+        # ---- FORMATTAZIONE VALORI ----
+        gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
+        gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
+        shs_float_mean_str = f"{shs_float_mean/1_000_000:.0f}M" if shs_float_mean is not None else "-"
+        shs_float_median_str = f"{shs_float_median/1_000_000:.2f}M" if shs_float_median is not None else "-"
+        shs_out_mean_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
+        shs_out_median_str = f"{shs_out_median/1_000_000:.2f}M" if shs_out_mean is not None else "-"
+        openvspmh_mean_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
+        openvspmh_median_str = f"{openVSpmh_median:.0f}%" if openVSpmh_median is not None else "-"
+        high_mean_str = f"{high_mean:.0f}%" if high_mean is not None else "-"
+        high_median_str = f"{high_median:.0f}%" if high_median is not None else "-"
+
+        # ---- STILE BOX ----
+        BOX_STYLE = "flex:1; background-color:#2B5E2B; color:white; padding:15px; border-radius:12px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"
+        LABEL_STYLE = "font-size:14px; opacity:0.85;"
+        VALUE_STYLE = "font-size:24px; font-weight:bold;"
+        SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
+
+        html = f"""
+        <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Gap%</div>
+            <div style="{VALUE_STYLE}">{gap_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {gap_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Shs Float medio</div>
+            <div style="{VALUE_STYLE}">{shs_float_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {shs_float_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Shs Outstanding medio</div>
+            <div style="{VALUE_STYLE}">{shs_out_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {shs_out_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">Spinta media</div>
+            <div style="{VALUE_STYLE}">{high_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {high_median_str}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">TimeHigh medio</div>
+            <div style="{VALUE_STYLE}">{time_mean_formatted}</div>
+        </div>
+
+        <div style="{BOX_STYLE}">
+            <div style="{LABEL_STYLE}">OpenvsPMH (medio)</div>
+            <div style="{VALUE_STYLE}">{openvspmh_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {openvspmh_median_str}</div>
+        </div>
+        </div>
+        """
+
+        st.markdown(html, unsafe_allow_html=True)
+    else:
+        st.info("⚠️ Nessun record con TP = 1 nel dataset filtrato.")
 
 
 
