@@ -45,29 +45,23 @@ filtered = df.copy()
 filtered["Gap%"] = pd.to_numeric(filtered["Gap%"], errors="coerce")
 filtered["Open"] = pd.to_numeric(filtered["Open"], errors="coerce")
 
-# --- Filtro date con controllo ---
+# Converti sempre Date in datetime
+filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
+
+# --- Filtro date solo se l’utente ha selezionato un intervallo ---
 if len(date_range) == 2:
     start, end = date_range
-    try:
-        filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
-        if filtered["Date_dt"].isna().all():
-            st.error("⚠️ Impossibile convertire le date del dataset in formato datetime.")
-        else:
-            filtered = filtered[(filtered["Date_dt"] >= pd.to_datetime(start)) &
-                                (filtered["Date_dt"] <= pd.to_datetime(end))]
-            if filtered.empty:
-                st.warning(
-                    f"⚠️ Nessun dato disponibile per l'intervallo selezionato ({start.strftime('%d-%m-%Y')} - {end.strftime('%d-%m-%Y')})."
-                )
-    except Exception as e:
-        st.error(f"Errore nel filtro delle date: {e}")
+    filtered = filtered[(filtered["Date_dt"] >= pd.to_datetime(start)) &
+                        (filtered["Date_dt"] <= pd.to_datetime(end))]
+    
+    if filtered.empty:
+        st.warning(
+            f"⚠️ Nessun dato disponibile per l'intervallo selezionato ({start.strftime('%d-%m-%Y')} - {end.strftime('%d-%m-%Y')})."
+        )
 
 # --- Filtro Open minimo e Gap% minimo ---
-if min_open > 0:
-    filtered = filtered[filtered["Open"] >= min_open]
-
-if min_gap > 0:
-    filtered = filtered[filtered["Gap%"] >= min_gap]
+filtered = filtered[filtered["Open"] >= min_open]
+filtered = filtered[filtered["Gap%"] >= min_gap]
 
 # ---- Dopo filtraggio ----
 if not filtered.empty:
@@ -86,6 +80,7 @@ if not filtered.empty:
         )
 else:
     st.info("⚠️ Nessun dato disponibile dopo i filtri.")
+
 
 # endregion
 
