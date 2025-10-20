@@ -144,16 +144,17 @@ st.markdown(
 
 # ---- FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA ----
 
+import pandas as pd
+import streamlit as st
+
 def show_kpi_section(df, title, box_color):
     """
-    Mostra una sezione di KPI in un expander Streamlit.
-    df: DataFrame già filtrato (SL=1, TP=1, BEprofit=1)
+    Mostra una sezione di KPI in un expander Streamlit usando box uniformi con display:grid.
+    
+    df: DataFrame già filtrato (es. SL=1, TP=1, BEprofit=1)
     title: stringa per il titolo della sezione
-    box_color: colore dei box (es. "#5E2B2B")
+    box_color: colore dei box (es. "#5E2B2B" per SL, verde per TP, giallo chiaro per BE)
     """
-    import pandas as pd
-    import streamlit as st
-
     with st.expander(f"{title} (clicca per espandere)"):
         st.markdown(f"**{title} - Numero di righe filtrate: {len(df)}**")
 
@@ -226,13 +227,10 @@ def show_kpi_section(df, title, box_color):
             {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"}
         ]
 
+        # --- Stile ---
         LABEL_STYLE = "font-size:14px; opacity:0.85;"
         VALUE_STYLE = "font-size:24px; font-weight:bold;"
         SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
-
-        # --- Stampa dei box ---
-        col_count = min(len(boxes), 6)  # numero massimo colonne per riga
-        cols = st.columns(col_count, gap="medium")
 
         BOX_STYLE = f"""
             background-color:{{}}; 
@@ -240,25 +238,37 @@ def show_kpi_section(df, title, box_color):
             border-radius:12px; 
             text-align:center; 
             box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            grid-auto-rows: 1fr;
+            display:flex; 
             flex-direction:column; 
             justify-content:center; 
+            align-items:center;
             min-height:150px;
         """
 
-        for i, box in enumerate(boxes):
-            col = cols[i % col_count]
+        # --- Container grid responsive ---
+        container_html_start = """
+        <div style="
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; 
+            grid-auto-rows: 1fr;
+            margin-top:10px; 
+            margin-bottom:10px;
+        ">
+        """
+        container_html_end = "</div>"
+
+        # --- Genera HTML dei box ---
+        boxes_html = ""
+        for box in boxes:
             sub_html = f'<div style="{SUBVALUE_STYLE}">{box["sub"]}</div>' if "sub" in box else ""
-            col.markdown(
-                f'<div style="{BOX_STYLE.format(box_color)}">'
-                f'<div style="{LABEL_STYLE}">{box["label"]}</div>'
-                f'<div style="{VALUE_STYLE}">{box["value"]}</div>'
-                f'{sub_html}'
-                f'</div>', unsafe_allow_html=True
-            )
+            boxes_html += f'<div style="{BOX_STYLE.format(box_color)}">' \
+                          f'<div style="{LABEL_STYLE}">{box["label"]}</div>' \
+                          f'<div style="{VALUE_STYLE}">{box["value"]}</div>' \
+                          f'{sub_html}' \
+                          f'</div>'
+
+        st.markdown(container_html_start + boxes_html + container_html_end, unsafe_allow_html=True)
 
 
 # ---- USO DELLA FUNZIONE ----
