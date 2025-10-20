@@ -24,6 +24,9 @@ def load_data():
 
 df = load_data()
 
+
+
+# region Filtri
 # ---- FILTRI LATERALI ----
 st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
@@ -75,7 +78,7 @@ if not filtered.empty:
         st.markdown(
             f"""
             <div style='font-size:16px; font-weight:600; margin-bottom:10px;'>
-                Dati filtrati dal <span style='color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
+                Dati filtrati dal <span style='font-size:18px; color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
                 al <span style='color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
             </div>
             """,
@@ -84,7 +87,7 @@ if not filtered.empty:
 else:
     st.info("⚠️ Nessun dato disponibile dopo i filtri.")
 
-
+# endregion
 
 # ---- CALCOLI ENTRY / SL / TP / ATTIVAZIONE ----
 filtered["SL_price"] = filtered["Open"] * (1 + param_sl/100)
