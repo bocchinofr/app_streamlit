@@ -43,20 +43,21 @@ if len(date_range) == 2:
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 filtered = filtered[(filtered["Open"] >= min_open) & (filtered["Gap%"] >= min_gap)]
 
+# ---- Dopo filtraggio ----
 if not filtered.empty:
-    # Assicurati che la colonna Data sia in formato datetime
-    if "Data" in filtered.columns:
-        filtered["Data"] = pd.to_datetime(filtered["Data"], errors="coerce")
-        min_date = filtered["Data"].min()
-        max_date = filtered["Data"].max()
+    # Converti la colonna Date in datetime (necessario per min/max)
+    filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
+    min_date = filtered["Date_dt"].min()
+    max_date = filtered["Date_dt"].max()
 
-        if pd.notna(min_date) and pd.notna(max_date):
-            st.markdown(
-                f"<div style='font-size:16px; font-weight:600; margin-bottom:10px;'>"
-                f"Dati filtrati dal {min_date.strftime('%d-%m-%Y')} al {max_date.strftime('%d-%m-%Y')}"
-                f"</div>",
-                unsafe_allow_html=True
-            )
+    if pd.notna(min_date) and pd.notna(max_date):
+        st.markdown(
+            f"<div style='font-size:16px; font-weight:600; margin-bottom:10px;'>"
+            f"Dati filtrati dal {min_date.strftime('%d-%m-%Y')} al {max_date.strftime('%d-%m-%Y')}"
+            f"</div>",
+            unsafe_allow_html=True
+        )
+
 else:
     st.info("⚠️ Nessun dato disponibile dopo i filtri.")
 
