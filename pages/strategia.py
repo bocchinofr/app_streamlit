@@ -154,7 +154,9 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         gap_mean = sl_df["Gap%"].mean()
         gap_median = sl_df["Gap%"].median()
         shs_float_mean = sl_df["Shs Float"].mean() if "Shs Float" in sl_df.columns else None
+        shs_float_median = sl_df["Shs Float"].median() if "Shs Float" in sl_df.columns else None
         shs_out_mean = sl_df["Shares Outstanding"].mean() if "Shares Outstanding" in sl_df.columns else None
+        shs_out_median = sl_df["Shares Outstanding"].median() if "Shares Outstanding" in sl_df.columns else None
 
         # Converti in datetime in modo sicuro
         sl_df["TimeHigh"] = pd.to_datetime(sl_df["TimeHigh"], errors="coerce")
@@ -177,8 +179,10 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         # ---- FORMATTAZIONE VALORI ----
         gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
         gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
-        shs_float_str = f"{shs_float_mean/1_000_000:.0f}M" if shs_float_mean is not None else "-"
-        shs_out_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
+        shs_float_mean_str = f"{shs_float_mean/1_000_000:.0f}M" if shs_float_mean is not None else "-"
+        shs_float_median_str = f"{shs_float_median/1_000_000:.0f}M" if shs_float_median is not None else "-"
+        shs_out_mean_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
+        shs_out_median_str = f"{shs_out_median/1_000_000:.0f}M" if shs_out_mean is not None else "-"
         openvspmh_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
 
         # ESEMPIO: blocco KPI HTML (usare st.markdown con unsafe_allow_html=True)
@@ -197,12 +201,14 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
 
         <div style="{BOX_STYLE}">
             <div style="{LABEL_STYLE}">Shs Float medio</div>
-            <div style="{VALUE_STYLE}">{shs_float_str}</div>
+            <div style="{VALUE_STYLE}">{shs_float_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {shs_float_median_str}</div>
         </div>
 
         <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">Shares Outstanding medio</div>
-            <div style="{VALUE_STYLE}">{shs_out_str}</div>
+            <div style="{LABEL_STYLE}">Shs Outstanding medio</div>
+            <div style="{VALUE_STYLE}">{shs_out_mean_str}</div>
+            <div style="{SUBVALUE_STYLE}">Mediana: {shs_out_median_str}</div>
         </div>
 
         <div style="{BOX_STYLE}">
@@ -211,7 +217,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         </div>
 
         <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">Open vs HighPM (medio)</div>
+            <div style="{LABEL_STYLE}">OpenvsPMH (medio)</div>
             <div style="{VALUE_STYLE}">{openvspmh_str}</div>
         </div>
         </div>
