@@ -231,7 +231,7 @@ def show_kpi_section(df, title, box_color):
         SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
 
         # --- Stampa dei box ---
-        col_count = min(len(boxes), 3)  # numero massimo colonne per riga
+        col_count = min(len(boxes), 6)  # numero massimo colonne per riga
         cols = st.columns(col_count, gap="medium")
 
         BOX_STYLE = f"""
