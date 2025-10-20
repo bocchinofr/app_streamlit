@@ -220,10 +220,10 @@ def show_kpi_section(df, title, box_color):
         boxes = [
             {"label": "Gap%", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
             {"label": "Shs Float medio", "value": shs_float_mean_str, "sub": f"Mediana: {shs_float_median_str}"},
-            {"label": "Shares Outstanding medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
+            {"label": "Shs Outstanding medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
             {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
             {"label": "TimeHigh medio", "value": time_mean_formatted},
-            {"label": "Open vs HighPM (medio)", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"}
+            {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"}
         ]
 
         LABEL_STYLE = "font-size:14px; opacity:0.85;"
@@ -240,7 +240,10 @@ def show_kpi_section(df, title, box_color):
             border-radius:12px; 
             text-align:center; 
             box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
-            display:flex; 
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            grid-auto-rows: 1fr;
             flex-direction:column; 
             justify-content:center; 
             min-height:150px;
