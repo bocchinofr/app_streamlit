@@ -36,12 +36,27 @@ param_BE = st.sidebar.number_input("%BEparam", value=5.0,
     help="Percentuale da aggiungere al prezzo di TP"
 )
 
-
 filtered = df.copy()
+
+# --- Filtro date con controllo ---
 if len(date_range) == 2:
     start, end = date_range
-    filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
-filtered = filtered[(filtered["Open"] >= min_open) & (filtered["Gap%"] >= min_gap)]
+    try:
+        # Converti Date in datetime per confronto
+        filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
+
+        if filtered["Date_dt"].isna().all():
+            st.error("⚠️ Impossibile convertire le date del dataset in formato datetime.")
+        else:
+            filtered = filtered[(filtered["Date_dt"] >= pd.to_datetime(start)) &
+                                (filtered["Date_dt"] <= pd.to_datetime(end))]
+            
+            if filtered.empty:
+                st.warning(
+                    f"⚠️ Nessun dato disponibile per l'intervallo selezionato ({start.strftime('%d-%m-%Y')} - {end.strftime('%d-%m-%Y')})."
+                )
+    except Exception as e:
+        st.error(f"Errore nel filtro delle date: {e}")
 
 # ---- Dopo filtraggio ----
 if not filtered.empty:
