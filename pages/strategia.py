@@ -147,7 +147,7 @@ st.markdown(
 # ---- SEZIONE DETTAGLIO SL ----
 with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
     sl_df = filtered[filtered["SL"] == 1].copy()
-    st.info(f"🔴 Numero di righe filtrate : {len(sl_df)}")
+    st.markdown(f"🔴 Numero di righe filtrate : {len(sl_df)}")
 
 
     if not sl_df.empty:
