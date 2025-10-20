@@ -142,9 +142,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ---- FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA ----
 
-import pandas as pd
-import streamlit as st
 
 def show_kpi_section(df, col_name, title, box_color):
     """
