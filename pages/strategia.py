@@ -276,7 +276,7 @@ sl_df = filtered[filtered["SL"] == 1].copy()
 show_kpi_section(sl_df, "🔴 Stop Loss", "#5E2B2B")
 
 tp_df = filtered[filtered["TP"] == 1].copy()
-show_kpi_section(tp_df, "🟢 Take Profit", "#1B7F1B")
+show_kpi_section(tp_df, "🟢 Take Profit", "#037307")
 
 be_df = filtered[filtered["BEprofit"] == 1].copy()
 show_kpi_section(be_df, "🟡 Break Even", "#9E7E14")
