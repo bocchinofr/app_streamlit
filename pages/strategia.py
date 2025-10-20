@@ -193,7 +193,7 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
         shs_float_str = f"{shs_float_mean/1_000_000:.0f}M" if shs_float_mean is not None else "-"
         shs_out_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
-        openvspmh_str = f"{openvspmh_mean:.0f}%" if openvspmh_mean is not None else "-"
+        openvspmh_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
 
         # ---- BOX KPI ----
         st.markdown(
