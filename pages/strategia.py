@@ -254,7 +254,7 @@ tp_df = filtered[filtered["TP"] == 1].copy()
 show_kpi_section(tp_df, "Take Profit", "#1B7F1B")
 
 be_df = filtered[filtered["BEprofit"] == 1].copy()
-show_kpi_section(be_df, "Break Even", "#F5D76E")
+show_kpi_section(be_df, "Break Even", "#D1A516")
 
 
 
