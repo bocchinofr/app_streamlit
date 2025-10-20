@@ -144,122 +144,120 @@ st.markdown(
 
 # ---- FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA ----
 
-def show_kpi_section(df, col_filter, titolo, colore):
+def show_kpi_section(df, title, box_color):
     """
-    df: DataFrame filtrato
-    col_filter: colonna da filtrare (SL, TP, BEprofit)
-    titolo: nome della sezione
-    colore: colore dei box in HEX
+    Mostra una sezione di KPI in un expander Streamlit.
+    df: DataFrame già filtrato (SL=1, TP=1, BEprofit=1)
+    title: stringa per il titolo della sezione
+    box_color: colore dei box (es. "#5E2B2B")
     """
-    df_sel = df[df[col_filter] == 1].copy()
-    st.markdown(f"**{titolo} - Numero di righe filtrate: {len(df_sel)}**")
-    
-    if df_sel.empty:
-        st.info(f"⚠️ Nessun record con {col_filter} = 1 nel dataset filtrato.")
-        return
-    
-    # Calcoli
-    gap_mean = df_sel["Gap%"].mean()
-    gap_median = df_sel["Gap%"].median()
-    shs_float_mean = df_sel["Shs Float"].mean() if "Shs Float" in df_sel.columns else None
-    shs_float_median = df_sel["Shs Float"].median() if "Shs Float" in df_sel.columns else None
-    shs_out_mean = df_sel["Shares Outstanding"].mean() if "Shares Outstanding" in df_sel.columns else None
-    shs_out_median = df_sel["Shares Outstanding"].median() if "Shares Outstanding" in df_sel.columns else None
+    import pandas as pd
+    import streamlit as st
 
-    # High%
-    if "High" in df_sel.columns:
-        df_sel["high%"] = ((df_sel["High"] - df_sel["Open"])/df_sel["High"])*100
-        high_mean = df_sel["high%"].mean()
-        high_median = df_sel["high%"].median()
-    else:
-        high_mean = high_median = None
+    with st.expander(f"{title} (clicca per espandere)"):
+        st.markdown(f"**{title} - Numero di righe filtrate: {len(df)}**")
 
-    # TimeHigh
-    df_sel["TimeHigh"] = pd.to_datetime(df_sel["TimeHigh"], errors="coerce")
-    if not df_sel["TimeHigh"].dropna().empty:
-        time_seconds = df_sel["TimeHigh"].dropna().apply(lambda x: x.hour*3600 + x.minute*60)
-        time_avg = time_seconds.mean()
-        time_mean_formatted = f"{int(time_avg // 3600):02d}:{int((time_avg % 3600)//60):02d}"
-    else:
-        time_mean_formatted = "-"
+        if df.empty:
+            st.info(f"⚠️ Nessun record con {title} = 1 nel dataset filtrato.")
+            return
 
-    # Open vs HighPM
-    if "HighPM" in df_sel.columns:
-        df_sel["openVSpmh"] = ((df_sel["Open"] - df_sel["HighPM"])/df_sel["HighPM"])*100
-        openVSpmh_mean = df_sel["openVSpmh"].mean()
-        openVSpmh_median = df_sel["openVSpmh"].median()
-    else:
-        openVSpmh_mean = openVSpmh_median = None
+        # --- Calcoli ---
+        gap_mean = df["Gap%"].mean() if "Gap%" in df.columns else None
+        gap_median = df["Gap%"].median() if "Gap%" in df.columns else None
 
-    # Formattazione valori
-    gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
-    gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
-    shs_float_mean_str = f"{shs_float_mean/1_000_000:.0f}M" if shs_float_mean is not None else "-"
-    shs_float_median_str = f"{shs_float_median/1_000_000:.2f}M" if shs_float_median is not None else "-"
-    shs_out_mean_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
-    shs_out_median_str = f"{shs_out_median/1_000_000:.2f}M" if shs_out_median is not None else "-"
-    high_mean_str = f"{high_mean:.0f}%" if high_mean is not None else "-"
-    high_median_str = f"{high_median:.0f}%" if high_median is not None else "-"
-    openvspmh_mean_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
-    openvspmh_median_str = f"{openVSpmh_median:.0f}%" if openVSpmh_median is not None else "-"
+        shs_float_mean = df["Shs Float"].mean() if "Shs Float" in df.columns else None
+        shs_float_median = df["Shs Float"].median() if "Shs Float" in df.columns else None
 
-    # Stile unico
-    BOX_STYLE = f"flex:1; background-color:{colore}; color:white; padding:15px; border-radius:12px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"
-    LABEL_STYLE = "font-size:14px; opacity:0.85;"
-    VALUE_STYLE = "font-size:24px; font-weight:bold;"
-    SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
+        shs_out_mean = df["Shares Outstanding"].mean() if "Shares Outstanding" in df.columns else None
+        shs_out_median = df["Shares Outstanding"].median() if "Shares Outstanding" in df.columns else None
 
-    html = f"""
-    <div style="display:flex; gap:15px; margin-top:10px; margin-bottom:10px; flex-wrap:wrap;">
-        <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">Gap%</div>
-            <div style="{VALUE_STYLE}">{gap_mean_str}</div>
-            <div style="{SUBVALUE_STYLE}">Mediana: {gap_median_str}</div>
-        </div>
+        if "High" in df.columns:
+            df["high%"] = ((df["High"] - df["Open"])/df["High"])*100
+            high_mean = df["high%"].mean()
+            high_median = df["high%"].median()
+        else:
+            high_mean = None
+            high_median = None
 
-        <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">Shs Float medio</div>
-            <div style="{VALUE_STYLE}">{shs_float_mean_str}</div>
-            <div style="{SUBVALUE_STYLE}">Mediana: {shs_float_median_str}</div>
-        </div>
+        # TimeHigh medio
+        if "TimeHigh" in df.columns:
+            df["TimeHigh"] = pd.to_datetime(df["TimeHigh"], errors="coerce")
+            time_seconds = df["TimeHigh"].dropna().apply(lambda x: x.hour*3600 + x.minute*60)
+            if not time_seconds.empty:
+                time_avg = time_seconds.mean()
+                time_mean_formatted = f"{int(time_avg//3600):02d}:{int((time_avg%3600)//60):02d}"
+            else:
+                time_mean_formatted = "-"
+        else:
+            time_mean_formatted = "-"
 
-        <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">Shares Outstanding medio</div>
-            <div style="{VALUE_STYLE}">{shs_out_mean_str}</div>
-            <div style="{SUBVALUE_STYLE}">Mediana: {shs_out_median_str}</div>
-        </div>
+        # Open vs HighPM
+        if "HighPM" in df.columns:
+            df["openVSpmh"] = ((df["Open"] - df["HighPM"])/df["HighPM"])*100
+            openVSpmh_mean = df["openVSpmh"].mean()
+            openVSpmh_median = df["openVSpmh"].median()
+        else:
+            openVSpmh_mean = None
+            openVSpmh_median = None
 
-        <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">Spinta medio</div>
-            <div style="{VALUE_STYLE}">{high_mean_str}</div>
-            <div style="{SUBVALUE_STYLE}">Mediana: {high_median_str}</div>
-        </div>
+        # --- Formattazione valori ---
+        gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
+        gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
 
-        <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">TimeHigh medio</div>
-            <div style="{VALUE_STYLE}">{time_mean_formatted}</div>
-        </div>
+        shs_float_mean_str = f"{shs_float_mean/1_000_000:.0f}M" if shs_float_mean is not None else "-"
+        shs_float_median_str = f"{shs_float_median/1_000_000:.2f}M" if shs_float_median is not None else "-"
 
-        <div style="{BOX_STYLE}">
-            <div style="{LABEL_STYLE}">Open vs HighPM (medio)</div>
-            <div style="{VALUE_STYLE}">{openvspmh_mean_str}</div>
-            <div style="{SUBVALUE_STYLE}">Mediana: {openvspmh_median_str}</div>
-        </div>
-    </div>
-    """
+        shs_out_mean_str = f"{shs_out_mean/1_000_000:.0f}M" if shs_out_mean is not None else "-"
+        shs_out_median_str = f"{shs_out_median/1_000_000:.2f}M" if shs_out_median is not None else "-"
 
-    st.markdown(html, unsafe_allow_html=True)
+        high_mean_str = f"{high_mean:.0f}%" if high_mean is not None else "-"
+        high_median_str = f"{high_median:.0f}%" if high_median is not None else "-"
+
+        openVSpmh_mean_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
+        openVSpmh_median_str = f"{openVSpmh_median:.0f}%" if openVSpmh_median is not None else "-"
+
+        # --- Lista dei box ---
+        boxes = [
+            {"label": "Gap%", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
+            {"label": "Shs Float medio", "value": shs_float_mean_str, "sub": f"Mediana: {shs_float_median_str}"},
+            {"label": "Shares Outstanding medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
+            {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
+            {"label": "TimeHigh medio", "value": time_mean_formatted},
+            {"label": "Open vs HighPM (medio)", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"}
+        ]
+
+        LABEL_STYLE = "font-size:14px; opacity:0.85;"
+        VALUE_STYLE = "font-size:24px; font-weight:bold;"
+        SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
+
+        # --- Stampa dei box ---
+        col_count = min(len(boxes), 6)  # numero massimo colonne per riga
+        cols = st.columns(col_count, gap="medium")
+
+        for i, box in enumerate(boxes):
+            col = cols[i % col_count]
+            sub_html = f'<div style="{SUBVALUE_STYLE}">{box["sub"]}</div>' if "sub" in box else ""
+            col.markdown(
+                f'<div style="background-color:{box_color}; padding:15px; border-radius:12px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">'
+                f'<div style="{LABEL_STYLE}">{box["label"]}</div>'
+                f'<div style="{VALUE_STYLE}">{box["value"]}</div>'
+                f'{sub_html}'
+                f'</div>', unsafe_allow_html=True
+            )
 
 
 # ---- USO DELLA FUNZIONE ----
 with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
-    show_kpi_section(filtered, "SL", "Stop Loss", "#5E2B2B")  # rosso scuro
+    sl_df = filtered[filtered["SL"] == 1].copy()
+    show_kpi_section(sl_df, "Stop Loss", "#5E2B2B")
 
 with st.expander("🟢 Dettaglio Take Profit (clicca per espandere)"):
-    show_kpi_section(filtered, "TP", "Take Profit", "#27AE60")  # verde
+    tp_df = filtered[filtered["TP"] == 1].copy()
+    show_kpi_section(tp_df, "Take Profit", "#1B7F1B")
 
 with st.expander("💛 Dettaglio Break Even (clicca per espandere)"):
-    show_kpi_section(filtered, "BEprofit", "Break Even", "#F9E79F")  # giallo chiaro
+    be_df = filtered[filtered["BEprofit"] == 1].copy()
+    show_kpi_section(be_df, "Break Even", "#F5D76E")
 
 
 
