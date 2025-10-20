@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from dateutil import parser
+import numpy as np
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Strategia Intraday", layout="wide")
@@ -155,16 +156,16 @@ with st.expander("📉 Dettaglio Stop Loss (clicca per espandere)"):
         shs_float_mean = sl_df["Shs Float"].mean() if "Shs Float" in sl_df.columns else None
         shs_out_mean = sl_df["Shares Outstanding"].mean() if "Shares Outstanding" in sl_df.columns else None
 
-        # TimeHigh medio
-        if "TimeHigh" in sl_df.columns:
-            time_seconds = sl_df["TimeHigh"].dropna().apply(lambda x: pd.to_timedelta(str(x)).total_seconds())
+        # Converti in datetime in modo sicuro
+        sl_df["TimeHigh"] = pd.to_datetime(sl_df["TimeHigh"], errors="coerce")
+
+        # Scarta i valori NaT e calcola il tempo medio in secondi
+        if not sl_df["TimeHigh"].dropna().empty:
+            time_seconds = sl_df["TimeHigh"].dropna().apply(lambda x: x.hour * 3600 + x.minute * 60)
             time_avg = time_seconds.mean()
-            if pd.notna(time_avg):
-                hhmm_avg = f"{int(time_avg//3600):02d}:{int((time_avg%3600)//60):02d}"
-            else:
-                hhmm_avg = "-"
+            time_mean_formatted = f"{int(time_avg // 3600):02d}:{int((time_avg % 3600) // 60):02d}"
         else:
-            hhmm_avg = "-"
+            time_mean_formatted = "-"
 
         # Open vs HighPM
         if "HighPM" in sl_df.columns:
