@@ -177,14 +177,14 @@ st.markdown(f"""
         <div style="{title_style}">Numero TP</div>
         <div style="{value_style}">{numero_TP}</div>
     </div>
-</div>
-
-<!-- SECONDA RIGA: 3 BOX -->
-<div style="display:flex; gap:15px; margin-bottom:20px;">
     <div style="{base_box_style}">
         <div style="{title_style}">BE profit</div>
         <div style="{value_style}">{BE_profit}</div>
     </div>
+</div>
+
+<!-- SECONDA RIGA: 3 BOX -->
+<div style="display:flex; gap:15px; margin-bottom:20px;">
     <!-- Box con colore testo personalizzato -->
     <div style="{base_box_style} color:#EE4419;">
         <div style="{title_style}">Close 90m RED</div>
