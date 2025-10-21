@@ -134,6 +134,9 @@ close_90m_green = ((filtered["attivazione"] == 1) &
              (filtered["TP_90m%"] < 0)
             ).sum()
 
+# Media TP_90m% per green/red
+tp_90m_green_avg = round(filtered.loc[close_90m_green, "TP_90m%"].mean(),0)
+tp_90m_red_avg = round(filtered.loc[close_90m_red, "TP_90m%"].mean(),0)
 
 st.markdown(
     """
@@ -197,6 +200,10 @@ st.markdown(f"""
     <div style="{base_box_style} color:#2EDB2E;">
         <div style="{title_style}">Close 90m GREEN</div>
         <div style="{value_style}">{close_90m_green}</div>
+    </div>
+    <div style="{base_box_style} color:#2EDB2E;">
+        <div style="{title_style}">tp 90m GREEN</div>
+        <div style="{value_style}">{tp_90m_green_avg}</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
