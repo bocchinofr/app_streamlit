@@ -104,7 +104,7 @@ filtered["BEprofit"] = (
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
 # Calcolo TP_90m
-filtered["TP_90m"] = ((filtered["Entry_price"] - filtered["Close_1100"])/filtered["Entry_price"]) * 100
+filtered["TP_90m%"] = ((filtered["Entry_price"] - filtered["Close_1100"])/filtered["Entry_price"]) * 100
 
 # Calcolo RR
 filtered["RR"] = (filtered["Entry_price"]-filtered["TP_price"])/(filtered["SL_price"]-filtered["Entry_price"])
@@ -122,13 +122,13 @@ close_90m_red = ((filtered["attivazione"] == 1) &
              (filtered["SL"] == 0) & 
              (filtered["TP"] == 0) & 
              (filtered["BEprofit"] == 0) &
-             (filtered["TP_90m"] <= 0)
+             (filtered["TP_90m%"] <= 0)
             ).sum()
 close_90m_green = ((filtered["attivazione"] == 1) & 
              (filtered["SL"] == 0) & 
              (filtered["TP"] == 0) & 
              (filtered["BEprofit"] == 0) &
-             (filtered["TP_90m"] > 0)
+             (filtered["TP_90m%"] > 0)
             ).sum()
 
 
@@ -347,7 +347,7 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
                 "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
-                "TP_90m", "RR","RR_be", "attivazione", "SL", "TP", "BEprofit"]
+                "TP_90m%", "RR","RR_be", "attivazione", "SL", "TP", "BEprofit"]
 
 
 # Funzione per righe alternate
