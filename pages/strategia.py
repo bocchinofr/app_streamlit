@@ -107,6 +107,22 @@ filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
 # Calcolo TP_90m
 filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / filtered["Open"] * 100).round(2)
+mask_green = (
+    (filtered["attivazione"] == 1) & 
+    (filtered["SL"] == 0) & 
+    (filtered["TP"] == 0) & 
+    (filtered["BEprofit"] == 0) &
+    (filtered["TP_90m%"] < 0)
+)
+mask_red = (
+    (filtered["attivazione"] == 1) & 
+    (filtered["SL"] == 0) & 
+    (filtered["TP"] == 0) & 
+    (filtered["BEprofit"] == 0) &
+    (filtered["TP_90m%"] >= 0)
+)
+tp_90m_green_avg = round(filtered.loc[mask_green, "TP_90m%"].mean(), 0)
+tp_90m_red_avg   = round(filtered.loc[mask_red, "TP_90m%"].mean(), 0)
 
 
 # Calcolo RR
@@ -133,10 +149,6 @@ close_90m_green = ((filtered["attivazione"] == 1) &
              (filtered["BEprofit"] == 0) &
              (filtered["TP_90m%"] < 0)
             ).sum()
-
-# Media TP_90m% per green/red
-tp_90m_green_avg = round(filtered.loc[close_90m_green, "TP_90m%"].mean(),0)
-tp_90m_red_avg = round(filtered.loc[close_90m_red, "TP_90m%"].mean(),0)
 
 st.markdown(
     """
