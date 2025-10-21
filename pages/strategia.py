@@ -32,6 +32,7 @@ st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
 min_open = st.sidebar.number_input("Open minimo", value=0.0)
 min_gap = st.sidebar.number_input("Gap% minimo", value=0.0)
+max_float = st.sidebar.number_input("Shs Float", value=0.0)
 param_sl = st.sidebar.number_input("%SL", value=30.0)
 param_tp = st.sidebar.number_input("%TP", value=-15.0)
 param_entry = st.sidebar.number_input("%entry", value=15.0)
@@ -62,6 +63,7 @@ if len(date_range) == 2:
 # --- Filtro Open minimo e Gap% minimo ---
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
+filtered = filtered[filtered["Shs Float"] <= max_float]
 
 # ---- Dopo filtraggio ----
 if not filtered.empty:
