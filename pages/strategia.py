@@ -104,7 +104,8 @@ filtered["BEprofit"] = (
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
 # Calcolo TP_90m
-filtered["TP_90m%"] = ((filtered["Entry_price"] - filtered["Close_1100"])/filtered["Entry_price"]) * 100
+filtered["TP_90m%"] = ((filtered["Entry_price"] - filtered["Close_1100"]) / filtered["Open"] * 100).round(2)
+
 
 # Calcolo RR
 filtered["RR"] = (filtered["Entry_price"]-filtered["TP_price"])/(filtered["SL_price"]-filtered["Entry_price"])
