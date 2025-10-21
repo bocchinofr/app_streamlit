@@ -84,7 +84,7 @@ else:
 
 # endregion
 
-# ---- CALCOLI ENTRY / SL / TP / ATTIVAZIONE ----
+# region ---- CALCOLI ENTRY / SL / TP / ATTIVAZIONE ----
 filtered["SL_price"] = filtered["Open"] * (1 + param_sl/100)
 filtered["TP_price"] = filtered["Open"] * (1 + param_tp/100)
 filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
@@ -110,8 +110,9 @@ filtered["TP_90m"] = filtered["Entry_price"] - filtered["Close_1100"]
 filtered["RR"] = (filtered["Entry_price"]-filtered["TP_price"])/(filtered["SL_price"]-filtered["Entry_price"])
 filtered["RR_be"] = (filtered["Entry_price"]-filtered["BE_price"])/(filtered["SL_price"]-filtered["Entry_price"])
 
+# endregion
 
-# ---- KPI BOX ----
+# region ---- KPI BOX ----
 total = len(filtered)
 attivazioni = filtered["attivazione"].sum()
 numero_SL = filtered["SL"].sum()
@@ -143,47 +144,64 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    f"""
-    <!-- PRIMA RIGA: 4 BOX -->
-    <div style="display:flex; gap:15px; margin-bottom:20px;">
-        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">Totale record</div>
-            <div style="font-size:24px; font-weight:bold;">{total}</div>
-        </div>
-        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">Attivazioni</div>
-            <div style="font-size:24px; font-weight:bold;">{attivazioni}</div>
-        </div>
-        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">Numero SL</div>
-            <div style="font-size:24px; font-weight:bold;">{numero_SL}</div>
-        </div>
-        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">Numero TP</div>
-            <div style="font-size:24px; font-weight:bold;">{numero_TP}</div>
-        </div>
-    </div>
-    <!-- SECONDA RIGA: 3 BOX -->
-    <div style="display:flex; gap:15px; margin-bottom:20px;">
-        <div style="flex:1; background-color:#184F5F; color:white; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">BE profit</div>
-            <div style="font-size:24px; font-weight:bold;">{BE_profit}</div>
-        </div>
-        <div style="flex:1; background-color:#184F5F; color:#EE4419; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">Close 90m RED</div>
-            <div style="font-size:24px; font-weight:bold;">{close_90m_red}</div>
-        </div>
-        <div style="flex:1; background-color:#184F5F; color:#2EDB2E; padding:15px; border-radius:12px; text-align:center;">
-            <div style="font-size:14px; opacity:0.8;">Close 90m GREEN</div>
-            <div style="font-size:24px; font-weight:bold;">{close_90m_green}</div>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# Stile base dei box
+base_box_style = """
+    flex:1; 
+    background-color:#184F5F; 
+    color:white; 
+    padding:15px; 
+    border-radius:12px; 
+    text-align:center;
+"""
 
-# ---- FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA ----
+# Stile del titolo e del valore
+title_style = "font-size:14px; opacity:0.8;"
+value_style = "font-size:24px; font-weight:bold;"
+
+st.markdown(f"""
+<!-- PRIMA RIGA: 4 BOX -->
+<div style="display:flex; gap:15px; margin-bottom:20px;">
+    <div style="{base_box_style}">
+        <div style="{title_style}">Totale record</div>
+        <div style="{value_style}">{total}</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Attivazioni</div>
+        <div style="{value_style}">{attivazioni}</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Numero SL</div>
+        <div style="{value_style}">{numero_SL}</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Numero TP</div>
+        <div style="{value_style}">{numero_TP}</div>
+    </div>
+</div>
+
+<!-- SECONDA RIGA: 3 BOX -->
+<div style="display:flex; gap:15px; margin-bottom:20px;">
+    <div style="{base_box_style}">
+        <div style="{title_style}">BE profit</div>
+        <div style="{value_style}">{BE_profit}</div>
+    </div>
+    <!-- Box con colore testo personalizzato -->
+    <div style="{base_box_style} color:#EE4419;">
+        <div style="{title_style}">Close 90m RED</div>
+        <div style="{value_style}">{close_90m_red}</div>
+    </div>
+    <!-- Box con colore testo personalizzato -->
+    <div style="{base_box_style} color:#2EDB2E;">
+        <div style="{title_style}">Close 90m GREEN</div>
+        <div style="{value_style}">{close_90m_green}</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+# endregion
+
+# region ---- FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA ----
 
 import pandas as pd
 import streamlit as st
@@ -322,10 +340,9 @@ show_kpi_section(tp_df, "🟢 Take Profit", "#035506")
 be_df = filtered[filtered["BEprofit"] == 1].copy()
 show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 
+# endregion
 
-
-
-# ---- TABELLA ----
+# region ---- TABELLA ----
 
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
@@ -373,3 +390,4 @@ st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella filtrata</h
 st.dataframe(styled_df, use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 
+# endregion
