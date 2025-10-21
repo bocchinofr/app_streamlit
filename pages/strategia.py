@@ -156,7 +156,7 @@ base_box_style = """
 
 # Stile del titolo e del valore
 title_style = "font-size:14px; opacity:0.8;"
-value_style = "font-size:24px; font-weight:bold;"
+value_style = "font-size:36px; font-weight:bold;"
 
 st.markdown(f"""
 <!-- PRIMA RIGA: 4 BOX -->
