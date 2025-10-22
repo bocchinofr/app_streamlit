@@ -423,64 +423,77 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
 # ---- INPUT PARAMETRI ----
-col1, col2, col3, col4 = st.columns(4)
-initial_capital = col1.number_input("💰 Capitale iniziale", value=10000.0, step=1000.0)
-risk_pct = col2.number_input("📉 % Rischio per trade (SL%)", value=3.0, step=0.5)
-rr = col3.number_input("📈 Rapporto Rischio/Rendimento (RR)", value=2.0, step=0.5)
-rr_be = col4.number_input("⚖️ RR Break-Even profit", value=0.3, step=0.1)
+col1, col2 = st.columns(2)
+initial_capital = col1.number_input("💰 Capitale iniziale", value=5000.0, step=500.0)
+risk_pct = col2.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
 
 # ---- COSTRUZIONE DATAFRAME ----
 df_equity = filtered.copy()
 
-# Considera solo i trade attivi
-if "attivazione" in df_equity.columns:
-    df_equity = df_equity[df_equity["attivazione"] == 1].copy()
-else:
-    st.warning("⚠️ Mancano i dati di 'attivazione'. Impossibile simulare equity.")
-    st.stop()
+# Considera solo i trade attivati
+df_equity = df_equity[df_equity["attivazione"] == 1].copy()
 
 # Evitiamo errori su colonne mancanti
-for col in ["TP", "SL", "BEprofit", "TP_90m%"]:
+for col in ["TP", "SL", "BEprofit", "TP_90m%", "Entry_price", "SL_price", "TP_price", "BE_price"]:
     if col not in df_equity.columns:
         st.warning(f"Manca la colonna '{col}' nel dataframe.")
         st.stop()
 
-# ---- CALCOLO RENDIMENTO PERCENTUALE ----
-sl_pct = risk_pct / 100.0
+# ---- CALCOLO EQUITY REALE ----
+capital = initial_capital
+equity_values = []
+drawdowns = []
+profits = []
 
-def calc_trade_return(row):
-    # Gestione casi in ordine di priorità
+for i, row in df_equity.iterrows():
+    # rischio in $
+    risk_amount = capital * (risk_pct / 100)
+
+    # calcolo quantità (short)
+    stop_dist = abs(row["SL_price"] - row["Entry_price"])
+    if stop_dist == 0:
+        continue
+    size = risk_amount / stop_dist
+
+    # calcolo profit/loss in base al tipo di trade
     if row["TP"] == 1:
-        return rr * sl_pct            # profitto pieno
+        pnl = (row["Entry_price"] - row["TP_price"]) * size  # short profit
     elif row["SL"] == 1:
-        return -sl_pct                # perdita
+        pnl = (row["Entry_price"] - row["SL_price"]) * size  # short loss (negativo)
     elif row["BEprofit"] == 1:
-        return rr_be * sl_pct         # piccolo profitto
+        pnl = (row["Entry_price"] - row["BE_price"]) * size  # break-even piccolo guadagno
     else:
-        # Caso chiusura 90m: per operatività short
         val = row["TP_90m%"]
-        return (-val / 100) if pd.notna(val) else 0
+        pnl = 0
+        if pd.notna(val):
+            pnl = (-val / 100) * row["Entry_price"] * size  # short: negativo = gain
 
-df_equity["Trade_Return"] = df_equity.apply(calc_trade_return, axis=1)
+    # aggiorna capitale
+    capital += pnl
 
-# ---- SIMULAZIONE EQUITY ----
-df_equity["Equity"] = initial_capital * (1 + df_equity["Trade_Return"]).cumprod()
+    # registra equity e drawdown
+    equity_values.append(capital)
+    peak = max(equity_values)
+    drawdown = (capital - peak) / peak * 100
+    drawdowns.append(drawdown)
+    profits.append(pnl)
 
-# ---- CALCOLO DRAWDOWN ----
-df_equity["Peak"] = df_equity["Equity"].cummax()
-df_equity["Drawdown"] = (df_equity["Equity"] - df_equity["Peak"]) / df_equity["Peak"] * 100
+# ---- ASSEMBLA DATAFRAME ----
+df_equity["PnL_$"] = profits
+df_equity["Equity"] = equity_values
+df_equity["Drawdown_%"] = drawdowns
 
 # ---- TABELLA RIASSUNTIVA ----
-df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit", "TP_90m%", "Trade_Return", "Equity", "Drawdown"]].copy()
-df_display["Trade_Return"] = (df_display["Trade_Return"] * 100).round(2)
+df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit", "TP_90m%", "PnL_$", "Equity", "Drawdown_%"]].copy()
+df_display["PnL_$"] = df_display["PnL_$"].round(2)
 df_display["Equity"] = df_display["Equity"].round(2)
-df_display["Drawdown"] = df_display["Drawdown"].round(2)
+df_display["Drawdown_%"] = df_display["Drawdown_%"].round(2)
 
 st.dataframe(df_display, use_container_width=True)
 
 # ---- GRAFICO EQUITY ----
 fig1, ax1 = plt.subplots()
-ax1.plot(df_equity["Equity"], linewidth=2)
+ax1.plot(df_display["Equity"], linewidth=2)
 ax1.set_title("Equity Line")
 ax1.set_xlabel("Trade #")
 ax1.set_ylabel("Capitale ($)")
@@ -488,7 +501,7 @@ st.pyplot(fig1)
 
 # ---- GRAFICO DRAWDOWN ----
 fig2, ax2 = plt.subplots()
-ax2.plot(df_equity["Drawdown"], color="red", linewidth=2)
+ax2.plot(df_display["Drawdown_%"], color="red", linewidth=2)
 ax2.set_title("Drawdown (%)")
 ax2.set_xlabel("Trade #")
 ax2.set_ylabel("Drawdown (%)")
