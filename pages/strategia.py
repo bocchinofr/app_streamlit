@@ -444,7 +444,7 @@ capital = initial_capital
 equity_values = []
 drawdowns = []
 profits = []
-siezes = []
+sizes = []
 
 for i, row in df_equity.iterrows():
     # rischio in $
