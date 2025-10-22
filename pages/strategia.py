@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from dateutil import parser
 import numpy as np
+import matplotlib.pyplot as plt
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Strategia Intraday", layout="wide")
@@ -418,8 +419,7 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 # endregion
 
 # === EQUITY & DRAWDOWN SIMULATION ===
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
