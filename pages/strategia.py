@@ -434,7 +434,7 @@ rr_be = col4.number_input("⚖️ RR Break-Even profit", value=0.3, step=0.1)
 df_equity = filtered.copy()  # df filtrato dopo i controlli e filtri utente
 
 # Evitiamo errori su colonne mancanti
-for col in ["TP", "SL", "BE_profit", "TP_90m%"]:
+for col in ["TP", "SL", "BEprofit", "TP_90m%"]:
     if col not in df_equity.columns:
         st.warning(f"Manca la colonna '{col}' nel dataframe.")
         st.stop()
@@ -447,7 +447,7 @@ def calc_trade_return(row):
         return rr * sl_pct       # profitto
     elif row["SL"] == 1:
         return -sl_pct            # perdita
-    elif "BE_profit" in row and row["BE_profit"] == 1:
+    elif "BEprofit" in row and row["BEprofit"] == 1:
         return rr_be * sl_pct     # piccolo profitto
     else:
         # Caso chiusura 90m: se negativo = guadagno (short)
@@ -464,7 +464,7 @@ df_equity["Peak"] = df_equity["Equity"].cummax()
 df_equity["Drawdown"] = (df_equity["Equity"] - df_equity["Peak"]) / df_equity["Peak"] * 100
 
 # ---- TABELLA RIASSUNTIVA ----
-df_display = df_equity[["Date", "Ticker", "TP", "SL", "BE_profit", "TP_90m%", "Trade_Return", "Equity", "Drawdown"]].copy()
+df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit", "TP_90m%", "Trade_Return", "Equity", "Drawdown"]].copy()
 df_display["Trade_Return"] = (df_display["Trade_Return"] * 100).round(2)
 df_display["Equity"] = df_display["Equity"].round(2)
 df_display["Drawdown"] = df_display["Drawdown"].round(2)
