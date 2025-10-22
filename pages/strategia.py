@@ -416,3 +416,69 @@ st.dataframe(styled_df, use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 
 # endregion
+
+#region 📈 SEZIONE EQUITY & DRAWDOWN
+# =======================
+st.markdown("---")
+with st.expander("📈 Simulazione Equity e Drawdown", expanded=True):
+
+    st.subheader("💰 Parametri simulazione")
+    col1, col2, col3 = st.columns(3)
+    capitale_iniziale = col1.number_input("Capitale iniziale ($)", value=10000, step=100)
+    rischio_per_trade = col2.number_input("Rischio per trade (%)", value=3.0, step=0.5)
+    rr_tp = col3.number_input("Rapporto R:R TP", value=3.0, step=0.5)
+    
+    # Calcolo base rischio e payoff
+    rischio_unitario = capitale_iniziale * (rischio_per_trade / 100)
+    payoff_tp = rischio_unitario * rr_tp
+
+    # Copia dataframe filtrato (quello che contiene attivazione, SL, TP, ecc.)
+    df_equity = df.copy()
+
+    # Determina il risultato del trade
+    conditions = [
+        (df_equity["TP"] == 1),
+        (df_equity["SL"] == 1),
+        (df_equity["BEprofit"] == 1),
+        (df_equity["close_90m"] == 1)
+    ]
+    results = ["TP", "SL", "BE", "CLOSE_90M"]
+    df_equity["Esito"] = np.select(conditions, results, default="NESSUNO")
+
+    # Calcolo rendimento % per trade
+    df_equity["Return_%"] = 0.0
+    df_equity.loc[df_equity["TP"] == 1, "Return_%"] = +rischio_per_trade * rr_tp
+    df_equity.loc[df_equity["SL"] == 1, "Return_%"] = -rischio_per_trade
+    df_equity.loc[df_equity["BEprofit"] == 1, "Return_%"] = rischio_per_trade * df_equity["RR_be"]
+    
+    # Close_90m → SHORT, quindi rendimento = -TP_90m%
+    if "TP_90m%" in df_equity.columns:
+        df_equity.loc[df_equity["close_90m"] == 1, "Return_%"] = -df_equity["TP_90m%"]
+
+    # Calcolo rendimento monetario
+    df_equity["Profit_$"] = capitale_iniziale * df_equity["Return_%"] / 100
+
+    # Calcolo equity cumulata
+    df_equity["Equity_$"] = capitale_iniziale + df_equity["Profit_$"].cumsum()
+
+    # Calcolo drawdown
+    df_equity["Peak_$"] = df_equity["Equity_$"].cummax()
+    df_equity["Drawdown_$"] = df_equity["Equity_$"] - df_equity["Peak_$"]
+    df_equity["Drawdown_%"] = (df_equity["Drawdown_$"] / df_equity["Peak_$"]) * 100
+
+    # Tabella riassuntiva
+    st.markdown("### 📊 Tabella dei trade")
+    st.dataframe(
+        df_equity[["data", "Ticker", "Esito", "Return_%", "Equity_$", "Drawdown_%"]],
+        use_container_width=True
+    )
+
+    # Grafico equity
+    st.markdown("### 📈 Andamento Equity")
+    st.line_chart(df_equity[["Equity_$"]].set_index(df_equity["data"]))
+
+    # Grafico drawdown
+    st.markdown("### 📉 Drawdown (%)")
+    st.line_chart(df_equity[["Drawdown_%"]].set_index(df_equity["data"]))
+
+# endregion
