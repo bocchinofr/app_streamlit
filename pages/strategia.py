@@ -444,6 +444,7 @@ capital = initial_capital
 equity_values = []
 drawdowns = []
 profits = []
+siezes = []
 
 for i, row in df_equity.iterrows():
     # rischio in $
@@ -454,6 +455,7 @@ for i, row in df_equity.iterrows():
     if stop_dist == 0:
         continue
     size = risk_amount / stop_dist
+    sizes.append(size)
 
     # calcolo profit/loss in base al tipo di trade
     if row["TP"] == 1:
@@ -482,12 +484,15 @@ for i, row in df_equity.iterrows():
 df_equity["PnL_$"] = profits
 df_equity["Equity"] = equity_values
 df_equity["Drawdown_%"] = drawdowns
+df_equity["Size"] = sizes
+
 
 # ---- TABELLA RIASSUNTIVA ----
-df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit", "TP_90m%", "PnL_$", "Equity", "Drawdown_%"]].copy()
+df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit","Size", "TP_90m%", "PnL_$", "Equity", "Drawdown_%"]].copy()
 df_display["PnL_$"] = df_display["PnL_$"].round(2)
 df_display["Equity"] = df_display["Equity"].round(2)
 df_display["Drawdown_%"] = df_display["Drawdown_%"].round(2)
+df_display["Size"] = df_display["Size"].round(0)
 
 st.dataframe(df_display, use_container_width=True)
 
