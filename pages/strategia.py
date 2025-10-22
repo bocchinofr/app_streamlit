@@ -484,7 +484,7 @@ df_equity["Equity"] = equity_values
 df_equity["Drawdown_%"] = drawdowns
 
 # ---- TABELLA RIASSUNTIVA ----
-df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit", "size", "TP_90m%", "PnL_$", "Equity", "Drawdown_%"]].copy()
+df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit", "TP_90m%", "PnL_$", "Equity", "Drawdown_%"]].copy()
 df_display["PnL_$"] = df_display["PnL_$"].round(2)
 df_display["Equity"] = df_display["Equity"].round(2)
 df_display["Drawdown_%"] = df_display["Drawdown_%"].round(2)
