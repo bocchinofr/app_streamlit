@@ -503,11 +503,11 @@ ax1.axhline(initial_capital, color="gray", linestyle="--", linewidth=1)  # linea
 ax1.set_title("Equity Line")
 ax1.set_xlabel("Trade #")
 ax1.set_ylabel("Capitale ($)")
-ax1.set_xticks(range(1, len(df_display), max(1, len(df_display)//10)))  # tick leggibili
+ax1.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))  # tick leggibili
 st.pyplot(fig1)
 
 # ---- GRAFICO DRAWDOWN ----
-fig2, ax2 = plt.subplots(figsize=(8, 3))  # più compatto
+fig2, ax2 = plt.subplots(figsize=(10, 2))  # più compatto
 ax2.plot(
     range(len(df_display)),
     df_display["Drawdown_%"],
