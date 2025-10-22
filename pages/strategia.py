@@ -492,17 +492,31 @@ df_display["Drawdown_%"] = df_display["Drawdown_%"].round(2)
 st.dataframe(df_display, use_container_width=True)
 
 # ---- GRAFICO EQUITY ----
-fig1, ax1 = plt.subplots()
-ax1.plot(df_display["Equity"], linewidth=2)
+fig1, ax1 = plt.subplots(figsize=(8, 3))  # più compatto
+ax1.plot(
+    range(len(df_display)),
+    df_display["Equity"],
+    linewidth=2,
+    color="royalblue",
+)
+ax1.axhline(initial_capital, color="gray", linestyle="--", linewidth=1)  # linea capitale iniziale
 ax1.set_title("Equity Line")
 ax1.set_xlabel("Trade #")
 ax1.set_ylabel("Capitale ($)")
+ax1.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))  # tick leggibili
 st.pyplot(fig1)
 
 # ---- GRAFICO DRAWDOWN ----
-fig2, ax2 = plt.subplots()
-ax2.plot(df_display["Drawdown_%"], color="red", linewidth=2)
+fig2, ax2 = plt.subplots(figsize=(8, 3))  # più compatto
+ax2.plot(
+    range(len(df_display)),
+    df_display["Drawdown_%"],
+    color="red",
+    linewidth=2,
+)
 ax2.set_title("Drawdown (%)")
 ax2.set_xlabel("Trade #")
 ax2.set_ylabel("Drawdown (%)")
+ax2.axhline(0, color="gray", linestyle="--", linewidth=1)
+ax2.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))
 st.pyplot(fig2)
