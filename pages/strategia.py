@@ -431,7 +431,7 @@ rr = col3.number_input("📈 Rapporto Rischio/Rendimento (RR)", value=2.0, step=
 rr_be = col4.number_input("⚖️ RR Break-Even profit", value=0.3, step=0.1)
 
 # ---- COSTRUZIONE DATAFRAME ----
-df_equity = df_filtered.copy()  # df filtrato dopo i controlli e filtri utente
+df_equity = df.copy()  # df filtrato dopo i controlli e filtri utente
 
 # Evitiamo errori su colonne mancanti
 for col in ["TP", "SL", "BE_profit", "TP_90m%"]:
