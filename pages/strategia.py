@@ -420,7 +420,6 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 
 # === EQUITY & DRAWDOWN SIMULATION ===
 
-
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
 # ---- INPUT PARAMETRI ----
@@ -431,7 +430,14 @@ rr = col3.number_input("📈 Rapporto Rischio/Rendimento (RR)", value=2.0, step=
 rr_be = col4.number_input("⚖️ RR Break-Even profit", value=0.3, step=0.1)
 
 # ---- COSTRUZIONE DATAFRAME ----
-df_equity = filtered.copy()  # df filtrato dopo i controlli e filtri utente
+df_equity = filtered.copy()
+
+# Considera solo i trade attivi
+if "attivazione" in df_equity.columns:
+    df_equity = df_equity[df_equity["attivazione"] == 1].copy()
+else:
+    st.warning("⚠️ Mancano i dati di 'attivazione'. Impossibile simulare equity.")
+    st.stop()
 
 # Evitiamo errori su colonne mancanti
 for col in ["TP", "SL", "BEprofit", "TP_90m%"]:
@@ -443,14 +449,15 @@ for col in ["TP", "SL", "BEprofit", "TP_90m%"]:
 sl_pct = risk_pct / 100.0
 
 def calc_trade_return(row):
+    # Gestione casi in ordine di priorità
     if row["TP"] == 1:
-        return rr * sl_pct       # profitto
+        return rr * sl_pct            # profitto pieno
     elif row["SL"] == 1:
-        return -sl_pct            # perdita
-    elif "BEprofit" in row and row["BEprofit"] == 1:
-        return rr_be * sl_pct     # piccolo profitto
+        return -sl_pct                # perdita
+    elif row["BEprofit"] == 1:
+        return rr_be * sl_pct         # piccolo profitto
     else:
-        # Caso chiusura 90m: se negativo = guadagno (short)
+        # Caso chiusura 90m: per operatività short
         val = row["TP_90m%"]
         return (-val / 100) if pd.notna(val) else 0
 
