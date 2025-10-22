@@ -469,7 +469,7 @@ for i, row in df_equity.iterrows():
             pnl = (-val / 100) * row["Entry_price"] * size  # short: negativo = gain
 
     # aggiorna capitale
-    capital += pnl
+    #capital += pnl
 
     # registra equity e drawdown
     equity_values.append(capital)
