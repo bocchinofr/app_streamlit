@@ -107,7 +107,7 @@ filtered["BEprofit"] = (
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
 # Calcolo TP_90m
-filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / filtered["Open"] * 100).round(2)
+filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / filtered["Entry_price"] * 100).round(2)
 mask_green = (
     (filtered["attivazione"] == 1) & 
     (filtered["SL"] == 0) & 
