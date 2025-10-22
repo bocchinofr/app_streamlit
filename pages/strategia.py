@@ -492,7 +492,7 @@ df_display["Drawdown_%"] = df_display["Drawdown_%"].round(2)
 st.dataframe(df_display, use_container_width=True)
 
 # ---- GRAFICO EQUITY ----
-fig1, ax1 = plt.subplots(figsize=(8, 3))  # più compatto
+fig1, ax1 = plt.subplots(figsize=(5, 3))  # più compatto
 ax1.plot(
     range(len(df_display)),
     df_display["Equity"],
