@@ -445,7 +445,7 @@ def kpi_box(title, value, color="#FFD700"):
         color:white; 
         padding:15px; 
         border-radius:12px;
-        margin-bottom:30px;
+        margin-bottom:20px;
     ">
         <span style="font-weight:600;">{title}:</span>
         <span style="color:{color}; font-size:20px; font-weight:700;">{value}</span>
