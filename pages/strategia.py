@@ -518,10 +518,10 @@ ax1.plot(
 )
 
 # Cambia il colore di fondo dell’intera figura
-fig1.patch.set_facecolor('#DBDCDC')  # ad esempio un blu-scuro
+fig1.patch.set_facecolor('#D5D9DF')  # ad esempio un blu-scuro
 
 # Cambia il colore di fondo dell’area degli assi (grafico)
-ax1.set_facecolor('#DBDCDC')  # ancora più scuro
+ax1.set_facecolor('#D5D9DF')  # ancora più scuro
 
 ax1.axhline(initial_capital, color="gray", linestyle="--", linewidth=1)  # linea capitale iniziale
 ax1.set_title("Equity Line", fontsize=9)
@@ -542,10 +542,10 @@ ax2.plot(
 )
 
 # Cambia il colore di fondo dell’intera figura
-fig2.patch.set_facecolor('#DBDCDC')  # ad esempio un blu-scuro
+fig2.patch.set_facecolor('#D5D9DF')  # ad esempio un blu-scuro
 
 # Cambia il colore di fondo dell’area degli assi (grafico)
-ax2.set_facecolor('#DBDCDC')  # ancora più scuro
+ax2.set_facecolor('#D5D9DF')  # ancora più scuro
 
 ax2.set_title("Drawdown (%)", fontsize=9)
 ax2.set_xlabel("Trade", fontsize=8)
