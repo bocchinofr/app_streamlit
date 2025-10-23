@@ -423,27 +423,13 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
 # ---- INPUT PARAMETRI ----
-with st.container():
-    st.markdown("""
-    <div style="
-        background-color:#1e1e1e;
-        padding:20px;
-        border-radius:12px;
-        border:1px solid #444;
-        margin-bottom:20px;">
-        <h4 style='color:#f0f0f0; margin-bottom:20px;'>⚙️ Parametri di Simulazione</h4>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Box "finto" ma coerente: parametri visivi dentro il container
+with st.expander("⚙️ Parametri di Simulazione", expanded=True):
     col1, col2 = st.columns(2)
     with col1:
         initial_capital = st.number_input("💰 Capitale iniziale", value=3000.0, step=100.0)
     with col2:
         risk_pct = st.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
 
-    # Aggiungiamo un piccolo margine inferiore per distanziare
-    st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
 
 
 # ---- COSTRUZIONE DATAFRAME ----
