@@ -530,6 +530,9 @@ def kpi_box(title, value, color="#FFD700"):
 
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 
+with kpi4:
+    st.markdown(kpi_box("Trade Attivati", f"{trade_count}", "white"), unsafe_allow_html=True)
+
 with kpi1:
     st.markdown(kpi_box("RR", f"{RR:.2f}","white"), unsafe_allow_html=True)
 
@@ -540,8 +543,7 @@ with kpi3:
     profit_color = "#00FF00" if profit >= 0 else "#FF6347"
     st.markdown(kpi_box("Profit", f"{profit:.2f}$", profit_color), unsafe_allow_html=True)
 
-with kpi4:
-    st.markdown(kpi_box("Trade Attivati", f"{trade_count}", "white"), unsafe_allow_html=True)
+
 
 
 # ---- CALCOLO COLONNA ESITO ----
