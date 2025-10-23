@@ -76,7 +76,7 @@ if not filtered.empty:
             f"""
             <div style='font-size:16px; font-weight:600; margin-bottom:10px;'>
                 Dati filtrati dal <span style='font-size:18px; color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
-                al <span style='color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
+                al <span style='font-size:18px; color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
             </div>
             """,
             unsafe_allow_html=True
