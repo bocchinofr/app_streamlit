@@ -214,8 +214,8 @@ st.markdown(f"""
     <div style="{base_box_style}; display:flex; flex-direction:column; align-items:center;">
         <div style="{title_style}">RR / RR_be</div>
         <div style="display:flex; justify-content:center; gap:20px; margin-top:5px;">
-            <div style="font-size:40px; font-weight:bold;">{RR_value}</div>
-            <div style="font-size:24px; font-weight:bold; color:#CCCCCC;">{RR_be_value}</div>
+            <div style="font-size:40px; font-weight:bold;">{RR}</div>
+            <div style="font-size:24px; font-weight:bold; color:#CCCCCC;">{RR_be}</div>
         </div>
     </div>
     <!-- Box con colore testo personalizzato -->
