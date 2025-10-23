@@ -186,7 +186,7 @@ value_style = "font-size:30px; font-weight:bold;"
 
 st.markdown(f"""
 <!-- PRIMA RIGA: 4 BOX -->
-<div style="display:flex; gap:15px; margin-bottom:20px;">
+<div style="display:flex; gap:15px; margin-bottom:10px;">
     <div style="{base_box_style}">
         <div style="{title_style}">Totale record</div>
         <div style="{value_style}">{total}</div>
@@ -209,7 +209,7 @@ st.markdown(f"""
     </div>
 </div>
 <!-- SECONDA RIGA: 3 BOX -->
-<div style="display:flex; gap:15px; margin-bottom:20px;">
+<div style="display:flex; gap:15px; margin-bottom:10px;">
     <div style="{base_box_style}; display:flex; justify-content:center; gap:20px;">
         <!-- Primo mini-box RR -->
         <div style="display:flex; flex-direction:column; align-items:center;">
