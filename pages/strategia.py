@@ -371,7 +371,7 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 # region ---- TABELLA ----
 
 # Colonne da mostrare in tabella
-cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m", "Close_1030",
+cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m",
                 "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
                 "TP_90m%", "RR","RR_be", "attivazione", "SL", "TP", "BEprofit"]
 
@@ -418,14 +418,26 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 
 # endregion
 
-# === EQUITY & DRAWDOWN SIMULATION ===
+# region === EQUITY & DRAWDOWN SIMULATION ===
 
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
 # ---- INPUT PARAMETRI ----
+st.markdown("""
+<div style="
+    background-color:#1e2130;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #444;
+    margin-bottom:15px;">
+    <h4 style='color:white;'>⚙️ Parametri di simulazione</h4>
+</div>
+""", unsafe_allow_html=True)
+
 col1, col2 = st.columns(2)
-initial_capital = col1.number_input("💰 Capitale iniziale", value=5000.0, step=500.0)
+initial_capital = col1.number_input("💰 Capitale iniziale", value=3000.0, step=100.0)
 risk_pct = col2.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
+
 
 # ---- COSTRUZIONE DATAFRAME ----
 df_equity = filtered.copy()
@@ -555,3 +567,5 @@ ax2.tick_params(axis='both', which='major', labelsize=7)
 ax2.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))
 plt.tight_layout()
 st.pyplot(fig2)
+
+# endregion
