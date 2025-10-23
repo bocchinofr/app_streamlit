@@ -175,7 +175,7 @@ base_box_style = """
     flex:1; 
     background-color:#184F5F; 
     color:white; 
-    padding:10px; 
+    padding:1px; 
     border-radius:12px; 
     text-align:center;
 """
