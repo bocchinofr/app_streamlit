@@ -486,9 +486,21 @@ df_equity["Equity"] = equity_values
 df_equity["Drawdown_%"] = drawdowns
 df_equity["Size"] = sizes
 
+# ---- CALCOLO COLONNA ESITO ----
+def get_result_icon(row):
+    if row["TP"] == 1:
+        return "🟢"
+    elif row["BEprofit"] == 1:
+        return "🟩"
+    elif row["SL"] == 1:
+        return "🔴"
+    else:
+        return "🟠"
+
+df_equity["Esito"] = df_equity.apply(get_result_icon, axis=1)
 
 # ---- TABELLA RIASSUNTIVA ----
-df_display = df_equity[["Date", "Ticker", "TP", "SL", "BEprofit","Size", "TP_90m%", "PnL_$", "Equity", "Drawdown_%"]].copy()
+df_display = df_equity[["Date", "Ticker", "Esito", "Size", "TP_90m%", "PnL_$", "Equity", "Drawdown_%"]].copy()
 df_display["PnL_$"] = df_display["PnL_$"].round(2)
 df_display["Equity"] = df_display["Equity"].round(2)
 df_display["Drawdown_%"] = df_display["Drawdown_%"].round(2)
