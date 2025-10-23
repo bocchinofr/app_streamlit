@@ -516,6 +516,13 @@ ax1.plot(
     linewidth=1,
     color="royalblue",
 )
+
+# Cambia il colore di fondo dell’intera figura
+fig1.patch.set_facecolor('#1B1F29')  # ad esempio un blu-scuro
+
+# Cambia il colore di fondo dell’area degli assi (grafico)
+ax1.set_facecolor('#0E1116')  # ancora più scuro
+
 ax1.axhline(initial_capital, color="gray", linestyle="--", linewidth=1)  # linea capitale iniziale
 ax1.set_title("Equity Line", fontsize=9)
 ax1.set_xlabel("Trade", fontsize=8)
