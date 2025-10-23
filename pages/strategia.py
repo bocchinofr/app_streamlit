@@ -208,7 +208,6 @@ st.markdown(f"""
         <div style="{value_style}">{BE_profit}</div>
     </div>
 </div>
-
 <!-- SECONDA RIGA: 3 BOX -->
 <div style="display:flex; gap:15px; margin-bottom:20px;">
     <div style="{base_box_style}; display:flex; justify-content:center; gap:20px;">
