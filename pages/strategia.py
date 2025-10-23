@@ -427,6 +427,42 @@ col1, col2 = st.columns(2)
 initial_capital = col1.number_input("💰 Capitale iniziale", value=3000.0, step=100.0)
 risk_pct = col2.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
 
+# ---- ESEMPI DI VALORI ----
+RR = 2.5
+RR_be = 1.3
+ultima_equity = 3850
+profit = ultima_equity - initial_capital
+
+# ---- STILE BASE KPI ----
+def kpi_box(title, value, color="#FFD700"):
+    return f"""
+    <div style="
+        background-color:#1E1E1E; 
+        padding:10px; 
+        border-radius:10px; 
+        text-align:center;
+    ">
+        <h4 style="color:#FFFFFF; margin:0;">{title}</h4>
+        <p style="color:{color}; font-size:20px; margin:0;">{value}</p>
+    </div>
+    """
+
+# ---- BOX KPI ----
+st.markdown("---")
+st.markdown("### 📊 Risultati simulazione")
+
+kpi1, kpi2, kpi3 = st.columns(3)
+
+with kpi1:
+    st.markdown(kpi_box("RR", f"{RR:.2f}", "#FFD700"), unsafe_allow_html=True)
+
+with kpi2:
+    st.markdown(kpi_box("RR BE", f"{RR_be:.2f}", "#00BFFF"), unsafe_allow_html=True)
+
+with kpi3:
+    profit_color = "#00FF00" if profit >= 0 else "#FF6347"
+    st.markdown(kpi_box("Profit", f"{profit:.2f}$", profit_color), unsafe_allow_html=True)
+
 # ---- COSTRUZIONE DATAFRAME ----
 df_equity = filtered.copy()
 
