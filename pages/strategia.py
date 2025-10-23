@@ -517,7 +517,7 @@ def kpi_box(title, value, color="#FFD700"):
 kpi1, kpi2, kpi3 = st.columns(3)
 
 with kpi1:
-    st.markdown(kpi_box("RR", f"{RR:.2f}"), unsafe_allow_html=True)
+    st.markdown(kpi_box("RR", f"{RR:.2f}","white"), unsafe_allow_html=True)
 
 with kpi2:
     st.markdown(kpi_box("RR BE", f"{RR_be:.2f}"), unsafe_allow_html=True)
