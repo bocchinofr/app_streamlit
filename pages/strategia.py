@@ -384,7 +384,7 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m",
                 "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
-                "TP_90m%", "RR","RR_be", "attivazione", "SL", "TP", "BEprofit"]
+                "TP_90m%", "attivazione", "SL", "TP", "BEprofit"]
 
 
 # Funzione per righe alternate
