@@ -125,8 +125,8 @@ mask_red = (
 tp_90m_green_avg = round(filtered.loc[mask_green, "TP_90m%"].mean(), 0)
 tp_90m_red_avg   = round(filtered.loc[mask_red, "TP_90m%"].mean(), 0)
 # Se è NaN → "-"
-tp_90m_green_avg = "-" if np.isnan(tp_90m_green_avg) else tp_90m_green_avg
-tp_90m_red_avg   = "-" if np.isnan(tp_90m_red_avg) else tp_90m_red_avg
+tp_90m_green_avg = "-" if np.isnan(tp_90m_green_avg) else int(tp_90m_green_avg)
+tp_90m_red_avg   = "-" if np.isnan(tp_90m_red_avg) else int(tp_90m_red_avg)
 
 
 # Calcolo RR
@@ -233,8 +233,8 @@ st.markdown(f"""
         <div style="{value_style}">{close_90m_green}</div>
     </div>
     <div style="{base_box_style} color:#2EDB2E;">
-        <div style="{title_style}">tp 90m GREEN</div>
-        <div style="{value_style}">{tp_90m_green_avg}</div>
+        <div style="{title_style}">media prezzo 90m</div>
+        <div style="{value_style}">{tp_90m_green_avg}%</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
