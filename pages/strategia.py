@@ -540,6 +540,13 @@ ax2.plot(
     color="red",
     linewidth=1,
 )
+
+# Cambia il colore di fondo dell’intera figura
+fig2.patch.set_facecolor('#E2E6EE')  # ad esempio un blu-scuro
+
+# Cambia il colore di fondo dell’area degli assi (grafico)
+ax2.set_facecolor('#E2E6EE')  # ancora più scuro
+
 ax2.set_title("Drawdown (%)", fontsize=9)
 ax2.set_xlabel("Trade", fontsize=8)
 ax2.set_ylabel("Drawdown (%)", fontsize=8)
