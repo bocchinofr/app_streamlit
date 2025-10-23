@@ -130,8 +130,12 @@ tp_90m_red_avg   = "-" if np.isnan(tp_90m_red_avg) else tp_90m_red_avg
 
 
 # Calcolo RR
-filtered["RR"] = (filtered["Entry_price"]-filtered["TP_price"])/(filtered["SL_price"]-filtered["Entry_price"])
-filtered["RR_be"] = (filtered["Entry_price"]-filtered["BE_price"])/(filtered["SL_price"]-filtered["Entry_price"])
+RR = round((filtered["Entry_price"].iloc[0] - filtered["TP_price"].iloc[0]) / 
+                 (filtered["SL_price"].iloc[0] - filtered["Entry_price"].iloc[0]), 2)
+
+RR_be= round((filtered["Entry_price"].iloc[0] - filtered["BE_price"].iloc[0]) / 
+                    (filtered["SL_price"].iloc[0] - filtered["Entry_price"].iloc[0]), 2)
+
 
 # endregion
 
@@ -207,6 +211,13 @@ st.markdown(f"""
 
 <!-- SECONDA RIGA: 3 BOX -->
 <div style="display:flex; gap:15px; margin-bottom:20px;">
+    <div style="{base_box_style}; display:flex; flex-direction:column;">
+        <div style="{title_style}">RR / RR_be</div>
+        <div style="display:flex; justify-content:center; gap:10px; font-size:30px; font-weight:bold;">
+            <div>{RR}</div>
+            <div>{RR_be}</div>
+        </div>
+    </div>
     <!-- Box con colore testo personalizzato -->
     <div style="{base_box_style} color:#EE4419;">
         <div style="{title_style}">Close 90m RED</div>
@@ -488,8 +499,6 @@ df_equity["Size"] = sizes
 
 
 # ---- ESEMPI DI VALORI ----
-RR = filtered["RR"].iloc[0]
-RR_be = filtered["RR_be"].iloc[0]
 ultima_equity = equity_values[-1] if equity_values else initial_capital
 profit = ultima_equity - initial_capital
 
