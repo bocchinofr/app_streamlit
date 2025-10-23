@@ -211,16 +211,15 @@ st.markdown(f"""
 
 <!-- SECONDA RIGA: 3 BOX -->
 <div style="display:flex; gap:15px; margin-bottom:20px;">
-    <div style="{base_box_style}; display:flex; flex-direction:column; align-items:center;">
-        <!-- Titoli affiancati -->
-        <div style="display:flex; justify-content:center; gap:20px; margin-bottom:5px; font-size:16px; opacity:0.8;">
-            <div>RR</div>
-            <div>RR_be</div>
-        </div>
-        
-        <!-- Valori affiancati con font size diversi -->
-        <div style="display:flex; justify-content:center; gap:20px;">
+    <div style="{base_box_style}; display:flex; justify-content:center; gap:20px;">
+        <!-- Primo mini-box RR -->
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div style="font-size:16px; opacity:0.8;">RR</div>
             <div style="font-size:40px; font-weight:bold;">{RR}</div>
+        </div>
+        <!-- Secondo mini-box RR_be -->
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div style="font-size:16px; opacity:0.8;">RR_be</div>
             <div style="font-size:24px; font-weight:bold; color:#CCCCCC;">{RR_be}</div>
         </div>
     </div>
