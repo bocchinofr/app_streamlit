@@ -519,11 +519,13 @@ ax2.plot(
     range(len(df_display)),
     df_display["Drawdown_%"],
     color="red",
-    linewidth=2,
+    linewidth=1,
 )
-ax2.set_title("Drawdown (%)")
-ax2.set_xlabel("Trade #")
-ax2.set_ylabel("Drawdown (%)")
-ax2.axhline(0, color="gray", linestyle="--", linewidth=1)
+ax2.set_title("Drawdown (%)", fontsize=9)
+ax2.set_xlabel("Trade", fontsize=8)
+ax2.set_ylabel("Drawdown (%)", fontsize=8)
+ax2.axhline(0, color="gray", linestyle="--", linewidth=0.8)
+ax2.tick_params(axis='both', which='major', labelsize=7)
 ax2.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))
+plt.tight_layout()
 st.pyplot(fig2)
