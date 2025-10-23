@@ -448,8 +448,6 @@ def kpi_box(title, value, color="#FFD700"):
     """
 
 # ---- BOX KPI ----
-st.markdown("---")
-st.markdown("### 📊 Risultati simulazione")
 
 kpi1, kpi2, kpi3 = st.columns(3)
 
