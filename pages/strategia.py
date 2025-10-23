@@ -423,22 +423,9 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
 # ---- INPUT PARAMETRI ----
-st.markdown("""
-<div style="
-    max-width:400px;
-    padding:10px;
-    border:1px solid #444;
-    border-radius:10px;">
-""", unsafe_allow_html=True)
-
-# inserisci qui i widgets
 col1, col2 = st.columns(2)
-initial_capital = col1.number_input(...)
-risk_pct = col2.number_input(...)
-st.markdown("</div>", unsafe_allow_html=True)
-
-
-
+initial_capital = col1.number_input("💰 Capitale iniziale", value=3000.0, step=100.0)
+risk_pct = col2.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
 
 # ---- COSTRUZIONE DATAFRAME ----
 df_equity = filtered.copy()
