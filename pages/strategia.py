@@ -232,7 +232,7 @@ st.markdown(f"""
         <div style="{title_style}">Close 90m GREEN</div>
         <div style="{value_style}">{close_90m_green}</div>
     </div>
-    <div style="{base_box_style} color:#2EDB2E;">
+    <div style="{base_box_style};">
         <div style="{title_style}">media prezzo 90m</div>
         <div style="{value_style}">{tp_90m_green_avg}%</div>
     </div>
