@@ -518,7 +518,7 @@ ax1.plot(
 )
 
 # Cambia il colore di fondo dell’intera figura
-fig1.patch.set_facecolor('#A3A4A6')  # ad esempio un blu-scuro
+fig1.patch.set_facecolor('#C1C5CB')  # ad esempio un blu-scuro
 
 # Cambia il colore di fondo dell’area degli assi (grafico)
 ax1.set_facecolor('#0E1116')  # ancora più scuro
