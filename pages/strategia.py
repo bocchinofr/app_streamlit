@@ -528,7 +528,7 @@ def kpi_box(title, value, color="#FFD700"):
 
 # ---- BOX KPI ----
 
-kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+kpi4, kpi1, kpi2, kpi3 = st.columns(4)
 
 with kpi4:
     st.markdown(kpi_box("Trade Attivati", f"{trade_count}", "white"), unsafe_allow_html=True)
