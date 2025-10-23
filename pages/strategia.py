@@ -175,7 +175,7 @@ base_box_style = """
     flex:1; 
     background-color:#184F5F; 
     color:white; 
-    padding:15px; 
+    padding:10px; 
     border-radius:12px; 
     text-align:center;
 """
@@ -209,7 +209,7 @@ st.markdown(f"""
     </div>
 </div>
 <!-- SECONDA RIGA: 3 BOX -->
-<div style="display:flex; gap:10px; margin-bottom:20px;">
+<div style="display:flex; gap:15px; margin-bottom:20px;">
     <div style="{base_box_style}; display:flex; justify-content:center; gap:20px;">
         <!-- Primo mini-box RR -->
         <div style="display:flex; flex-direction:column; align-items:center;">
