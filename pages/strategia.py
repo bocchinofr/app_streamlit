@@ -501,7 +501,7 @@ fig1, ax1 = plt.subplots(figsize=(10, 2))  # più compatto
 ax1.plot(
     range(len(df_display)),
     df_display["Equity"],
-    linewidth=2,
+    linewidth=1,
     color="royalblue",
 )
 ax1.axhline(initial_capital, color="gray", linestyle="--", linewidth=1)  # linea capitale iniziale
