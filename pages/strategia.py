@@ -437,15 +437,17 @@ profit = ultima_equity - initial_capital
 def kpi_box(title, value, color="#FFD700"):
     return f"""
     <div style="
-        flex:1; 
+        display:flex; 
+        justify-content:center; 
+        align-items:center; 
+        gap:10px; 
         background-color:#184F5F; 
         color:white; 
         padding:15px; 
-        border-radius:12px; 
-        text-align:center;
+        border-radius:12px;
     ">
-        <h4 style="color:#FFFFFF; margin:0px;">{title}</h4>
-        <p style="color:{color}; font-size:20px; margin:0;">{value}</p>
+        <span style="font-weight:600;">{title}:</span>
+        <span style="color:{color}; font-size:20px; font-weight:700;">{value}</span>
     </div>
     """
 
