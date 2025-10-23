@@ -520,7 +520,7 @@ with kpi1:
     st.markdown(kpi_box("RR", f"{RR:.2f}","white"), unsafe_allow_html=True)
 
 with kpi2:
-    st.markdown(kpi_box("RR BE", f"{RR_be:.2f}"), unsafe_allow_html=True)
+    st.markdown(kpi_box("RR BE", f"{RR_be:.2f}","white"), unsafe_allow_html=True)
 
 with kpi3:
     profit_color = "#00FF00" if profit >= 0 else "#FF6347"
