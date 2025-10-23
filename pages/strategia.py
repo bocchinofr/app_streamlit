@@ -444,7 +444,7 @@ def kpi_box(title, value, color="#FFD700"):
         border-radius:12px; 
         text-align:center;
     ">
-        <h4 style="color:#FFFFFF; margin:3;">{title}</h4>
+        <h4 style="color:#FFFFFF; margin:3px;">{title}</h4>
         <p style="color:{color}; font-size:20px; margin:0;">{value}</p>
     </div>
     """
