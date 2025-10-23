@@ -427,45 +427,6 @@ col1, col2 = st.columns(2)
 initial_capital = col1.number_input("💰 Capitale iniziale", value=3000.0, step=100.0)
 risk_pct = col2.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
 
-# ---- ESEMPI DI VALORI ----
-RR = filtered["RR"].iloc[0]
-RR_be = filtered["RR_be"].iloc[0]
-ultima_equity = 3850
-profit = ultima_equity - initial_capital
-
-# ---- STILE BASE KPI ----
-def kpi_box(title, value, color="#FFD700"):
-    return f"""
-    <div style="
-        display:flex; 
-        justify-content:center; 
-        align-items:center; 
-        gap:10px; 
-        background-color:#184F5F; 
-        color:white; 
-        padding:15px; 
-        border-radius:12px;
-        margin-bottom:20px;
-    ">
-        <span style="font-weight:600;">{title}:</span>
-        <span style="color:{color}; font-size:20px; font-weight:700;">{value}</span>
-    </div>
-    """
-
-# ---- BOX KPI ----
-
-kpi1, kpi2, kpi3 = st.columns(3)
-
-with kpi1:
-    st.markdown(kpi_box("RR", f"{RR:.2f}", "#FFD700"), unsafe_allow_html=True)
-
-with kpi2:
-    st.markdown(kpi_box("RR BE", f"{RR_be:.2f}", "#00BFFF"), unsafe_allow_html=True)
-
-with kpi3:
-    profit_color = "#00FF00" if profit >= 0 else "#FF6347"
-    st.markdown(kpi_box("Profit", f"{profit:.2f}$", profit_color), unsafe_allow_html=True)
-
 # ---- COSTRUZIONE DATAFRAME ----
 df_equity = filtered.copy()
 
@@ -524,6 +485,47 @@ df_equity["PnL_$"] = profits
 df_equity["Equity"] = equity_values
 df_equity["Drawdown_%"] = drawdowns
 df_equity["Size"] = sizes
+
+
+# ---- ESEMPI DI VALORI ----
+RR = filtered["RR"].iloc[0]
+RR_be = filtered["RR_be"].iloc[0]
+ultima_equity = equity_values[-1] if equity_values else initial_capital
+profit = ultima_equity - initial_capital
+
+# ---- STILE BASE KPI ----
+def kpi_box(title, value, color="#FFD700"):
+    return f"""
+    <div style="
+        display:flex; 
+        justify-content:center; 
+        align-items:center; 
+        gap:10px; 
+        background-color:#184F5F; 
+        color:white; 
+        padding:15px; 
+        border-radius:12px;
+        margin-bottom:20px;
+    ">
+        <span style="font-weight:600;">{title}:</span>
+        <span style="color:{color}; font-size:20px; font-weight:700;">{value}</span>
+    </div>
+    """
+
+# ---- BOX KPI ----
+
+kpi1, kpi2, kpi3 = st.columns(3)
+
+with kpi1:
+    st.markdown(kpi_box("RR", f"{RR:.2f}"), unsafe_allow_html=True)
+
+with kpi2:
+    st.markdown(kpi_box("RR BE", f"{RR_be:.2f}"), unsafe_allow_html=True)
+
+with kpi3:
+    profit_color = "#00FF00" if profit >= 0 else "#FF6347"
+    st.markdown(kpi_box("Profit", f"{profit:.2f}$", profit_color), unsafe_allow_html=True)
+
 
 # ---- CALCOLO COLONNA ESITO ----
 def get_result_icon(row):
