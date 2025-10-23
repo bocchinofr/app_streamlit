@@ -220,7 +220,7 @@ st.markdown(f"""
         <!-- Secondo mini-box RR_be -->
         <div style="display:flex; flex-direction:column; align-items:center;">
             <div style="{title_style}">RR_be</div>
-            <div style="font-size:36px; font-weight:bold; color:#CCCCCC;">{RR_be}</div>
+            <div style="font-size:32px; font-weight:bold; color:#CCCCCC;">{RR_be}</div>
         </div>
     </div>
     <!-- Box con colore testo personalizzato -->
