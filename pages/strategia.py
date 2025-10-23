@@ -428,8 +428,8 @@ initial_capital = col1.number_input("💰 Capitale iniziale", value=3000.0, step
 risk_pct = col2.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
 
 # ---- ESEMPI DI VALORI ----
-RR = filtered["RR"].iloc(0)
-RR_be = filtered ["RR_be"].iloc(0)
+RR = float(filtered["RR"])
+RR_be = float(filtered["RR_be"])
 ultima_equity = 3850
 profit = ultima_equity - initial_capital
 
