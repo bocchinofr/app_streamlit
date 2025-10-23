@@ -505,10 +505,12 @@ ax1.plot(
     color="royalblue",
 )
 ax1.axhline(initial_capital, color="gray", linestyle="--", linewidth=1)  # linea capitale iniziale
-ax1.set_title("Equity Line")
-ax1.set_xlabel("Trade #")
-ax1.set_ylabel("Capitale ($)")
-ax1.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))  # tick leggibili
+ax1.set_title("Equity Line", fontsize=9)
+ax1.set_xlabel("Trade #", fontsize=8)
+ax1.set_ylabel("Capitale ($)", fontsize=8)
+ax1.tick_params(axis='both', which='major', labelsize=7)  # riduce la dimensione delle etichette assi
+ax1.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))
+plt.tight_layout()
 st.pyplot(fig1)
 
 # ---- GRAFICO DRAWDOWN ----
