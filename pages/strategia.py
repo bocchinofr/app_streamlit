@@ -15,7 +15,7 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 def load_data():
     usecols = [
         "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High",
-        "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100"
+        "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
     # Parse date
@@ -31,8 +31,8 @@ df = load_data()
 # ---- FILTRI LATERALI ----
 st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
-min_open = st.sidebar.number_input("Open minimo", value=0.0)
-min_gap = st.sidebar.number_input("Gap% minimo", value=0.0)
+min_open = st.sidebar.number_input("Open minimo", value=2.0)
+min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float", value=1000000000)
 param_sl = st.sidebar.number_input("%SL", value=30.0)
 param_tp = st.sidebar.number_input("%TP", value=-15.0)
@@ -244,8 +244,6 @@ st.markdown(f"""
 
 # region ---- FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA ----
 
-import pandas as pd
-import streamlit as st
 
 def show_kpi_section(df, title, box_color):
     """
@@ -271,6 +269,12 @@ def show_kpi_section(df, title, box_color):
 
         shs_out_mean = df["Shares Outstanding"].mean() if "Shares Outstanding" in df.columns else None
         shs_out_median = df["Shares Outstanding"].median() if "Shares Outstanding" in df.columns else None
+
+        volume_mean = df["Volume"].mean() if "Volume" in df.columns else None
+        volume_median = df["Volume"].median() if "Volume" in df.columns else None
+
+        volume30_mean = df["Volume_30m"].mean() if "Volume_30m" in df.columns else None
+        volume30_median = df["Volume_30m"].median() if "Volume_30m" in df.columns else None
 
         if "High" in df.columns:
             df["high%"] = ((df["High"] - df["Open"])/df["High"])*100
@@ -317,6 +321,12 @@ def show_kpi_section(df, title, box_color):
         openVSpmh_mean_str = f"{openVSpmh_mean:.0f}%" if openVSpmh_mean is not None else "-"
         openVSpmh_median_str = f"{openVSpmh_median:.0f}%" if openVSpmh_median is not None else "-"
 
+        volume_mean_str = f"{volume_mean/1_000_000:.0f}M" if volume_mean is not None else "-"
+        volume_median_str = f"{volume_median/1_000_000:.2f}M" if volume_median is not None else "-"
+
+        volume30_mean_str = f"{volume30_mean/1_000_000:.0f}M" if volume30_mean is not None else "-"
+        volume30_median_str = f"{volume30_median/1_000_000:.2f}M" if volume30_median is not None else "-"
+
         # --- Lista dei box ---
         boxes = [
             {"label": "Gap%", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
@@ -325,6 +335,8 @@ def show_kpi_section(df, title, box_color):
             {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
             {"label": "TimeHigh medio", "value": time_mean_formatted},
             {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"}
+            {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"}
+            {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"}
         ]
 
         # --- Stile ---
