@@ -273,6 +273,9 @@ def show_kpi_section(df, title, box_color):
         volume_mean = df["Volume"].mean() if "Volume" in df.columns else None
         volume_median = df["Volume"].median() if "Volume" in df.columns else None
 
+        volumePM_mean = df["VolumePM"].mean() if "VolumePM" in df.columns else None
+        volumePM_median = df["VolumePM"].median() if "VolumePM" in df.columns else None
+
         volume30_mean = df["Volume_30m"].mean() if "Volume_30m" in df.columns else None
         volume30_median = df["Volume_30m"].median() if "Volume_30m" in df.columns else None
 
@@ -324,6 +327,9 @@ def show_kpi_section(df, title, box_color):
         volume_mean_str = f"{volume_mean/1_000_000:.0f}M" if volume_mean is not None else "-"
         volume_median_str = f"{volume_median/1_000_000:.2f}M" if volume_median is not None else "-"
 
+        volumePM_mean_str = f"{volumePM_mean/1_000_000:.0f}M" if volumePM_mean is not None else "-"
+        volumePM_median_str = f"{volumePM_median/1_000_000:.2f}M" if volumePM_median is not None else "-"
+
         volume30_mean_str = f"{volume30_mean/1_000_000:.0f}M" if volume30_mean is not None else "-"
         volume30_median_str = f"{volume30_median/1_000_000:.2f}M" if volume30_median is not None else "-"
 
@@ -336,6 +342,7 @@ def show_kpi_section(df, title, box_color):
             {"label": "TimeHigh medio", "value": time_mean_formatted},
             {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
             {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
+            {"label": "VolumePM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
             {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"}
         ]
 
