@@ -364,7 +364,7 @@ def show_kpi_section(df, title, box_color):
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
             gap: 10px; 
-            grid-auto-rows: 2fr;
+            grid-auto-rows: 1fr;
             margin-top:10px; 
             margin-bottom:10px;
         ">
@@ -476,7 +476,7 @@ sizes = []
 
 for i, row in df_equity.iterrows():
     # rischio in $
-    risk_amount = capital * (risk_pct / 100)
+    risk_amount = initial_capital * (risk_pct / 100)
 
     # calcolo quantità (short)
     stop_dist = abs(row["SL_price"] - row["Entry_price"])
