@@ -617,7 +617,7 @@ ax2.bar(
 )
 
 # Cambia il colore di fondo dell’intera figura
-fig2.patch.set_facecolor('#D5D9DF')
+fig2.patch.set_facecolor('#DE9D9D')
 
 # Cambia il colore di fondo dell’area degli assi (grafico)
 ax2.set_facecolor('#D5D9DF')
