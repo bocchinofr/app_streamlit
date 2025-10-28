@@ -351,6 +351,12 @@ def show_kpi_section(df, title, box_color):
         volume30_mean_str = f"{volume30_mean/1_000_000:.0f}M" if volume30_mean is not None else "-"
         volume30_median_str = f"{volume30_median/1_000_000:.2f}M" if volume30_median is not None else "-"
 
+        vol5_vs_PM_mean_str = f"{vol5_vs_PM_mean:.0f}%" if vol5_vs_PM_mean is not None else "-"
+        vol5_vs_PM_median_str = f"{vol5_vs_PM_median:.0f}%" if vol5_vs_PM_median is not None else "-"
+
+        vol30_vs_PM_mean_str = f"{vol30_vs_PM_mean:.0f}%" if vol30_vs_PM_mean is not None else "-"
+        vol30_vs_PM_median_str = f"{vol30_vs_PM_median:.0f}%" if vol30_vs_PM_median is not None else "-"
+
         # --- Lista dei box ---
         boxes = [
             {"label": "Gap%", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
