@@ -276,6 +276,9 @@ def show_kpi_section(df, title, box_color):
         volumePM_mean = df["VolumePM"].mean() if "VolumePM" in df.columns else None
         volumePM_median = df["VolumePM"].median() if "VolumePM" in df.columns else None
 
+        volume5_mean = df["Volume_5m"].mean() if "Volume_5m" in df.columns else None
+        volume5_median = df["Volume_5m"].median() if "Volume_5m" in df.columns else None
+
         volume30_mean = df["Volume_30m"].mean() if "Volume_30m" in df.columns else None
         volume30_median = df["Volume_30m"].median() if "Volume_30m" in df.columns else None
 
