@@ -394,12 +394,11 @@ def show_kpi_section(df, title, box_color):
         # --- Container grid responsive ---
         container_html_start = """
         <div style="
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
-            gap: 10px; 
-            grid-auto-rows: 1fr;
-            margin-top:10px; 
-            margin-bottom:10px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            row-gap: 15px;
+            margin-top: 10px;
         ">
         """
         container_html_end = "</div>"
