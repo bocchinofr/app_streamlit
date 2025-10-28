@@ -607,18 +607,20 @@ st.pyplot(fig1)
 
 # ---- GRAFICO DRAWDOWN ----
 fig2, ax2 = plt.subplots(figsize=(10, 2))  # più compatto
-ax2.plot(
+
+# Grafico a barre invece che linea
+ax2.bar(
     range(len(df_display)),
     df_display["Drawdown_%"],
     color="red",
-    linewidth=1,
+    width=0.8,
 )
 
 # Cambia il colore di fondo dell’intera figura
-fig2.patch.set_facecolor('#D5D9DF')  # ad esempio un blu-scuro
+fig2.patch.set_facecolor('#D5D9DF')
 
 # Cambia il colore di fondo dell’area degli assi (grafico)
-ax2.set_facecolor('#D5D9DF')  # ancora più scuro
+ax2.set_facecolor('#D5D9DF')
 
 ax2.set_title("Drawdown (%)", fontsize=9)
 ax2.set_xlabel("Trade", fontsize=8)
@@ -626,6 +628,7 @@ ax2.set_ylabel("Drawdown (%)", fontsize=8)
 ax2.axhline(0, color="gray", linestyle="--", linewidth=0.8)
 ax2.tick_params(axis='both', which='major', labelsize=7)
 ax2.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))
+
 plt.tight_layout()
 st.pyplot(fig2)
 
