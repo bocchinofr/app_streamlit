@@ -612,7 +612,7 @@ fig2, ax2 = plt.subplots(figsize=(10, 2))  # più compatto
 ax2.bar(
     range(len(df_display)),
     df_display["Drawdown_%"],
-    color="red",
+    color="#C11010",
     width=0.8,
 )
 
