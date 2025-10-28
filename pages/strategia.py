@@ -334,10 +334,11 @@ def show_kpi_section(df, title, box_color):
             {"label": "Shs Outstanding medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
             {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
             {"label": "TimeHigh medio", "value": time_mean_formatted},
-            {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"}
-            {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"}
+            {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
+            {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
             {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"}
         ]
+
 
         # --- Stile ---
         LABEL_STYLE = "font-size:14px; opacity:0.85;"
