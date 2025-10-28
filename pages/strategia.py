@@ -276,9 +276,6 @@ def show_kpi_section(df, title, box_color):
         volumePM_mean = df["VolumePM"].mean() if "VolumePM" in df.columns else None
         volumePM_median = df["VolumePM"].median() if "VolumePM" in df.columns else None
 
-        volume5_mean = df["Volume_5m"].mean() if "Volume_5m" in df.columns else None
-        volume5_median = df["Volume_5m"].median() if "Volume_5m" in df.columns else None
-
         volume30_mean = df["Volume_30m"].mean() if "Volume_30m" in df.columns else None
         volume30_median = df["Volume_30m"].median() if "Volume_30m" in df.columns else None
 
@@ -311,21 +308,6 @@ def show_kpi_section(df, title, box_color):
             openVSpmh_mean = None
             openVSpmh_median = None
 
-        # --- Rapporti % tra volumi ---
-        if all(col in df.columns for col in ["Volume_5m", "VolumePM"]):
-            df["Vol5_vs_PM_%"] = (df["Volume_5m"] / df["VolumePM"]) * 100
-            vol5_vs_PM_mean = df["Vol5_vs_PM_%"].mean()
-            vol5_vs_PM_median = df["Vol5_vs_PM_%"].median()
-        else:
-            vol5_vs_PM_mean = vol5_vs_PM_median = None
-
-        if all(col in df.columns for col in ["Volume_30m", "VolumePM"]):
-            df["Vol30_vs_PM_%"] = (df["Volume_30m"] / df["VolumePM"]) * 100
-            vol30_vs_PM_mean = df["Vol30_vs_PM_%"].mean()
-            vol30_vs_PM_median = df["Vol30_vs_PM_%"].median()
-        else:
-            vol30_vs_PM_mean = vol30_vs_PM_median = None
-
         # --- Formattazione valori ---
         gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
         gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
@@ -351,12 +333,6 @@ def show_kpi_section(df, title, box_color):
         volume30_mean_str = f"{volume30_mean/1_000_000:.0f}M" if volume30_mean is not None else "-"
         volume30_median_str = f"{volume30_median/1_000_000:.2f}M" if volume30_median is not None else "-"
 
-        vol5_vs_PM_mean_str = f"{vol5_vs_PM_mean:.0f}%" if vol5_vs_PM_mean is not None else "-"
-        vol5_vs_PM_median_str = f"{vol5_vs_PM_median:.0f}%" if vol5_vs_PM_median is not None else "-"
-
-        vol30_vs_PM_mean_str = f"{vol30_vs_PM_mean:.0f}%" if vol30_vs_PM_mean is not None else "-"
-        vol30_vs_PM_median_str = f"{vol30_vs_PM_median:.0f}%" if vol30_vs_PM_median is not None else "-"
-
         # --- Lista dei box ---
         boxes = [
             {"label": "Gap%", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
@@ -368,8 +344,6 @@ def show_kpi_section(df, title, box_color):
             {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
             {"label": "VolumePM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
             {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"}
-            {"label": "Vol 5m / PM", "value": vol5_vs_PM_mean_str, "sub": f"Mediana: {vol5_vs_PM_median_str}"},
-            {"label": "Vol 30m / PM", "value": vol30_vs_PM_mean_str, "sub": f"Mediana: {vol30_vs_PM_median_str}"}
         ]
 
 
