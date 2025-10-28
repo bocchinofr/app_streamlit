@@ -453,7 +453,7 @@ st.markdown("### 📈 Simulazione Equity & Drawdown")
 # ---- INPUT PARAMETRI ----
 col1, col2 = st.columns(2)
 initial_capital = col1.number_input("💰 Capitale iniziale", value=3000.0, step=100.0)
-risk_pct = col2.number_input("📉 % Rischio per trade", value=3.0, step=0.5)
+risk_pct = col2.number_input("📉 % Rischio per trade", value=2.0, step=0.5)
 
 # ---- COSTRUZIONE DATAFRAME ----
 df_equity = filtered.copy()
