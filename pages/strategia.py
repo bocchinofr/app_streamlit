@@ -311,6 +311,21 @@ def show_kpi_section(df, title, box_color):
             openVSpmh_mean = None
             openVSpmh_median = None
 
+        # --- Rapporti % tra volumi ---
+        if all(col in df.columns for col in ["Volume_5m", "VolumePM"]):
+            df["Vol5_vs_PM_%"] = (df["Volume_5m"] / df["VolumePM"]) * 100
+            vol5_vs_PM_mean = df["Vol5_vs_PM_%"].mean()
+            vol5_vs_PM_median = df["Vol5_vs_PM_%"].median()
+        else:
+            vol5_vs_PM_mean = vol5_vs_PM_median = None
+
+        if all(col in df.columns for col in ["Volume_30m", "VolumePM"]):
+            df["Vol30_vs_PM_%"] = (df["Volume_30m"] / df["VolumePM"]) * 100
+            vol30_vs_PM_mean = df["Vol30_vs_PM_%"].mean()
+            vol30_vs_PM_median = df["Vol30_vs_PM_%"].median()
+        else:
+            vol30_vs_PM_mean = vol30_vs_PM_median = None
+
         # --- Formattazione valori ---
         gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
         gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
