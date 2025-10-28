@@ -612,12 +612,12 @@ fig2, ax2 = plt.subplots(figsize=(10, 2))  # più compatto
 ax2.bar(
     range(len(df_display)),
     df_display["Drawdown_%"],
-    color="#C11010",
+    color="#DE9D9D",
     width=0.8,
 )
 
 # Cambia il colore di fondo dell’intera figura
-fig2.patch.set_facecolor('#DE9D9D')
+fig2.patch.set_facecolor('#D5D9DF')
 
 # Cambia il colore di fondo dell’area degli assi (grafico)
 ax2.set_facecolor('#D5D9DF')
