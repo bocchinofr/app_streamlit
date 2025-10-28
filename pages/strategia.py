@@ -367,7 +367,9 @@ def show_kpi_section(df, title, box_color):
             {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
             {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
             {"label": "VolumePM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
-            {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"}
+            {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"},
+            {"label": "Vol 5m / PM", "value": vol5_vs_PM_mean_str, "sub": f"Mediana: {vol5_vs_PM_median_str}"},
+            {"label": "Vol 30m / PM", "value": vol30_vs_PM_mean_str, "sub": f"Mediana: {vol30_vs_PM_median_str}"}
         ]
 
 
