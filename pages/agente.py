@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
+st.set_page_config(page_title="Strategia Intraday", layout="wide")
 st.title("Insider & Institutional Sell Risk Dashboard")
 
 # -----------------------------
