@@ -1,151 +1,95 @@
+# streamlit_app.py
+
 import streamlit as st
 import pandas as pd
+import requests
+import xml.etree.ElementTree as ET
 import datetime
-from google.oauth2.service_account import Credentials
-import gspread
-from gspread_dataframe import set_with_dataframe
-from openai import OpenAI
-import os
+import altair as alt
 
-# ======================================
-# 🔐 CONFIGURAZIONE CREDENZIALI
-# ======================================
-creds = Credentials.from_service_account_info(
-    st.secrets["google_service_account"],
-    scopes=[
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive.file",
-        "https://www.googleapis.com/auth/drive"
-    ]
-)
-gc = gspread.authorize(creds)
+st.set_page_config(page_title="Analisi Vendite Insider", layout="wide")
+st.title("Analisi Probabilità Vendita Insider (US)")
 
-# Nome del file Google Sheet dove salverai i risultati
-SHEET_NAME = "analisi_agenteAI"
+# --- Input utente ---
+ticker = st.text_input("Inserisci ticker (es. AAPL):")
+pre_market_price = st.number_input("Prezzo pre-market ($):", min_value=0.0, format="%.2f")
 
-# ID della cartella condivisa su Google Drive (copialo dall’URL)
-# Esempio: https://drive.google.com/drive/folders/1AbCdEfGhIjKlMnOpQrStUvWxYz
-FOLDER_ID = "1Kqb-ttIHsKMB3B92vOg0EawkAVgUOKrF"
+# Funzione per ottenere il CIK da ticker
+def get_cik(ticker):
+    ticker = ticker.upper()
+    url = "https://www.sec.gov/files/company_tickers.json"
+    r = requests.get(url)
+    data = r.json()
+    for k in data:
+        if data[k]["ticker"] == ticker:
+            return str(data[k]["cik_str"]).zfill(10)
+    return None
 
-# Funzione per aprire o creare il file nella cartella condivisa
-def open_or_create_sheet(gc, sheet_name, folder_id):
-    try:
-        sh = gc.open(sheet_name)
-        print(f"✅ File '{sheet_name}' trovato.")
-    except gspread.SpreadsheetNotFound:
-        try:
-            print(f"⚙️ File '{sheet_name}' non trovato, lo creo nella cartella...")
-            sh = gc.create(sheet_name, folder_id=folder_id)
-            print(f"✅ Creato con ID: {sh.id}")
-        except Exception as e:
-            import traceback
-            print("❌ Errore durante la creazione del file:")
-            print(traceback.format_exc())
-            raise e
-    return sh
+# Funzione per scaricare ultimi Form 4
+def get_form4_filings(cik, count=10):
+    base_url = f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}&type=4&owner=include&count={count}&output=atom"
+    r = requests.get(base_url, headers={"User-Agent": "Mozilla/5.0"})
+    if r.status_code != 200:
+        return None
+    root = ET.fromstring(r.text)
+    ns = {"atom": "http://www.w3.org/2005/Atom"}
+    entries = root.findall("atom:entry", ns)
+    filings = []
+    for e in entries:
+        title = e.find("atom:title", ns).text
+        updated = e.find("atom:updated", ns).text
+        link = e.find("atom:link", ns).attrib["href"]
+        filings.append({"title": title, "updated": updated, "link": link})
+    return filings
 
+# Funzione euristica per calcolare probabilità
+def calculate_probability(filings, pre_market_price):
+    if not filings:
+        return 0
+    prob = 0
+    for f in filings:
+        title = f["title"].lower()
+        if "sale" in title:
+            prob += 15
+        elif "grant" in title:
+            prob += 10
+        elif "purchase" in title:
+            prob += 5
+    # Normalizzazione
+    prob = min(prob, 100)
+    return prob
 
-# Crea o apri il foglio
-sh = open_or_create_sheet(gc, SHEET_NAME, FOLDER_ID)
-
-worksheet = sh.sheet1
-
-api_key = st.secrets.get("OPENAI_API_KEY", None)
-st.write("Chiave trovata:", api_key is not None)
-
-if not api_key:
-    st.error("⚠️ OPENAI_API_KEY non trovata nei secrets Streamlit!")
-else:
-    client = OpenAI(api_key=api_key)
-
-# ======================================
-# 🤖 CLIENT OPENAI (usa ChatGPT locale / API)
-# ======================================
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-
-# ======================================
-# 🧩 INTERFACCIA STREAMLIT
-# ======================================
-st.title("🧠 Agente AI – Analisi News Small Cap NASDAQ")
-
-st.markdown(
-    "Inserisci un **ticker** e il **link della news**. L’agente analizzerà automaticamente la notizia, "
-    "estrarrà i dati chiave e li salverà su Google Sheets."
-)
-
-with st.form("input_form"):
-    ticker = st.text_input("Ticker (es. $GNS, $SOUN, $CXAI)", "").upper().strip()
-    news_link = st.text_input("Link della news", "")
-    note_utente = st.text_area("Note o contesto aggiuntivo (opzionale)", "")
-    submitted = st.form_submit_button("🚀 Analizza News")
-
-if submitted:
-    if not ticker or not news_link:
-        st.warning("⚠️ Inserisci sia il ticker che il link della news.")
+if st.button("Analizza"):
+    if not ticker:
+        st.warning("Inserisci un ticker valido!")
     else:
-        with st.spinner("Analisi in corso..."):
-            prompt = f"""
-            Analizza la seguente notizia riguardante il titolo {ticker} (NASDAQ small cap).
-            Fornisci un riassunto sintetico e indica in modo chiaro:
-
-            - 🎯 Argomento principale della notizia
-            - 💡 Impatto potenziale sul titolo (Positivo / Negativo / Neutro)
-            - 🧩 Tipologia della news (es. earnings, diluizione, partnership, FDA, ecc.)
-            - 📈 Valutazione qualitativa complessiva (Alta / Media / Bassa rilevanza)
-
-            Link della news: {news_link}
-
-            Contesto aggiuntivo fornito dall’utente: {note_utente}
-            """
-
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "Sei un analista finanziario esperto in azioni small cap NASDAQ."},
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.4,
-            )
-
-            analisi = response.choices[0].message.content
-
-        # Mostra risultato visivo
-        st.success("✅ Analisi completata")
-        st.markdown("### 🧾 Risultato dell’analisi")
-        st.markdown(analisi)
-
-        # Salva su Google Sheet
-        new_row = pd.DataFrame([{
-            "Data": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "Ticker": ticker,
-            "Link News": news_link,
-            "Analisi": analisi,
-            "Note Utente": note_utente
-        }])
-
-        try:
-            existing_df = pd.DataFrame(worksheet.get_all_records())
-            df_updated = pd.concat([existing_df, new_row], ignore_index=True)
-        except Exception:
-            df_updated = new_row
-
-        worksheet.clear()
-        set_with_dataframe(worksheet, df_updated)
-
-        st.info(f"📊 Analisi salvata su Google Sheet: **{SHEET_NAME}**")
-
-
-# ======================================
-# 📚 STORICO ANALISI
-# ======================================
-st.divider()
-st.subheader("📅 Storico Analisi Recenti")
-
-try:
-    df = pd.DataFrame(worksheet.get_all_records())
-    if len(df) > 0:
-        st.dataframe(df.tail(10), use_container_width=True)
-    else:
-        st.write("Nessuna analisi presente.")
-except Exception as e:
-    st.warning(f"Errore nel caricamento del foglio: {e}")
+        st.info("Scaricando dati SEC...")
+        cik = get_cik(ticker)
+        if not cik:
+            st.error("Ticker non trovato su SEC!")
+        else:
+            filings = get_form4_filings(cik)
+            if not filings:
+                st.warning("Nessun Form 4 recente trovato.")
+            else:
+                # Calcolo probabilità
+                prob = calculate_probability(filings, pre_market_price)
+                
+                st.success(f"Probabilità vendita insider oggi: **{prob}%**")
+                
+                # Tabella
+                df_filings = pd.DataFrame(filings)
+                df_filings["updated"] = pd.to_datetime(df_filings["updated"])
+                st.subheader("Ultimi Form 4")
+                st.dataframe(df_filings[["updated", "title", "link"]].sort_values(by="updated", ascending=False))
+                
+                # Grafico numero transazioni per giorno
+                df_filings['date'] = df_filings['updated'].dt.date
+                chart = alt.Chart(df_filings).mark_bar().encode(
+                    x='date:T',
+                    y='count()',
+                    tooltip=['date', 'count()']
+                ).properties(
+                    title="Numero di Form 4 pubblicati per giorno"
+                )
+                st.altair_chart(chart, use_container_width=True)
