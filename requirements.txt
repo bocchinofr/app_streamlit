@@ -4,3 +4,7 @@ numpy
 Openpyxl
 matplotlib
 beautifulsoup4
+gspread
+gspread-dataframe
+google-auth
+openai
