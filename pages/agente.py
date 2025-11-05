@@ -19,6 +19,15 @@ creds = Credentials.from_service_account_info(
 )
 gc = gspread.authorize(creds)
 
+from googleapiclient.discovery import build
+drive_service = build('drive', 'v3', credentials=gc.auth)
+
+folder_id = "1Kqb-ttIHsKMB3B92vOg0EawkAVgUOKrF"
+results = drive_service.files().list(q=f"'{folder_id}' in parents", fields="files(id, name)").execute()
+print("📂 File visibili nella cartella:", results.get("files", []))
+
+
+
 # Nome del file Google Sheet dove salverai i risultati
 SHEET_NAME = "analisi_agenteAI"
 
