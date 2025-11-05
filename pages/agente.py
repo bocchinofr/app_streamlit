@@ -28,14 +28,22 @@ FOLDER_ID = "https://drive.google.com/drive/folders/1Kqb-ttIHsKMB3B92vOg0EawkAVg
 
 # Funzione per aprire o creare il file nella cartella condivisa
 def open_or_create_sheet(gc, sheet_name, folder_id):
-    query = f"name='{sheet_name}' and '{folder_id}' in parents and trashed=false"
-    files = gc.list_spreadsheet_files(query=query)
-    if files:
-        sh = gc.open_by_key(files[0]["id"])
+    # Recupera tutti i file accessibili
+    all_files = gc.list_spreadsheet_files()
+
+    # Filtra quelli che si trovano nella cartella giusta e con nome giusto
+    target_files = [
+        f for f in all_files
+        if f.get("name") == sheet_name and f.get("parents") and folder_id in f.get("parents")
+    ]
+
+    if target_files:
+        sh = gc.open_by_key(target_files[0]["id"])
+        st.success(f"✅ File '{sheet_name}' trovato nella cartella Drive.")
     else:
         sh = gc.create(sheet_name, folder_id=folder_id)
-        # opzionale: rendi il file accessibile in sola lettura (pubblico o solo a chi ha link)
-        sh.share(None, perm_type='anyone', role='reader')
+        sh.share(None, perm_type="anyone", role="reader")
+        st.info(f"🆕 Creato nuovo file '{sheet_name}' nella cartella Drive.")
     return sh
 
 # Crea o apri il foglio
