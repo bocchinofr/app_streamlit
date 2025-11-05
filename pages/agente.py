@@ -49,11 +49,12 @@ sh = open_or_create_sheet(gc, SHEET_NAME, FOLDER_ID)
 
 worksheet = sh.sheet1
 
+print("Chiave trovata:", bool(os.getenv("OPENAI_API_KEY")))
 
 # ======================================
 # 🤖 CLIENT OPENAI (usa ChatGPT locale / API)
 # ======================================
-client = OpenAI()
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # ======================================
 # 🧩 INTERFACCIA STREAMLIT
