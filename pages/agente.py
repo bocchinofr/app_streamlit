@@ -50,8 +50,13 @@ sh = open_or_create_sheet(gc, SHEET_NAME, FOLDER_ID)
 
 worksheet = sh.sheet1
 
-print("Chiave trovata:", bool(os.getenv("OPENAI_API_KEY")))
+api_key = st.secrets.get("OPENAI_API_KEY", None)
+st.write("Chiave trovata:", api_key is not None)
 
+if not api_key:
+    st.error("⚠️ OPENAI_API_KEY non trovata nei secrets Streamlit!")
+else:
+    client = OpenAI(api_key=api_key)
 
 # ======================================
 # 🤖 CLIENT OPENAI (usa ChatGPT locale / API)
