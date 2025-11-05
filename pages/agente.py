@@ -11,8 +11,11 @@ from openai import OpenAI
 # ======================================
 creds = Credentials.from_service_account_info(
     st.secrets["google_service_account"],
-    scopes=["https://www.googleapis.com/auth/spreadsheets", 
-            "https://www.googleapis.com/auth/drive"]
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive"
+    ]
 )
 gc = gspread.authorize(creds)
 
