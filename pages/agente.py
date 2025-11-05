@@ -5,6 +5,7 @@ from google.oauth2.service_account import Credentials
 import gspread
 from gspread_dataframe import set_with_dataframe
 from openai import OpenAI
+import os
 
 # ======================================
 # 🔐 CONFIGURAZIONE CREDENZIALI
@@ -48,6 +49,9 @@ def open_or_create_sheet(gc, sheet_name, folder_id):
 sh = open_or_create_sheet(gc, SHEET_NAME, FOLDER_ID)
 
 worksheet = sh.sheet1
+
+print("Chiave trovata:", bool(os.getenv("OPENAI_API_KEY")))
+
 
 # ======================================
 # 🤖 CLIENT OPENAI (usa ChatGPT locale / API)
