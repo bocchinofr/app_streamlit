@@ -14,33 +14,42 @@ st.title("Analisi Probabilità Vendita Insider (US)")
 ticker = st.text_input("Inserisci ticker (es. AAPL):")
 pre_market_price = st.number_input("Prezzo pre-market ($):", min_value=0.0, format="%.2f")
 
-# Funzione per ottenere il CIK da ticker
+# Funzione per ottenere il CIK da ticker usando CSV pubblico SEC
 def get_cik(ticker):
     ticker = ticker.upper()
-    url = "https://www.sec.gov/files/company_tickers.json"
-    r = requests.get(url)
-    data = r.json()
-    for k in data:
-        if data[k]["ticker"] == ticker:
-            return str(data[k]["cik_str"]).zfill(10)
-    return None
+    url = "https://www.sec.gov/include/ticker.txt"  # CSV tab-separated ticker e CIK
+    try:
+        df = pd.read_csv(url, sep="\t", header=None, names=["ticker", "cik"])
+        df["ticker"] = df["ticker"].str.upper()
+        match = df[df["ticker"] == ticker]
+        if not match.empty:
+            return str(match.iloc[0]["cik"]).zfill(10)
+        else:
+            return None
+    except Exception as e:
+        st.error(f"Errore nel recuperare CIK: {e}")
+        return None
 
 # Funzione per scaricare ultimi Form 4
 def get_form4_filings(cik, count=10):
     base_url = f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}&type=4&owner=include&count={count}&output=atom"
-    r = requests.get(base_url, headers={"User-Agent": "Mozilla/5.0"})
-    if r.status_code != 200:
+    try:
+        r = requests.get(base_url, headers={"User-Agent": "Mozilla/5.0"})
+        if r.status_code != 200:
+            return None
+        root = ET.fromstring(r.text)
+        ns = {"atom": "http://www.w3.org/2005/Atom"}
+        entries = root.findall("atom:entry", ns)
+        filings = []
+        for e in entries:
+            title = e.find("atom:title", ns).text
+            updated = e.find("atom:updated", ns).text
+            link = e.find("atom:link", ns).attrib["href"]
+            filings.append({"title": title, "updated": updated, "link": link})
+        return filings
+    except Exception as e:
+        st.error(f"Errore nel recuperare Form 4: {e}")
         return None
-    root = ET.fromstring(r.text)
-    ns = {"atom": "http://www.w3.org/2005/Atom"}
-    entries = root.findall("atom:entry", ns)
-    filings = []
-    for e in entries:
-        title = e.find("atom:title", ns).text
-        updated = e.find("atom:updated", ns).text
-        link = e.find("atom:link", ns).attrib["href"]
-        filings.append({"title": title, "updated": updated, "link": link})
-    return filings
 
 # Funzione euristica per calcolare probabilità
 def calculate_probability(filings, pre_market_price):
