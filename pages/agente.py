@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 st.title("PHIO — Analisi Grants / Insider (exercisable today)")
 
 # CONFIG
-USER_AGENT = "FrancescoApp/1.0 (mailto:tuo-email@example.com)"
+USER_AGENT = "bocchinofr@gmail.com"
 TODAY = datetime.date.today()
 
 # --- helper: get CIK via ticker.txt (SEC) ---
