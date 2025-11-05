@@ -18,8 +18,14 @@ pre_market_price = st.number_input("Prezzo pre-market ($):", min_value=0.0, form
 def get_cik(ticker):
     ticker = ticker.upper()
     url = "https://www.sec.gov/include/ticker.txt"  # CSV tab-separated ticker e CIK
+    headers = {
+        "User-Agent": "Mozilla/5.0 (compatible; FrancescoBocchinoApp/1.0; email@example.com)"
+    }
     try:
-        df = pd.read_csv(url, sep="\t", header=None, names=["ticker", "cik"])
+        r = requests.get(url, headers=headers)
+        r.raise_for_status()  # solleva eccezione per errori HTTP
+        from io import StringIO
+        df = pd.read_csv(StringIO(r.text), sep="\t", header=None, names=["ticker", "cik"])
         df["ticker"] = df["ticker"].str.upper()
         match = df[df["ticker"] == ticker]
         if not match.empty:
@@ -29,7 +35,6 @@ def get_cik(ticker):
     except Exception as e:
         st.error(f"Errore nel recuperare CIK: {e}")
         return None
-
 # Funzione per scaricare ultimi Form 4
 def get_form4_filings(cik, count=10):
     base_url = f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}&type=4&owner=include&count={count}&output=atom"
