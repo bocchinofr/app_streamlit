@@ -24,7 +24,7 @@ SHEET_NAME = "analisi_agenteAI"
 
 # ID della cartella condivisa su Google Drive (copialo dall’URL)
 # Esempio: https://drive.google.com/drive/folders/1AbCdEfGhIjKlMnOpQrStUvWxYz
-FOLDER_ID = "https://drive.google.com/drive/folders/1Kqb-ttIHsKMB3B92vOg0EawkAVgUOKrF"
+FOLDER_ID = "1Kqb-ttIHsKMB3B92vOg0EawkAVgUOKrF"
 
 # Funzione per aprire o creare il file nella cartella condivisa
 def open_or_create_sheet(gc, sheet_name, folder_id):
