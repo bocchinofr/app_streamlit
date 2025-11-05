@@ -1,78 +1,118 @@
 import streamlit as st
-from openai import OpenAI
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
 import datetime
+from google.oauth2.service_account import Credentials
+import gspread
+from gspread_dataframe import set_with_dataframe
+from openai import OpenAI
 
-# -------------------------------
-# 🔐 CONFIGURAZIONE
-# -------------------------------
+# ======================================
+# 🔐 CONFIGURAZIONE CREDENZIALI
+# ======================================
+creds = Credentials.from_service_account_info(st.secrets["google_service_account"])
+gc = gspread.authorize(creds)
 
-st.set_page_config(page_title="Analizzatore News Small Cap", page_icon="📊", layout="wide")
-st.title("📊 Agente AI")
+# Nome del file Google Sheet dove salverai i risultati
+SHEET_NAME = "Analisi_News_SmallCap"
 
-# Imposta chiavi (usa .streamlit/secrets.toml in produzione)
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-GOOGLE_SHEET_URL = st.secrets["GOOGLE_SHEET_URL"]
+# Se il file non esiste, verrà creato al primo salvataggio
+try:
+    sh = gc.open(SHEET_NAME)
+except gspread.SpreadsheetNotFound:
+    sh = gc.create(SHEET_NAME)
+    sh.share('', perm_type='anyone', role='reader')  # accesso in sola lettura pubblico
 
-# Connessione a OpenAI
-client = OpenAI(api_key=OPENAI_API_KEY)
+worksheet = sh.sheet1
 
-# Connessione a Google Sheet
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-gc = gspread.authorize(credentials)
-sheet = gc.open_by_url(GOOGLE_SHEET_URL).sheet1
 
-# -------------------------------
-# 🧠 INTERFACCIA STREAMLIT
-# -------------------------------
+# ======================================
+# 🤖 CLIENT OPENAI (usa ChatGPT locale / API)
+# ======================================
+client = OpenAI()
 
-st.title("📊 Analizzatore News Small Cap NASDAQ")
-st.markdown("Inserisci il **ticker** e il **link della notizia** per generare un’analisi strutturata automatica.")
+# ======================================
+# 🧩 INTERFACCIA STREAMLIT
+# ======================================
+st.title("🧠 Agente AI – Analisi News Small Cap NASDAQ")
 
-col1, col2 = st.columns(2)
-ticker = col1.text_input("Ticker", placeholder="es. KITT")
-news_url = col2.text_input("Link della notizia", placeholder="https://finviz.com/news/...")
+st.markdown(
+    "Inserisci un **ticker** e il **link della news**. L’agente analizzerà automaticamente la notizia, "
+    "estrarrà i dati chiave e li salverà su Google Sheets."
+)
 
-if st.button("🔍 Analizza notizia"):
-    if not ticker or not news_url:
-        st.warning("⚠️ Inserisci sia il ticker che il link della notizia.")
+with st.form("input_form"):
+    ticker = st.text_input("Ticker (es. $GNS, $SOUN, $CXAI)", "").upper().strip()
+    news_link = st.text_input("Link della news", "")
+    note_utente = st.text_area("Note o contesto aggiuntivo (opzionale)", "")
+    submitted = st.form_submit_button("🚀 Analizza News")
+
+if submitted:
+    if not ticker or not news_link:
+        st.warning("⚠️ Inserisci sia il ticker che il link della news.")
     else:
-        with st.spinner("Analisi in corso... ⏳"):
+        with st.spinner("Analisi in corso..."):
             prompt = f"""
-            Analizza la notizia relativa a {ticker}, disponibile al link seguente:
-            {news_url}
+            Analizza la seguente notizia riguardante il titolo {ticker} (NASDAQ small cap).
+            Fornisci un riassunto sintetico e indica in modo chiaro:
 
-            Fornisci una risposta in italiano e con la seguente struttura chiara:
+            - 🎯 Argomento principale della notizia
+            - 💡 Impatto potenziale sul titolo (Positivo / Negativo / Neutro)
+            - 🧩 Tipologia della news (es. earnings, diluizione, partnership, FDA, ecc.)
+            - 📈 Valutazione qualitativa complessiva (Alta / Media / Bassa rilevanza)
 
-            1️⃣ **Score totale e classificazione** (es. 6/15 - DUBBIA)
-            2️⃣ **Dettagli Notizia** (Data/Ora, Fonte, Link, Freschezza)
-            3️⃣ **Dati chiave** (riassunto sintetico dei numeri e delle informazioni principali)
-            4️⃣ **Elementi sostanziali identificati**
-            5️⃣ **Rischi principali**
-            6️⃣ **Impatto atteso** (specifico per small cap Nasdaq)
-            7️⃣ **Verdetto finale** (valutazione complessiva e tono della notizia)
+            Link della news: {news_link}
+
+            Contesto aggiuntivo fornito dall’utente: {note_utente}
             """
 
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
-                messages=[{"role": "user", "content": prompt}]
+                messages=[
+                    {"role": "system", "content": "Sei un analista finanziario esperto in azioni small cap NASDAQ."},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.4,
             )
 
-            output = response.choices[0].message.content
+            analisi = response.choices[0].message.content
 
-        # Mostra il risultato a schermo
-        st.success("✅ Analisi completata!")
-        st.markdown("### 📋 Risultato dell’analisi")
-        st.markdown(output)
+        # Mostra risultato visivo
+        st.success("✅ Analisi completata")
+        st.markdown("### 🧾 Risultato dell’analisi")
+        st.markdown(analisi)
 
         # Salva su Google Sheet
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        row = [timestamp, ticker, news_url, output]
-        sheet.append_row(row)
-        st.info("📁 Analisi salvata su Google Sheet con successo!")
+        new_row = pd.DataFrame([{
+            "Data": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "Ticker": ticker,
+            "Link News": news_link,
+            "Analisi": analisi,
+            "Note Utente": note_utente
+        }])
 
-        # Mostra anche un estratto breve
-        with st.expander("👁️ Anteprima sintetica"):
-            st.markdown(output.split("\n")[0])  # prima riga come riassunto
+        try:
+            existing_df = pd.DataFrame(worksheet.get_all_records())
+            df_updated = pd.concat([existing_df, new_row], ignore_index=True)
+        except Exception:
+            df_updated = new_row
+
+        worksheet.clear()
+        set_with_dataframe(worksheet, df_updated)
+
+        st.info(f"📊 Analisi salvata su Google Sheet: **{SHEET_NAME}**")
+
+
+# ======================================
+# 📚 STORICO ANALISI
+# ======================================
+st.divider()
+st.subheader("📅 Storico Analisi Recenti")
+
+try:
+    df = pd.DataFrame(worksheet.get_all_records())
+    if len(df) > 0:
+        st.dataframe(df.tail(10), use_container_width=True)
+    else:
+        st.write("Nessuna analisi presente.")
+except Exception as e:
+    st.warning(f"Errore nel caricamento del foglio: {e}")
