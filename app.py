@@ -14,7 +14,7 @@ st.title("📈 Dashboard Analisi Small Cap")
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
 df = pd.read_csv(SHEET_URL)
 
-# ---- PULIZIA DATI ----
+# region ---- PULIZIA DATI ----
 # Rimuovo eventuali spazi nei nomi colonne
 df.columns = df.columns.str.strip()
 
@@ -61,10 +61,10 @@ for col in num_cols:
 for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         df[col] = df[col].fillna(0)
+ 
+# endregion
 
-
-
-# ---- CONTROLLO DATI ----
+# region ---- CONTROLLO DATI ----
 
 problemi_dati = False  # flag per sapere se ci sono problemi
 
@@ -86,9 +86,9 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
             st.warning(f"⚠️ Attenzione: {len(invalid_nums)} righe con valori non numerici in '{col}'")
             st.dataframe(invalid_nums[["Ticker", col]])
 
+# endregion
 
-
-# ---- FILTRI ----
+# region ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
 
 tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
@@ -106,6 +106,26 @@ filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh) & (filtered["OPEN"] 
 if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
+
+# ---- DATE FILTRATE ----
+if not filtered.empty:
+    min_date = filtered["Date"].min()
+    max_date = filtered["Date"].max()
+    if pd.notna(min_date) and pd.notna(max_date):
+        st.markdown(
+            f"""
+            <div style='font-size:16px; font-weight:600; margin-bottom:10px;'>
+                Dati filtrati dal 
+                <span style='font-size:20px; color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
+                al 
+                <span style='font-size:20px; color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+else:
+    st.info("⚠️ Nessun dato disponibile dopo i filtri.")
+
 
 
 # ---- KPI BOX ----
@@ -201,7 +221,7 @@ green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_mi
 mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
 mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
-
+# endregion
 
 # ---- STILE GLOBALE ----
 st.markdown(
