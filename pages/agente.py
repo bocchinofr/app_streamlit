@@ -97,3 +97,25 @@ if generate_button:
     st.subheader("✅ Testo generato (pronto da copiare in ChatGPT-4)")
     st.code(template, language="markdown")
     st.download_button("📥 Download .txt", template, file_name=f"insider_{ticker or 'TICKER'}.txt")
+
+st.markdown(
+    """
+    <style>
+    /* Cambia il colore di sfondo principale della pagina */
+    .stApp {
+        background-color: #03121A;  /* puoi mettere qualsiasi colore esadecimale o rgb */
+    }
+
+    /* Cambia lo sfondo della sidebar */
+    .css-1d391kg { 
+        background-color: #e0e0e0; 
+    }
+
+    /* Facoltativo: cambia colore testo principale */
+    .stApp, .stMarkdown {
+        color: #1a1a1a;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
