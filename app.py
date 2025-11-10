@@ -114,7 +114,7 @@ if not filtered.empty:
     if pd.notna(min_date) and pd.notna(max_date):
         st.markdown(
             f"""
-            <div style='font-size:16px; font-weight:600; margin-bottom:15px; color:#FFFFFF;'>
+            <div style='font-size:16px; font-weight:400; margin-bottom:15px; color:#FFFFFF;'>
                 📅 Dati filtrati dal 
                 <span style='font-size:20px; color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
                 al 
