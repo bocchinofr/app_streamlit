@@ -23,12 +23,7 @@ with st.sidebar:
 
     generate_button = st.button("Genera testo pronto")
 
-# Anteprima della tabella
-st.subheader("Anteprima tabella")
-if tabella_input.strip() == "":
-    st.code("<<Textarea vuota>>", language="text")
-else:
-    st.code(tabella_input, language="text")
+
 
 if generate_button:
     table_block = tabella_input.strip() or "<<INCOLLA QUI LA TABELLA OPENINSIDER O IL CODICE HTML>>"
