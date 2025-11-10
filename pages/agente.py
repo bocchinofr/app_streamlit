@@ -1,7 +1,7 @@
 import streamlit as st
 import textwrap
 
-st.set_page_config(page_title="Insider Trading Compiler", layout="centered")
+st.set_page_config(page_title="Insider Trading Compiler", layout="wide")
 st.title("📋 Insider Trading — Text Compiler for ChatGPT-4")
 st.markdown("Compila i campi e genera il testo formattato da incollare in ChatGPT-4.")
 
