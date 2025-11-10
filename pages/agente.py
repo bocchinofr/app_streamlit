@@ -23,7 +23,7 @@ with st.sidebar:
 
     generate_button = st.button("Genera testo pronto")
 
-
+st.markdown ("inserire i parametri a lato per visualizzare il testo")
 
 if generate_button:
     table_block = tabella_input.strip() or "<<INCOLLA QUI LA TABELLA OPENINSIDER O IL CODICE HTML>>"
