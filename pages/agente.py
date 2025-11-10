@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from io import StringIO
 
-st.set_page_config(page_title="Insider Analysis Compiler", layout="wide")
+st.set_page_config(page_title="agente", layout="wide")
 st.title("📋 Insider Trading — Text Compiler for ChatGPT-4")
 st.markdown("Usa questa pagina per compilare rapidamente un testo formattato da incollare in ChatGPT-4.")
 
