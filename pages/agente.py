@@ -2,7 +2,7 @@ import streamlit as st
 import textwrap
 import urllib.parse
 
-st.set_page_config(page_title="Insider Trading Compiler", layout="centered")
+st.set_page_config(page_title="Insider Trading Compiler", layout="wide")
 st.title("📋 Insider Trading — Text Compiler for ChatGPT-4")
 
 with st.sidebar:
