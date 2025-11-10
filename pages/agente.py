@@ -16,10 +16,12 @@ with st.sidebar:
     )
     news_link = st.text_input("🔗 Link news (opzionale)")
 
-    # Pulsante cerca su Finviz
+    # Pulsante cerca su Finviz come vero bottone
     if ticker.strip():
         finviz_url = f"https://finviz.com/quote.ashx?t={urllib.parse.quote(ticker.strip())}"
-        st.markdown(f"[🔍 Cerca su Finviz]({finviz_url})", unsafe_allow_html=True)
+        if st.button("🔍 Cerca su Finviz"):
+            # apri il link in nuova scheda tramite markdown con target _blank
+            st.markdown(f'<a href="{finviz_url}" target="_blank">Apri Finviz</a>', unsafe_allow_html=True)
 
     generate_button = st.button("Genera testo pronto")
 
