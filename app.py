@@ -107,15 +107,15 @@ if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
-# ---- DATE FILTRATE ----
+# ---- DATE FILTRATE (con tema scuro) ----
 if not filtered.empty:
     min_date = filtered["Date"].min()
     max_date = filtered["Date"].max()
     if pd.notna(min_date) and pd.notna(max_date):
         st.markdown(
             f"""
-            <div style='font-size:16px; font-weight:600; margin-bottom:10px;'>
-                Dati filtrati dal 
+            <div style='font-size:16px; font-weight:600; margin-bottom:15px; color:#FFFFFF;'>
+                📅 Dati filtrati dal 
                 <span style='font-size:20px; color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
                 al 
                 <span style='font-size:20px; color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
@@ -125,7 +125,6 @@ if not filtered.empty:
         )
 else:
     st.info("⚠️ Nessun dato disponibile dopo i filtri.")
-
 
 
 # ---- KPI BOX ----
