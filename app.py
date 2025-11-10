@@ -91,12 +91,12 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 # region ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
 
+date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
 min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 0)
 max_float = st.sidebar.number_input("Float massimo", 0, 1_000_000_000, 5_000_000)
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 min_open = st.sidebar.number_input("OPEN minimo", 0.0, 1000.0, 0.0)
-date_range = st.sidebar.date_input("Intervallo date", [])
 
 filtered = df.copy()
 if tickers:
