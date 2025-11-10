@@ -111,10 +111,7 @@ st.markdown(
         background-color: #e0e0e0; 
     }
 
-    /* Facoltativo: cambia colore testo principale */
-    .stApp, .stMarkdown {
-        color: #1a1a1a;
-    }
+
     </style>
     """,
     unsafe_allow_html=True
