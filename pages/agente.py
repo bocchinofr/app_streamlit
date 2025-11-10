@@ -7,10 +7,14 @@ st.title("📋 Insider Trading — Text Compiler for ChatGPT-4")
 
 with st.sidebar:
     st.header("Input dati")
-    ticker = st.text_input("Ticker (es. PHIO)")
-    prezzo_attuale = st.text_input("Prezzo attuale USD (es. 3.47)")
+    ticker = st.text_input("Ticker")
+    # Pulsante cerca su Finviz
+    if ticker.strip():
+        finviz_url = f"https://finviz.com/quote.ashx?t={urllib.parse.quote(ticker.strip())}"
+        st.markdown(f"[🔍 Cerca su Finviz]({finviz_url})", unsafe_allow_html=True)
+    prezzo_attuale = st.text_input("Prezzo attuale USD")
     tabella_input = st.text_area(
-        "Incolla qui la tabella (testo, markdown o codice HTML)",
+        "Incolla qui la tabella (testo o codice HTML)",
         height=200,
         placeholder="Incolla qui la tabella OpenInsider o il codice HTML..."
     )
