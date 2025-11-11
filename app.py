@@ -126,8 +126,9 @@ if not filtered.empty:
 else:
     st.info("⚠️ Nessun dato disponibile dopo i filtri.")
 
+# endregion
 
-# ---- KPI BOX ----
+# region ---- KPI BOX ----
 total = len(filtered)
 red_close = np.mean(filtered["Chiusura"].eq("RED")) * 100 if total > 0 else 0
 gap_mean = filtered["GAP"].mean() if total > 0 else 0
@@ -137,6 +138,8 @@ open_pmh_median = filtered["%Open_PMH"].median() if total > 0 else 0
 spinta_mean = filtered["%OH"].mean() if total > 0 else 0
 spinta_median = filtered["%OH"].median() if total > 0 else 0
 pmbreak = filtered["break"].mean() *100 if total > 0 else 0
+low_mean = filtered["%OL"].mean() if total > 0 else 0
+low_median = filtered["%OL"].median() if total > 0 else 0
 
 # Medie per red e green per OPENvsPMH
 open_pmh_red = (
@@ -183,6 +186,16 @@ gap_green = (
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
+low_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "%OL"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+low_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "%OL"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
 
 
 # ---- ORARIO HIGH: MEDIA, MEDIANA, FILTRI RED/GREEN ----
@@ -222,7 +235,7 @@ mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
 # endregion
 
-# ---- STILE GLOBALE ----
+# region ---- STILE GLOBALE ----
 st.markdown(
     """
     <style>
@@ -307,7 +320,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ---- KPI BOX SCROLLABILI ----
+# endregion
+
+# region ---- KPI BOX SCROLLABILI ----
 html_kpis = f"""
 <div class="kpi-container">
     <div class="kpi-box">
@@ -420,11 +435,33 @@ html_kpis = f"""
             </div>
         </div>
     </div>
+    <div class="kpi-box">
+        <div class="gap-subbox">
+            <div>
+                <div class="kpi-label">Low medio</div>
+                <div class="kpi-value">{low_mean:.0f}%</div>
+            </div>
+            <div>
+                <div class="kpi-label">Mediana</div>
+                <div class="kpi-subvalue">{low_median:.0f}%</div>
+            </div>
+        </div>
+        <div class="redgreen-subbox">
+            <div>
+                <div class="label red">chiusure red</div>
+                <div class="value red">{low_red:.0f}%</div>
+            </div>
+            <div>
+                <div class="label green">chiusure green</div>
+                <div class="value green">{low_green:.0f}%</div>
+            </div>
+        </div>
+    </div>
 </div>
 """
 st.markdown(html_kpis, unsafe_allow_html=True)
 
-
+# endregion
 
 
 # ---- TAB E TABELLA ----
