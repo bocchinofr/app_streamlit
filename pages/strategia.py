@@ -40,6 +40,13 @@ param_entry = st.sidebar.number_input("%entry", value=15.0)
 param_BE = st.sidebar.number_input("%BEparam", value=5.0,
     help="Percentuale da aggiungere al prezzo di TP"
 )
+tickers = sorted(df["Ticker"].dropna().unique())
+selected_tickers = st.sidebar.multiselect(
+    "Ticker",
+    options=tickers,
+    default=[],
+    help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
+)
 
 filtered = df.copy()
 
@@ -65,6 +72,9 @@ if len(date_range) == 2:
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
+# --- Filtro Ticker (se selezionato) ---
+if selected_tickers:
+    filtered = filtered[filtered["Ticker"].isin(selected_tickers)]
 
 # ---- Dopo filtraggio ----
 if not filtered.empty:
@@ -83,6 +93,18 @@ if not filtered.empty:
         )
 else:
     st.info("⚠️ Nessun dato disponibile dopo i filtri.")
+
+if selected_tickers:
+    tickers_str = ", ".join(selected_tickers)
+    st.markdown(
+        f"""
+        <div style='font-size:16px; font-weight:600; margin-bottom:10px;'>
+            Ticker selezionati: <span style='font-size:22px; color:#FFD700; font-weight:bold;'>{tickers_str}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 
 # endregion
