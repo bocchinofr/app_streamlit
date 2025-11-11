@@ -72,9 +72,14 @@ if len(date_range) == 2:
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
+
 # --- Filtro Ticker (se selezionato) ---
 if selected_tickers:
     filtered = filtered[filtered["Ticker"].isin(selected_tickers)]
+# ---- Dopo filtraggio ----
+if filtered.empty:
+    st.warning("⚠️ Nessun dato disponibile dopo l'applicazione dei filtri.")
+    st.stop()
 
 # ---- Dopo filtraggio ----
 if not filtered.empty:
