@@ -31,6 +31,13 @@ df = load_data()
 # ---- FILTRI LATERALI ----
 st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
+tickers = sorted(df["Ticker"].dropna().unique())
+selected_tickers = st.sidebar.multiselect(
+    "Ticker",
+    options=tickers,
+    default=[],
+    help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
+)
 min_open = st.sidebar.number_input("Open minimo", value=2.0)
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float", value=1000000000)
@@ -39,13 +46,6 @@ param_tp = st.sidebar.number_input("%TP", value=-15.0)
 param_entry = st.sidebar.number_input("%entry", value=15.0)
 param_BE = st.sidebar.number_input("%BEparam", value=5.0,
     help="Percentuale da aggiungere al prezzo di TP"
-)
-tickers = sorted(df["Ticker"].dropna().unique())
-selected_tickers = st.sidebar.multiselect(
-    "Ticker",
-    options=tickers,
-    default=[],
-    help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
 )
 
 filtered = df.copy()
