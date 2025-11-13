@@ -217,7 +217,7 @@ else:
         "Hold_count": int((filtered["Outcome"] == "Hold").sum())
     })
 
-
+st.write(filtered.columns)
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
