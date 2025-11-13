@@ -14,7 +14,7 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 @st.cache_data
 def load_data():
     usecols = [
-        "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low",
+        "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
         "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
