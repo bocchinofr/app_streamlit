@@ -16,7 +16,7 @@ def load_data():
     usecols = [
         "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
         "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
-        "High_120m", "Low_120m", "High_240m", "Low_240m"
+        "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
     # Parse date
@@ -129,18 +129,56 @@ filtered["TP_price"] = filtered["Open"] * (1 + param_tp/100)
 filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 
 filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).astype(int)
+
 if mode == "90 minuti":
-    filtered["SL"] = ((filtered["attivazione"] == 1) & 
-                      (filtered["High_90m"] >= filtered["SL_price"])).astype(int)
-    
-    filtered["TP"] = ((filtered["attivazione"] == 1) & 
-                      (filtered["SL"] == 0) & 
-                      (filtered["Low_90m"] <= filtered["TP_price"])).astype(int)
-    
-    filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / 
-                           filtered["Entry_price"] * 100).round(2)
+    # usiamo timeframes 30m, 60m, 90m
+    timeframes_90m = [
+        ("High_30m", "Low_30m"),
+        ("High_60m", "Low_60m"),
+        ("High_90m", "Low_90m")
+    ]
+
+    # inizializzo colonne
+    filtered["SL"] = 0
+    filtered["TP"] = 0
+    filtered["TP_90m%"] = 0.0
+    filtered["Outcome"] = "Hold"
+
+    for idx, row in filtered.iterrows():
+        if row["attivazione"] != 1:
+            continue
+        
+        entry = row["Entry_price"]
+        sl_price = row["SL_price"]
+        tp_price = row["TP_price"]
+        sl_hit = False
+        tp_hit = False
+
+        for high_col, low_col in timeframes_90m:
+            high = row[high_col]
+            low = row[low_col]
+
+            # SHORT: SL se prezzo sale sopra SL_price
+            if not sl_hit and high >= sl_price:
+                filtered.at[idx, "SL"] = 1
+                filtered.at[idx, "Outcome"] = "SL"
+                sl_hit = True
+                break  # fermiamo al primo evento
+
+            # SHORT: TP se prezzo scende sotto TP_price
+            if not tp_hit and low <= tp_price:
+                filtered.at[idx, "TP"] = 1
+                filtered.at[idx, "Outcome"] = "TP"
+                tp_hit = True
+                break
+
+        # calcolo performance % in base a chi ha colpito
+        close_price = row["Close_1100"] if filtered.at[idx, "TP"] == 0 else tp_price
+        filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
 else:
+    # modalità fino a chiusura: aggiungiamo anche 30 minuti al primo timeframe
     timeframes = [
+        ("High_30m", "Low_30m"),
         ("High_60m", "Low_60m"),
         ("High_90m", "Low_90m"),
         ("High_120m", "Low_120m"),
@@ -173,7 +211,7 @@ else:
                 filtered.at[idx, "SL"] = 1
                 filtered.at[idx, "Outcome"] = "SL"
                 sl_hit = True
-                break  # il primo evento fermiamo il check
+                break
 
             # SHORT: TP se prezzo scende sotto TP_price
             if not tp_hit and low <= tp_price:
@@ -185,6 +223,7 @@ else:
         # calcolo performance % in base a chi ha colpito
         close_price = row["Close"] if filtered.at[idx, "TP"] == 0 else tp_price
         filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
+
 
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
