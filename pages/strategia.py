@@ -155,7 +155,7 @@ else:
         tp_price = row["TP_price"]
 
         # timeline progressiva per 60m, 90m, 120m, 240m
-        steps = ["60", "90", "120", "240"]
+        steps = ["60m", "90m", "120m", "240m"]
         outcome = None
 
         for step in steps:
