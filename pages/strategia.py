@@ -140,84 +140,52 @@ if mode == "90 minuti":
     filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / 
                            filtered["Entry_price"] * 100).round(2)
 else:
-    # --- Assicuriamoci che le colonne numeriche siano numeriche ---
-    num_cols = [
-        "Entry_price", "SL_price", "TP_price",
-        "High_60m", "Low_60m", "High_90m", "Low_90m",
-        "High_120m", "Low_120m", "High_240m", "Low_240m",
-        "Close"
+    timeframes = [
+        ("High_60m", "Low_60m"),
+        ("High_90m", "Low_90m"),
+        ("High_120m", "Low_120m"),
+        ("High_240m", "Low_240m"),
+        ("High", "Low")  # fallback finale
     ]
-    for c in num_cols:
-        if c in filtered.columns:
-            filtered[c] = pd.to_numeric(filtered[c], errors="coerce")
 
-    # Inizializza colonne (se non esistono già)
+    # inizializzo colonne
     filtered["SL"] = 0
     filtered["TP"] = 0
-    filtered["TP_90m%"] = np.nan
-    filtered["Outcome"] = ""  # "TP", "SL", "Hold" (chiuso a close)
+    filtered["TP_90m%"] = 0.0
+    filtered["Outcome"] = "Hold"
 
-    steps = [("60","_60m"), ("90","_90m"), ("120","_120m"), ("240","_240m")]
-
-    # Loop riga per riga solo per attivazione == 1
     for idx, row in filtered.iterrows():
-        if row.get("attivazione", 0) != 1:
+        if row["attivazione"] != 1:
             continue
+        
+        entry = row["Entry_price"]
+        sl_price = row["SL_price"]
+        tp_price = row["TP_price"]
+        sl_hit = False
+        tp_hit = False
 
-        entry = row.get("Entry_price", np.nan)
-        sl_price = row.get("SL_price", np.nan)
-        tp_price = row.get("TP_price", np.nan)
+        for high_col, low_col in timeframes:
+            high = row[high_col]
+            low = row[low_col]
 
-        # se mancano i prezzi fondamentali, salta
-        if pd.isna(entry) or pd.isna(sl_price) or pd.isna(tp_price):
-            filtered.at[idx, "Outcome"] = "MissingPrices"
-            continue
-
-        outcome = None
-
-        # ciclo temporale progressivo: 60 -> 90 -> 120 -> 240
-        for s, suffix in steps:
-            high_col = f"High{s}m" if f"High{s}m" in filtered.columns else f"High{s}{suffix}"
-            low_col  = f"Low{s}m"  if f"Low{s}m"  in filtered.columns else f"Low{s}{suffix}"
-
-            high = row.get(high_col, np.nan)
-            low  = row.get(low_col, np.nan)
-
-            # STRATEGIA SHORT:
-            # 1) se prima sale e tocca SL_price -> SL
-            if pd.notna(high) and pd.notna(sl_price) and high >= sl_price:
+            # SHORT: SL se prezzo sale sopra SL_price
+            if not sl_hit and high >= sl_price:
                 filtered.at[idx, "SL"] = 1
                 filtered.at[idx, "Outcome"] = "SL"
-                outcome = "SL"
-                break
+                sl_hit = True
+                break  # il primo evento fermiamo il check
 
-            # 2) se scende e tocca TP_price -> TP
-            if pd.notna(low) and pd.notna(tp_price) and low <= tp_price:
+            # SHORT: TP se prezzo scende sotto TP_price
+            if not tp_hit and low <= tp_price:
                 filtered.at[idx, "TP"] = 1
                 filtered.at[idx, "Outcome"] = "TP"
-                outcome = "TP"
+                tp_hit = True
                 break
 
-        # Se non ha toccato né TP né SL entro 240m -> chiudiamo a close
-        if outcome is None:
-            close_price = row.get("Close", np.nan)
-            if pd.notna(close_price):
-                filtered.at[idx, "Outcome"] = "Hold"
-                # percentuale rispetto all'entry (utile per equity calcs)
-                filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
-            else:
-                filtered.at[idx, "Outcome"] = "NoClose"
+        # calcolo performance % in base a chi ha colpito
+        close_price = row["Close"] if filtered.at[idx, "TP"] == 0 else tp_price
+        filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
 
-    # DEBUG: stampa conteggi per verificare che il loop abbia segnato righe
-    st.write({
-        "tot_records": len(filtered),
-        "attivazioni": int(filtered["attivazione"].sum()),
-        "SL_count": int(filtered["SL"].sum()),
-        "TP_count": int(filtered["TP"].sum()),
-        "Hold_count": int((filtered["Outcome"] == "Hold").sum())
-    })
-
-st.write(filtered.columns)
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
