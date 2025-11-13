@@ -204,7 +204,7 @@ else:
             if pd.notna(close_price):
                 filtered.at[idx, "Outcome"] = "Hold"
                 # percentuale rispetto all'entry (utile per equity calcs)
-                filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100).round(2)
+                filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
             else:
                 filtered.at[idx, "Outcome"] = "NoClose"
 
