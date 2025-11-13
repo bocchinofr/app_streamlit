@@ -15,7 +15,8 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 def load_data():
     usecols = [
         "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
-        "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m"
+        "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
+        "High_120m", "Low_120m", "High_240m", "Low_240m"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
     # Parse date
@@ -139,15 +140,47 @@ if mode == "90 minuti":
     filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / 
                            filtered["Entry_price"] * 100).round(2)
 else:
-    filtered["SL"] = ((filtered["attivazione"] == 1) & 
-                      (filtered["High"] >= filtered["SL_price"])).astype(int)
-    
-    filtered["TP"] = ((filtered["attivazione"] == 1) & 
-                      (filtered["SL"] == 0) & 
-                      (filtered["Low"] <= filtered["TP_price"])).astype(int)
-    
-    filtered["TP_90m%"] = ((filtered["Close"] - filtered["Entry_price"]) / 
-                           filtered["Entry_price"] * 100).round(2)
+    # Inizializza colonne
+    filtered["SL"] = 0
+    filtered["TP"] = 0
+    filtered["TP_90m%"] = np.nan
+
+    # Loop riga per riga (solo se attivazione == 1)
+    for idx, row in filtered.iterrows():
+        if row["attivazione"] != 1:
+            continue  # nessuna operazione aperta
+
+        entry = row["Entry_price"]
+        sl_price = row["SL_price"]
+        tp_price = row["TP_price"]
+
+        # timeline progressiva per 60m, 90m, 120m, 240m
+        steps = ["60", "90", "120", "240"]
+        outcome = None
+
+        for step in steps:
+            high = row.get(f"High_{step}m", np.nan)
+            low = row.get(f"Low_{step}m", np.nan)
+
+            # STRATEGIA SHORT:
+            # Se prima tocca SL (cioè prezzo sale oltre SL_price) → SL
+            if pd.notna(high) and high >= sl_price:
+                filtered.at[idx, "SL"] = 1
+                outcome = "SL"
+                break
+
+            # Se tocca TP (cioè prezzo scende sotto TP_price) → TP
+            if pd.notna(low) and low <= tp_price:
+                filtered.at[idx, "TP"] = 1
+                outcome = "TP"
+                break
+
+        # Se entro 240m non tocca né TP né SL, chiudiamo a fine giornata
+        if outcome is None:
+            close_price = row.get("Close", np.nan)
+            if pd.notna(close_price):
+                filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100).round(2)
+
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
