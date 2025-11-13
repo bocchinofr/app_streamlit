@@ -50,7 +50,7 @@ max_float = st.sidebar.number_input("Shs Float", value=1000000000)
 param_sl = st.sidebar.number_input("%SL", value=30.0)
 param_tp = st.sidebar.number_input("%TP", value=-15.0)
 param_entry = st.sidebar.number_input("%entry", value=15.0)
-param_BE = st.sidebar.number_input("%BEparam", value=5.0,
+param_BE = st.sidebar.number_input("%BEparam", value=0.0,
     help="Percentuale da aggiungere al prezzo di TP"
 )
 
