@@ -29,6 +29,12 @@ df = load_data()
 
 # region Filtri
 # ---- FILTRI LATERALI ----
+mode = st.sidebar.radio(
+    "⏱️ Modalità strategia",
+    options=["90 minuti", "Fino a chiusura"],
+    index=0,
+    help="Scegli se valutare il trade entro 90 minuti o fino alla chiusura"
+)
 st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = sorted(df["Ticker"].dropna().unique())
@@ -47,6 +53,8 @@ param_entry = st.sidebar.number_input("%entry", value=15.0)
 param_BE = st.sidebar.number_input("%BEparam", value=5.0,
     help="Percentuale da aggiungere al prezzo di TP"
 )
+
+
 
 filtered = df.copy()
 
@@ -527,7 +535,9 @@ for col in ["TP", "SL", "BEprofit", "TP_90m%", "Entry_price", "SL_price", "TP_pr
         st.warning(f"Manca la colonna '{col}' nel dataframe.")
         st.stop()
 
-# ---- CALCOLO EQUITY REALE ----
+# endregion
+
+# region ---- CALCOLO EQUITY REALE ----
 capital = initial_capital
 equity_values = []
 drawdowns = []
