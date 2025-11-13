@@ -130,6 +130,9 @@ filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).astype(int)
 filtered["SL"] = ((filtered["attivazione"] == 1) & (filtered["High_90m"] >= filtered["SL_price"])).astype(int)
 filtered["TP"] = ((filtered["attivazione"] == 1) & (filtered["SL"] == 0) & (filtered["Low_90m"] <= filtered["TP_price"])).astype(int)
+filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / filtered["Entry_price"] * 100).round(2)
+filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
+
 
 # Calcolo BEprofit
 filtered["BEprofit"] = (
@@ -139,10 +142,8 @@ filtered["BEprofit"] = (
     (filtered["Low_90m"] <= filtered["TP_price"] * (1 + param_BE/100))
 ).astype(int)
 
-filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
 # Calcolo TP_90m
-filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / filtered["Entry_price"] * 100).round(2)
 mask_green = (
     (filtered["attivazione"] == 1) & 
     (filtered["SL"] == 0) & 
