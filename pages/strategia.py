@@ -179,7 +179,7 @@ else:
         if outcome is None:
             close_price = row.get("Close", np.nan)
             if pd.notna(close_price):
-                filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100).round(2)
+                filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
 
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
