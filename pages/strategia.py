@@ -148,9 +148,7 @@ else:
     
     filtered["TP_90m%"] = ((filtered["Close"] - filtered["Entry_price"]) / 
                            filtered["Entry_price"] * 100).round(2)
-#filtered["SL"] = ((filtered["attivazione"] == 1) & (filtered["High_90m"] >= filtered["SL_price"])).astype(int)
-#filtered["TP"] = ((filtered["attivazione"] == 1) & (filtered["SL"] == 0) & (filtered["Low_90m"] <= filtered["TP_price"])).astype(int)
-#filtered["TP_90m%"] = ((filtered["Close_1100"] - filtered["Entry_price"]) / filtered["Entry_price"] * 100).round(2)
+
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
 
@@ -280,12 +278,12 @@ st.markdown(f"""
     </div>
     <!-- Box con colore testo personalizzato -->
     <div style="{base_box_style} color:#EE4419;">
-        <div style="{title_style}">Close 90m RED</div>
+        <div style="{title_style}">Close trade RED</div>
         <div style="{value_style}">{close_90m_red}</div>
     </div>
     <!-- Box con colore testo personalizzato -->
     <div style="{base_box_style} color:#2EDB2E;">
-        <div style="{title_style}">Close 90m GREEN</div>
+        <div style="{title_style}">Close trade GREEN</div>
         <div style="{value_style}">{close_90m_green}</div>
     </div>
     <div style="{base_box_style};">
