@@ -6,18 +6,21 @@ import matplotlib.pyplot as plt
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Strategia Intraday", layout="wide")
-# Titolo
-st.title("Strategia Intraday Opzioni")
 
-# Layout con due colonne: titolo a sinistra, select a destra
+# Titolo
 col1, col2 = st.columns([3, 1])
+
+with col1:
+    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday Opzioni</h1>", unsafe_allow_html=True)
 
 with col2:
     mode = st.selectbox(
-        "Modalità strategia",
+        "Modalità",
         ["30 minuti", "60 minuti", "90 minuti"],
-        index=2  # opzionale, per default 90 minuti
+        index=2,
+        label_visibility="visible"
     )
+
 # ---- CARICAMENTO DATI CON CACHE ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=xlsx"
 
