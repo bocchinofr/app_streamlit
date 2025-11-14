@@ -14,7 +14,7 @@ with col1:
     st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday Opzioni</h1>", unsafe_allow_html=True)
 
 with col2:
-    mode = st.selectbox(
+    mode = st.radio(
         "Modalità",
         ["Fino a chiusura", "90 minuti"],
         index=1,
