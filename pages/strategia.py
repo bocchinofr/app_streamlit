@@ -18,6 +18,7 @@ with col2:
         "Modalità",
         ["Fino a chiusura", "90 minuti"],
         index=1,
+        horizontal=True,
         label_visibility="visible"
     )
 
