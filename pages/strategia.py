@@ -7,22 +7,39 @@ import matplotlib.pyplot as plt
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Strategia Intraday", layout="wide")
 
-# Titolo
-col1, col2 = st.columns([3, 1])
+# ---- STICKY HEADER: titolo + modalità + date filtrate ----
+header_placeholder = st.container()  # contenitore per sticky
 
-with col1:
-    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday Opzioni</h1>", unsafe_allow_html=True)
+with header_placeholder:
+    st.markdown("""
+    <div style="
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1000;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+    ">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="margin: 0;">Strategia Intraday Opzioni</h1>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-with col2:
-    mode = st.radio(
-        "Modalità",
-        ["Fino a chiusura", "90 minuti"],
-        index=1,
-        horizontal=True,
-        label_visibility="visible"
-    )
+mode_placeholder = st.empty()  # placeholder per radio
+date_info_placeholder = st.empty()  # placeholder per date filtrate
 
-# ---- CARICAMENTO DATI CON CACHE ----
+# ---- RADIO MODALITÀ ----
+mode = mode_placeholder.radio(
+    "Modalità",
+    ["Fino a chiusura", "90 minuti"],
+    index=1,
+    horizontal=True,
+    label_visibility="visible"
+)
+
+# ---- CARICAMENTO DATI ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=xlsx"
 
 @st.cache_data
@@ -33,98 +50,58 @@ def load_data():
         "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m", "Market Cap"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
-    # Parse date
-    df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.date
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.strftime("%d-%m-%Y")
     return df
 
 df = load_data()
 
-
-
-# region Filtri
 # ---- FILTRI LATERALI ----
-#mode = st.sidebar.radio(
-#    "⏱️ Modalità strategia",
-#    options=["90 minuti", "Fino a chiusura"],
-#    index=0,
-#    help="Scegli se valutare il trade entro 90 minuti o fino alla chiusura"
-#)
 st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = sorted(df["Ticker"].dropna().unique())
-selected_tickers = st.sidebar.multiselect(
-    "Ticker",
-    options=tickers,
-    default=[],
-    help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
-)
+selected_tickers = st.sidebar.multiselect("Ticker", options=tickers, default=[])
 max_marketcap = st.sidebar.number_input("Market Cap massima", value=2_000_000_000)
 min_open = st.sidebar.number_input("Open minimo", value=2.0)
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float", value=1000000000)
-param_sl = st.sidebar.number_input("%SL", value=30.0)
-param_tp = st.sidebar.number_input("%TP", value=-15.0)
-param_entry = st.sidebar.number_input("%entry", value=15.0)
-param_BE = st.sidebar.number_input("%BEparam", value=0.0,
-    help="Percentuale da aggiungere al prezzo di TP"
-)
 
-
-
+# ---- FILTRAGGI ----
 filtered = df.copy()
-
-# Converti Gap% e Open in numerico
 filtered["Gap%"] = pd.to_numeric(filtered["Gap%"], errors="coerce")
 filtered["Open"] = pd.to_numeric(filtered["Open"], errors="coerce")
 filtered["Market Cap"] = pd.to_numeric(filtered["Market Cap"], errors="coerce")
-
-# Converti sempre Date in datetime
 filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
 
-# --- Filtro date solo se l’utente ha selezionato un intervallo ---
 if len(date_range) == 2:
     start, end = date_range
-    filtered = filtered[(filtered["Date_dt"] >= pd.to_datetime(start)) &
-                        (filtered["Date_dt"] <= pd.to_datetime(end))]
-    
-    if filtered.empty:
-        st.warning(
-            f"⚠️ Nessun dato disponibile per l'intervallo selezionato ({start.strftime('%d-%m-%Y')} - {end.strftime('%d-%m-%Y')})."
-        )
+    filtered = filtered[(filtered["Date_dt"] >= pd.to_datetime(start)) & (filtered["Date_dt"] <= pd.to_datetime(end))]
 
-# --- Filtro Open minimo e Gap% minimo ---
-filtered = filtered[filtered["Open"] >= min_open]
-filtered = filtered[filtered["Gap%"] >= min_gap]
-filtered = filtered[filtered["Shs Float"] <= max_float]
-filtered = filtered[filtered["Market Cap"] <= max_marketcap]
+filtered = filtered[(filtered["Open"] >= min_open) &
+                    (filtered["Gap%"] >= min_gap) &
+                    (filtered["Shs Float"] <= max_float) &
+                    (filtered["Market Cap"] <= max_marketcap)]
 
-
-# --- Filtro Ticker (se selezionato) ---
 if selected_tickers:
     filtered = filtered[filtered["Ticker"].isin(selected_tickers)]
-# ---- Dopo filtraggio ----
+
 if filtered.empty:
     st.warning("⚠️ Nessun dato disponibile dopo l'applicazione dei filtri.")
     st.stop()
 
-# ---- Dopo filtraggio ----
-if not filtered.empty:
-    min_date = filtered["Date_dt"].min()
-    max_date = filtered["Date_dt"].max()
-    if pd.notna(min_date) and pd.notna(max_date):
-        # Solo le date colorate e in grassetto
-        st.markdown(
-            f"""
-            <div style='font-size:16px; font-weight:600; margin-bottom:10px;'>
-                Dati filtrati dal <span style='font-size:22px; color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
-                al <span style='font-size:22px; color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-else:
-    st.info("⚠️ Nessun dato disponibile dopo i filtri.")
+# ---- MOSTRA DATE FILTRATE NELLO STICKY HEADER ----
+min_date = filtered["Date_dt"].min()
+max_date = filtered["Date_dt"].max()
+if pd.notna(min_date) and pd.notna(max_date):
+    date_info_placeholder.markdown(
+        f"""
+        <div style='font-size:16px; font-weight:600; margin-top:5px; margin-bottom:5px;'>
+            Dati filtrati dal <span style='font-size:18px; color:#1E90FF; font-weight:bold;'>{min_date.strftime('%d-%m-%Y')}</span> 
+            al <span style='font-size:18px; color:#1E90FF; font-weight:bold;'>{max_date.strftime('%d-%m-%Y')}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 if selected_tickers:
     tickers_str = ", ".join(selected_tickers)
