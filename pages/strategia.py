@@ -16,7 +16,7 @@ def load_data():
     usecols = [
         "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
         "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
-        "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m"
+        "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m", "Market Cap"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
     # Parse date
@@ -45,6 +45,7 @@ selected_tickers = st.sidebar.multiselect(
     default=[],
     help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
 )
+max_marketcap = st.sidebar.number_input("Market Cap massima", value=2_000_000_000)
 min_open = st.sidebar.number_input("Open minimo", value=2.0)
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float", value=1000000000)
@@ -62,6 +63,7 @@ filtered = df.copy()
 # Converti Gap% e Open in numerico
 filtered["Gap%"] = pd.to_numeric(filtered["Gap%"], errors="coerce")
 filtered["Open"] = pd.to_numeric(filtered["Open"], errors="coerce")
+filtered["Market Cap"] = pd.to_numeric(filtered["Market Cap"], errors="coerce")
 
 # Converti sempre Date in datetime
 filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
@@ -81,6 +83,8 @@ if len(date_range) == 2:
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
+filtered = filtered[filtered["Market Cap"] <= max_marketcap]
+
 
 # --- Filtro Ticker (se selezionato) ---
 if selected_tickers:
