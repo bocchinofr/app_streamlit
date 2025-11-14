@@ -17,7 +17,7 @@ with col2:
     mode = st.selectbox(
         "Modalità",
         ["Fino a chiusura", "90 minuti"],
-        index=2,
+        index=1,
         label_visibility="visible"
     )
 
