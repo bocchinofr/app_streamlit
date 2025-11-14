@@ -16,7 +16,7 @@ with col1:
 with col2:
     mode = st.selectbox(
         "Modalità",
-        ["30 minuti", "60 minuti", "90 minuti"],
+        ["Fino a chiusura", "90 minuti"],
         index=2,
         label_visibility="visible"
     )
@@ -43,12 +43,12 @@ df = load_data()
 
 # region Filtri
 # ---- FILTRI LATERALI ----
-mode = st.sidebar.radio(
-    "⏱️ Modalità strategia",
-    options=["90 minuti", "Fino a chiusura"],
-    index=0,
-    help="Scegli se valutare il trade entro 90 minuti o fino alla chiusura"
-)
+#mode = st.sidebar.radio(
+#    "⏱️ Modalità strategia",
+#    options=["90 minuti", "Fino a chiusura"],
+#    index=0,
+#    help="Scegli se valutare il trade entro 90 minuti o fino alla chiusura"
+#)
 st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = sorted(df["Ticker"].dropna().unique())
