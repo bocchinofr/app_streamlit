@@ -89,7 +89,10 @@ if len(date_range) == 2:
 # --- Filtro Open minimo e Gap% minimo ---
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
-filtered = filtered[filtered["Shs Float"] <= max_float]
+filtered = filtered[
+    (filtered["Shs Float"] <= max_float) | 
+    (filtered["Shs Float"].isna())
+]
 filtered = filtered[
     (filtered["Market Cap"] <= max_marketcap) | 
     (filtered["Market Cap"].isna())
