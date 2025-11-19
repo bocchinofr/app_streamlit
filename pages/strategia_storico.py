@@ -90,8 +90,10 @@ if len(date_range) == 2:
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
-filtered = filtered[filtered["Market Cap"] <= max_marketcap]
-
+filtered = filtered[
+    (filtered["Market Cap"] <= max_marketcap) | 
+    (filtered["Market Cap"].isna())
+]
 
 # --- Filtro Ticker (se selezionato) ---
 if selected_tickers:
