@@ -534,7 +534,7 @@ def show_kpi_section(df, title, box_color):
 
         # --- Lista dei box ---
         boxes = [
-            {"label": "Gap% medio ", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
+            {"label": "Gap% medio   ", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
             {"label": "Shs Float medio", "value": shs_float_mean_str, "sub": f"Mediana: {shs_float_median_str}"},
             {"label": "Shs Outstanding medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
             {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
