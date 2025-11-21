@@ -550,7 +550,7 @@ def show_kpi_section(df, title, box_color):
 
         # --- Stile ---
         LABEL_STYLE = "font-size:14px; opacity:0.85;"
-        VALUE_STYLE = "font-size:18px; font-weight:bold; margin-left: 8px"
+        VALUE_STYLE = "font-size:20px; font-weight:bold; margin-left: 8px"
         SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
 
         BOX_STYLE = f"""
