@@ -67,8 +67,21 @@ else:
 
 col_mc_min, col_mc_max = st.sidebar.columns(2)
 
-marketcap_min = col_mc_min.number_input("MC Min", value=default_min, step=1_000_000)
-marketcap_max = col_mc_max.number_input("MC Max", value=default_max, step=1_000_000)
+marketcap_min_M = col_mc_min.number_input(
+    "Min (M)", 
+    value=mc_min_M, 
+    step=10
+)
+
+marketcap_max_M = col_mc_max.number_input(
+    "Max (M)", 
+    value=mc_max_M, 
+    step=10
+)
+
+# Converti in valori reali per il filtro
+marketcap_min = marketcap_min_M * 1_000_000
+marketcap_max = marketcap_max_M * 1_000_000
 
 # ====== ALTRI FILTRI ======
 min_open = st.sidebar.number_input("Open minimo", value=2.0)
