@@ -538,7 +538,7 @@ def show_kpi_section(df, title, box_color):
         <div style="
             display:grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
+            gap: 10px;
             row-gap: 12px;
             margin-top: 10px;
             margin-bottom :10px;
