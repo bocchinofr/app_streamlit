@@ -54,37 +54,14 @@ selected_tickers = st.sidebar.multiselect(
     default=[],
     help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
 )
-
-# ====== MARKET CAP IN MILIONI (M) ======
-# Gestione NaN + calcolo min/max reali
-mc_series = pd.to_numeric(df["Market Cap"], errors="coerce").dropna()
-
-if mc_series.empty:
-    mc_min_real = 0
-    mc_max_real = 1_000_000_000
-else:
-    mc_min_real = int(mc_series.min())
-    mc_max_real = int(mc_series.max())
-
-# Converti in milioni per lo slider
-mc_min_M = int(mc_min_real / 1_000_000)
-mc_max_M = int(mc_max_real / 1_000_000)
-
-# Slider in milioni
-marketcap_min_M, marketcap_max_M = st.sidebar.slider(
-    "Range Market Cap (in milioni)",
-    min_value=mc_min_M,
-    max_value=mc_max_M,
-    value=(mc_min_M, mc_max_M),
-    step=10,   # 10M per step
-    help="Seleziona il Market Cap espresso in milioni"
+marketcap_min, marketcap_max = st.sidebar.slider(
+    "Range Market Cap",
+    min_value=0,
+    max_value=1_000_000_000,
+    value=(0, 1_000_000_000),
+    step=10_000_000,
+    help="Seleziona range minimo e massimo di Market Cap"
 )
-
-# Converti range selezionato in valori reali per il filtraggio
-marketcap_min = marketcap_min_M * 1_000_000
-marketcap_max = marketcap_max_M * 1_000_000
-
-# ====== ALTRI FILTRI ======
 min_open = st.sidebar.number_input("Open minimo", value=2.0)
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float", value=1000000000)
@@ -97,15 +74,15 @@ param_BE = st.sidebar.number_input("%BEparam", value=0.0,
 
 filtered = df.copy()
 
-# Converti valori numerici
+# Converti Gap% e Open in numerico
 filtered["Gap%"] = pd.to_numeric(filtered["Gap%"], errors="coerce")
 filtered["Open"] = pd.to_numeric(filtered["Open"], errors="coerce")
 filtered["Market Cap"] = pd.to_numeric(filtered["Market Cap"], errors="coerce")
 
-# Converti Date
+# Converti sempre Date in datetime
 filtered["Date_dt"] = pd.to_datetime(filtered["Date"], format="%d-%m-%Y", errors="coerce")
 
-# --- Filtro date ---
+# --- Filtro date solo se l’utente ha selezionato un intervallo ---
 if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date_dt"] >= pd.to_datetime(start)) &
@@ -116,12 +93,10 @@ if len(date_range) == 2:
             f"⚠️ Nessun dato disponibile per l'intervallo selezionato ({start.strftime('%d-%m-%Y')} - {end.strftime('%d-%m-%Y')})."
         )
 
-# --- Filtri numerici ---
+# --- Filtro Open minimo e Gap% minimo ---
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
-
-# --- Filtro MarketCap basato sui valori reali ---
 filtered = filtered[
     (filtered["Market Cap"] >= marketcap_min) &
     (filtered["Market Cap"] <= marketcap_max)
