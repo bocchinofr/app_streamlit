@@ -54,7 +54,14 @@ selected_tickers = st.sidebar.multiselect(
     default=[],
     help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
 )
-max_marketcap = st.sidebar.number_input("Market Cap massima", value=2_000_000_000)
+marketcap_min, marketcap_max = st.sidebar.slider(
+    "Range Market Cap",
+    min_value=0,
+    max_value=2_000_000_000,
+    value=(0, 2_000_000_000),
+    step=10_000_000,
+    help="Seleziona range minimo e massimo di Market Cap"
+)
 min_open = st.sidebar.number_input("Open minimo", value=2.0)
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float", value=1000000000)
@@ -90,7 +97,10 @@ if len(date_range) == 2:
 filtered = filtered[filtered["Open"] >= min_open]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
-filtered = filtered[filtered["Market Cap"] <= max_marketcap]
+filtered = filtered[
+    (filtered["Market Cap"] >= marketcap_min) &
+    (filtered["Market Cap"] <= marketcap_max)
+]
 
 
 # --- Filtro Ticker (se selezionato) ---
@@ -538,7 +548,7 @@ def show_kpi_section(df, title, box_color):
         <div style="
             display:grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
+            gap: 12px;
             row-gap: 12px;
             margin-top: 10px;
             margin-bottom :10px;
