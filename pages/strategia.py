@@ -54,14 +54,23 @@ selected_tickers = st.sidebar.multiselect(
     default=[],
     help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
 )
-marketcap_min, marketcap_max = st.sidebar.slider(
-    "Range Market Cap",
-    min_value=0,
-    max_value=1_000_000_000,
-    value=(0, 1_000_000_000),
-    step=10_000_000,
-    help="Seleziona range minimo e massimo di Market Cap"
-)
+# ====== MARKET CAP: DUE BOX TESTO ======
+mc_series = pd.to_numeric(df["Market Cap"], errors="coerce").dropna()
+
+# Imposta min/max reali se disponibili, altrimenti fallback
+if mc_series.empty:
+    default_min = 0
+    default_max = 1_000_000_000
+else:
+    default_min = int(mc_series.min())
+    default_max = int(mc_series.max())
+
+col_mc_min, col_mc_max = st.sidebar.columns(2)
+
+marketcap_min = col_mc_min.number_input("MC Min", value=default_min, step=1_000_000)
+marketcap_max = col_mc_max.number_input("MC Max", value=default_max, step=1_000_000)
+
+# ====== ALTRI FILTRI ======
 min_open = st.sidebar.number_input("Open minimo", value=2.0)
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float", value=1000000000)
