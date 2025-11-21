@@ -56,32 +56,28 @@ selected_tickers = st.sidebar.multiselect(
 )
 
 # ====== MARKET CAP: DUE BOX (IN MILIONI) ======
-mc_series = pd.to_numeric(df["Market Cap"], errors="coerce").dropna()
-
-# Calcola min/max reali
-if mc_series.empty:
-    mc_min_real = 0
-    mc_max_real = 1_000_000_000
-else:
-    mc_min_real = int(mc_series.min())
-    mc_max_real = int(mc_series.max())
-
-# Converti valori reali in milioni per l'input dell'utente
-mc_min_M = int(mc_min_real / 1_000_000)
-mc_max_M = int(mc_max_real / 1_000_000)
+# Valori fissi di default in Milioni
+default_mc_min_M = 0
+default_mc_max_M = 2000
 
 col_mc_min, col_mc_max = st.sidebar.columns(2)
 
 marketcap_min_M = col_mc_min.number_input(
-    "MC Max ($M)", 
-    value=mc_min_M, 
-    step=10
+    "MC Min ($M)", 
+    value=default_mc_min_M, 
+    step=10,
+    min_value=0,
+    max_value=2000,
+    help="Valore minimo di Market Cap in Milioni"
 )
 
 marketcap_max_M = col_mc_max.number_input(
-    "MC min ($M)", 
-    value=mc_max_M, 
-    step=10
+    "MC Max ($M)", 
+    value=default_mc_max_M, 
+    step=10,
+    min_value=0,
+    max_value=2000,
+    help="Valore massimo di Market Cap in Milioni"
 )
 
 # Converti in valori reali per il filtro
