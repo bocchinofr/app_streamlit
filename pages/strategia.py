@@ -75,7 +75,6 @@ st.sidebar.markdown("MarketCap $M")
 col_mc_min, col_mc_max = st.sidebar.columns(2)
 
 marketcap_min_M = col_mc_min.number_input(
-    "Min (M)", 
     value=mc_min_M, 
     step=10
 )
