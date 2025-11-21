@@ -584,10 +584,12 @@ def show_kpi_section(df, title, box_color):
         for box in boxes:
             sub_html = f'<div style="{SUBVALUE_STYLE}">{box["sub"]}</div>' if "sub" in box else ""
             boxes_html += f'<div style="{BOX_STYLE.format(box_color)}">' \
-                          f'<div style="{LABEL_STYLE}">{box["label"]}</div>' \
-                          f'<div style="{VALUE_STYLE}">{box["value"]}</div>' \
-                          f'{sub_html}' \
-                          f'</div>'
+                        f'<div style="display:flex; justify-content:center; align-items:center;">' \
+                        f'<div style="{LABEL_STYLE}">{box["label"]}</div>' \
+                        f'<div style="{VALUE_STYLE}">{box["value"]}</div>' \
+                        f'</div>' \
+                        f'{sub_html}' \
+                        f'</div>'
 
         st.markdown(container_html_start + boxes_html + container_html_end, unsafe_allow_html=True)
 
