@@ -536,15 +536,15 @@ def show_kpi_section(df, title, box_color):
         boxes = [
             {"label": "Gap% medio", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
             {"label": "Shs Float medio", "value": shs_float_mean_str, "sub": f"Mediana: {shs_float_median_str}"},
-            {"label": "Shs Outstanding medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
+            {"label": "Shs Out medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
             {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
             {"label": "TimeHigh medio", "value": time_mean_formatted},
-            {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
-            {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
-            {"label": "VolumePM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
-            {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"},
-            {"label": "Vol 5m / PM", "value": vol5_vs_PM_mean_str, "sub": f"Mediana: {vol5_vs_PM_median_str}"},
-            {"label": "Vol 30m / PM", "value": vol30_vs_PM_mean_str, "sub": f"Mediana: {vol30_vs_PM_median_str}"}
+            {"label": "Open/PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
+            {"label": "Vol medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
+            {"label": "VolPM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
+            {"label": "Vol 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"},
+            {"label": "Vol5m/PM", "value": vol5_vs_PM_mean_str, "sub": f"Mediana: {vol5_vs_PM_median_str}"},
+            {"label": "Vol30m/PM", "value": vol30_vs_PM_mean_str, "sub": f"Mediana: {vol30_vs_PM_median_str}"}
         ]
 
 
