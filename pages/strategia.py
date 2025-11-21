@@ -70,8 +70,9 @@ else:
 mc_min_M = int(mc_min_real / 1_000_000)
 mc_max_M = int(mc_max_real / 1_000_000)
 
-st.sidebar.markdown("**Range Market Cap (in Milioni)**  
-*(Inserire i valori in milioni, es: 2000 = 2 miliardi)*")
+st.sidebar.markdown("**Range Market Cap (in Milioni)**")
+st.sidebar.markdown("*Inserire i valori in milioni (es: 2000 = 2 miliardi)*")
+
 
 col_mc_min, col_mc_max = st.sidebar.columns(2)
 
