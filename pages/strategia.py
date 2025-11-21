@@ -70,18 +70,16 @@ else:
 mc_min_M = int(mc_min_real / 1_000_000)
 mc_max_M = int(mc_max_real / 1_000_000)
 
-st.sidebar.markdown("MarketCap $M")
-
 col_mc_min, col_mc_max = st.sidebar.columns(2)
 
 marketcap_min_M = col_mc_min.number_input(
-    "MarketCap Max (M)", 
+    "MC Max ($M)", 
     value=mc_min_M, 
     step=10
 )
 
 marketcap_max_M = col_mc_max.number_input(
-    "Max (M)", 
+    "MC min ($M)", 
     value=mc_max_M, 
     step=10
 )
