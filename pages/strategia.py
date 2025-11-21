@@ -45,7 +45,7 @@ df = load_data()
 # region Filtri
 # ---- FILTRI LATERALI ----
 
-st.sidebar.header("🔍 Filtri e parametri")
+#st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = sorted(df["Ticker"].dropna().unique())
 selected_tickers = st.sidebar.multiselect(
