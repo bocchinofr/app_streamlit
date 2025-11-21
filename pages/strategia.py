@@ -54,16 +54,24 @@ selected_tickers = st.sidebar.multiselect(
     default=[],
     help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
 )
-# ====== MARKET CAP: DUE BOX TESTO ======
+
+# ====== MARKET CAP: DUE BOX (IN MILIONI) ======
 mc_series = pd.to_numeric(df["Market Cap"], errors="coerce").dropna()
 
-# Imposta min/max reali se disponibili, altrimenti fallback
+# Calcola min/max reali
 if mc_series.empty:
-    default_min = 0
-    default_max = 1_000_000_000
+    mc_min_real = 0
+    mc_max_real = 1_000_000_000
 else:
-    default_min = int(mc_series.min())
-    default_max = int(mc_series.max())
+    mc_min_real = int(mc_series.min())
+    mc_max_real = int(mc_series.max())
+
+# Converti valori reali in milioni per l'input dell'utente
+mc_min_M = int(mc_min_real / 1_000_000)
+mc_max_M = int(mc_max_real / 1_000_000)
+
+st.sidebar.markdown("**Range Market Cap (in Milioni)**  
+*(Inserire i valori in milioni, es: 2000 = 2 miliardi)*")
 
 col_mc_min, col_mc_max = st.sidebar.columns(2)
 
