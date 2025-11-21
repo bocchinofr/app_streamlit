@@ -522,7 +522,7 @@ def show_kpi_section(df, title, box_color):
 
         BOX_STYLE = f"""
             background-color:{{}}; 
-            padding:15px; 
+            padding:10px; 
             border-radius:12px; 
             text-align:center; 
             box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
