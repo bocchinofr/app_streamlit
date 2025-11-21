@@ -530,7 +530,7 @@ def show_kpi_section(df, title, box_color):
             flex-direction:column; 
             justify-content:center; 
             align-items:center;
-            min-height:150px;
+            min-height:50px;
         """
 
         # --- Container grid responsive ---
