@@ -501,6 +501,15 @@ def show_kpi_section(df, title, box_color):
         else:
             vol30_vs_PM_mean = vol30_vs_PM_median = None
 
+        # --- Calcoli Market Cap ---
+        if "Market Cap" in df.columns:
+            mc_mean = df["Market Cap"].mean()
+            mc_median = df["Market Cap"].median()
+            mc_mean_str = f"{mc_mean/1_000_000:.0f}M"
+            mc_median_str = f"{mc_median/1_000_000:.2f}M"
+        else:
+            mc_mean_str = mc_median_str = "-"
+
         # --- Formattazione valori ---
         gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
         gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
@@ -535,6 +544,7 @@ def show_kpi_section(df, title, box_color):
         # --- Lista dei box ---
         boxes = [
             {"label": "Gap% medio", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
+            {"label": "Market Cap medio", "value": mc_mean_str, "sub": f"Mediana: {mc_median_str}"},
             {"label": "Shs Float medio", "value": shs_float_mean_str, "sub": f"Mediana: {shs_float_median_str}"},
             {"label": "Shs Out medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
             {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
