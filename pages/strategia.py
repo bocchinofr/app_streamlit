@@ -11,7 +11,7 @@ st.set_page_config(page_title="Strategia Intraday", layout="wide")
 col1, col2 = st.columns([3, 1])
 
 with col1:
-    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday Opzioni</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday</h1>", unsafe_allow_html=True)
 
 with col2:
     mode = st.radio(
