@@ -94,6 +94,36 @@ st.sidebar.header("🔍 Filtri")
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
 min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 0)
+
+# ====== MARKET CAP: DUE BOX (IN MILIONI) ======
+# Valori fissi di default in Milioni
+default_mc_min_M = 0
+default_mc_max_M = 2000
+
+col_mc_min, col_mc_max = st.sidebar.columns(2)
+
+marketcap_min_M = col_mc_min.number_input(
+    "MC Min ($M)", 
+    value=default_mc_min_M, 
+    step=10,
+    min_value=0,
+    max_value=2000,
+    help="Valore minimo di Market Cap in Milioni"
+)
+
+marketcap_max_M = col_mc_max.number_input(
+    "MC Max ($M)", 
+    value=default_mc_max_M, 
+    step=10,
+    min_value=0,
+    max_value=2000,
+    help="Valore massimo di Market Cap in Milioni"
+)
+
+# Converti in valori reali per il filtro
+marketcap_min = marketcap_min_M * 1_000_000
+marketcap_max = marketcap_max_M * 1_000_000
+
 max_float = st.sidebar.number_input("Float massimo", 0, 1_000_000_000, 5_000_000)
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 min_open = st.sidebar.number_input("OPEN minimo", 0.0, 1000.0, 0.0)
@@ -106,6 +136,11 @@ filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh) & (filtered["OPEN"] 
 if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
+
+filtered = filtered[
+    (filtered["Market Cap"] >= marketcap_min) &
+    (filtered["Market Cap"] <= marketcap_max)
+]
 
 # ---- DATE FILTRATE (con tema scuro) ----
 if not filtered.empty:
