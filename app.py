@@ -128,21 +128,23 @@ max_float = st.sidebar.number_input("Float massimo", 0, 1_000_000_000, 5_000_000
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 
 # filtro OPEN price
-col1, col2 = st.columns(2)
+col_open_min, col_open_max = st.sidebar.columns(2)
 
-with col1:
-    open_min = st.number_input(
-        "Open MIN",
-        value=float(filtered["OPEN"].min()),
-        step=0.01
-    )
+open_min = col_open_min.number_input(
+    "Open MIN, 
+    value=0, 
+    step=0.1,
+    min_value=0,
+    max_value=100,
+)
 
-with col2:
-    open_max = st.number_input(
-        "Open MAX",
-        value=float(filtered["OPEN"].max()),
-        step=0.01
-    )
+open_max = col_open_max.number_input(
+    "Open MAX, 
+    value=0, 
+    step=0.1,
+    min_value=0,
+    max_value=100,
+)
 
 filtered = df.copy()
 if tickers:
