@@ -131,7 +131,7 @@ min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 col_open_min, col_open_max = st.sidebar.columns(2)
 
 open_min = col_open_min.number_input(
-    "Open MIN, 
+    "Open MIN", 
     value=0, 
     step=0.1,
     min_value=0,
@@ -139,7 +139,7 @@ open_min = col_open_min.number_input(
 )
 
 open_max = col_open_max.number_input(
-    "Open MAX, 
+    "Open MAX", 
     value=0, 
     step=0.1,
     min_value=0,
