@@ -126,13 +126,34 @@ marketcap_max = marketcap_max_M * 1_000_000
 
 max_float = st.sidebar.number_input("Float massimo", 0, 1_000_000_000, 5_000_000)
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
-min_open = st.sidebar.number_input("OPEN minimo", 0.0, 1000.0, 0.0)
+
+# filtro OPEN price
+col1, col2 = st.columns(2)
+
+with col1:
+    open_min = st.number_input(
+        "Open MIN",
+        value=float(filtered["OPEN"].min()),
+        step=0.01
+    )
+
+with col2:
+    open_max = st.number_input(
+        "Open MAX",
+        value=float(filtered["OPEN"].max()),
+        step=0.01
+    )
+
+filtered = filtered[
+    (filtered["open_minimo"] >= open_min) &
+    (filtered["open_minimo"] <= open_max)
+]
 
 filtered = df.copy()
 if tickers:
     filtered = filtered[filtered["Ticker"].isin(tickers)]
 filtered = filtered[(filtered["GAP"] >= min_gap) & (filtered["Float"] <= max_float)]
-filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh) & (filtered["OPEN"] >= min_open)]
+filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
 if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
