@@ -488,7 +488,7 @@ def show_kpi_section(df, title, box_color):
 
         # --- Rapporti % tra volumi ---
         if all(col in df.columns for col in ["Volume_5m", "VolumePM"]):
-            df["Vol5_vs_PM_%"] = (df["Volume_5m"] / df["VolumePM"]) * 100
+            df["Vol5_vs_PM_%"] = (df["Volume_5m"] / df["VolumePM"].replace(0,np.nan)) * 100
             vol5_vs_PM_mean = df["Vol5_vs_PM_%"].mean()
             vol5_vs_PM_median = df["Vol5_vs_PM_%"].median()
         else:
