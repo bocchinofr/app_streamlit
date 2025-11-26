@@ -144,8 +144,6 @@ with col2:
         step=0.01
     )
 
-
-
 filtered = df.copy()
 if tickers:
     filtered = filtered[filtered["Ticker"].isin(tickers)]
@@ -153,8 +151,8 @@ filtered = filtered[(filtered["GAP"] >= min_gap) & (filtered["Float"] <= max_flo
 filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
 
 filtered = filtered[
-    (filtered["open_minimo"] >= open_min) &
-    (filtered["open_minimo"] <= open_max)
+    (filtered["OPEN"] >= open_min) &
+    (filtered["OPEN"] <= open_max)
 ]
 
 if len(date_range) == 2:
