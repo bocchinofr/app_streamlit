@@ -140,7 +140,7 @@ open_min = col_open_min.number_input(
 
 open_max = col_open_max.number_input(
     "Open MAX", 
-    value=0.0, 
+    value=100.0, 
     step=0.1,
     min_value=0.0,
     max_value=100.0,
