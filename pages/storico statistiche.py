@@ -47,7 +47,7 @@ for col in percent_cols:
         df[col] = df[col].apply(parse_percent)
 
 # Pulizia colonne numeriche con virgola e separatore migliaia
-num_cols = ["OPEN", "Float", "break"]
+num_cols = ["OPEN", "Shared Outstanding", "break"]
 for col in num_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(
@@ -58,7 +58,7 @@ for col in num_cols:
         )
 
 # Sostituisco NaN con valori neutri per non perdere righe
-for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
+for col in ["GAP", "Shared Outstanding", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         df[col] = df[col].fillna(0)
  
@@ -79,7 +79,7 @@ if not invalid_dates.empty:
     st.dataframe(invalid_dates[["Ticker", "Date"]])
 
 # Numeri non validi nelle colonne numeriche principali
-for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
+for col in ["GAP", "Shared Outstanding", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         invalid_nums = df[df[col].isna()]
         if not invalid_nums.empty:
@@ -124,7 +124,7 @@ marketcap_max_M = col_mc_max.number_input(
 marketcap_min = marketcap_min_M * 1_000_000
 marketcap_max = marketcap_max_M * 1_000_000
 
-max_float = st.sidebar.number_input("Float massimo", 0, 1_000_000_000, 5_000_000)
+max_float = st.sidebar.number_input("Shared Outstanding massimo", 0, 1_000_000_000, 5_000_000)
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 
 # filtro OPEN price
@@ -149,7 +149,7 @@ open_max = col_open_max.number_input(
 filtered = df.copy()
 if tickers:
     filtered = filtered[filtered["Ticker"].isin(tickers)]
-filtered = filtered[(filtered["GAP"] >= min_gap) & (filtered["Float"] <= max_float)]
+filtered = filtered[(filtered["GAP"] >= min_gap) & (filtered["Shared Outstanding"] <= max_float)]
 filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
 
 filtered = filtered[
