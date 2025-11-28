@@ -11,7 +11,7 @@ st.set_page_config(page_title="Analisi Storico", layout="wide", initial_sidebar_
 st.title("📈 Analisi Storico")
 
 # ---- CARICAMENTO DATI ----
-SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv&gid=1532878413"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv&gid=137871937"
 df = pd.read_csv(SHEET_URL)
 
 # region ---- PULIZIA DATI ----
