@@ -545,5 +545,17 @@ if "Chiusura" in filtered_sorted.columns:
         "GREEN": "🟢 GREEN"
     })
 
+def to_millions(x):
+    try:
+        return f"{x/1_000_000:.2f} M"
+    except:
+        return "-"
+
+if "Shared Outstanding" in filtered_sorted.columns:
+    filtered_sorted["Shared Outstanding"] = filtered_sorted["Shared Outstanding"].apply(to_millions)
+
+if "Market Cap" in filtered_sorted.columns:
+    filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
+
 st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
