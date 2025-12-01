@@ -557,6 +557,25 @@ if "Shared Outstanding" in filtered_sorted.columns:
 if "Market Cap" in filtered_sorted.columns:
     filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
 
+
+percent_cols_display = [
+    "%Open_PMH", "%OH", "%OL",
+    "%OH_30m", "%OL_30m",
+    "%OH_10-11", "%OL_10-11"
+]
+
+for col in percent_cols_display:
+    if col in filtered_sorted.columns:
+        mask = pd.to_numeric(
+            filtered_sorted[col].astype(str).str.replace("%", "").str.strip(),
+            errors="coerce"
+        ).isna()
+
+        print(f"\n--- Valori NON numerici nella colonna {col} ---")
+        print(filtered_sorted.loc[mask, [col]].head(20))
+
+
+
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
