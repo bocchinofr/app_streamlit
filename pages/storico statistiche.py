@@ -127,7 +127,7 @@ marketcap_max_M = col_mc_max.number_input(
 marketcap_min = marketcap_min_M * 1_000_000
 marketcap_max = marketcap_max_M * 1_000_000
 
-max_float = st.sidebar.number_input("Sh Outstanding massimo", 0, 1_000_000_000, 50_000_000)
+max_float = st.sidebar.number_input("Sh Outstanding massimo", 0, 100_000_000_000, 50_000_000)
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 
 # filtro OPEN price
