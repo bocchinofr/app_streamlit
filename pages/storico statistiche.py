@@ -14,6 +14,9 @@ st.title("📈 Analisi Storico")
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv&gid=137871937"
 df = pd.read_csv(SHEET_URL)
 
+# Rimuovi tutte le colonne senza nome
+df = df.loc[:, ~df.columns.str.contains("^Unnamed")]
+
 # region ---- PULIZIA DATI ----
 # Rimuovo eventuali spazi nei nomi colonne
 df.columns = df.columns.str.strip()
