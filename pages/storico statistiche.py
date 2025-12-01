@@ -557,5 +557,18 @@ if "Shared Outstanding" in filtered_sorted.columns:
 if "Market Cap" in filtered_sorted.columns:
     filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
 
+# --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
+percent_cols_display = [
+    "%Open_PMH", "%OH", "%OL",
+    "%OH_30m", "%OL_30m",
+    "%OH_10-11", "%OL_10-11"
+]
+
+for col in percent_cols_display:
+    if col in filtered_sorted.columns:
+        filtered_sorted[col] = filtered_sorted[col].apply(
+            lambda x: f"{x:.0f}" if pd.notna(x) else "-"
+        )
+
 st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
