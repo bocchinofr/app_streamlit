@@ -131,19 +131,23 @@ min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 col_open_min, col_open_max = st.sidebar.columns(2)
 
 open_min = col_open_min.number_input(
-    "OpenPMH MIN %", 
+    "OpPMH MIN %", 
     value=0.0, 
     step=0.1,
     min_value=0.0,
     max_value=100.0,
+    help="Valore minimo di Open rispetto a PMH in %"
+
 )
 
 open_max = col_open_max.number_input(
-    "OpenPMH MAX %", 
+    "OpPMH MAX %", 
     value=100.0, 
     step=0.1,
     min_value=0.0,
     max_value=100.0,
+    help="Valore massimo di Open rispetto a PMH in %"
+
 )
 
 filtered = df.copy()
