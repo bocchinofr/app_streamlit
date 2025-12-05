@@ -85,9 +85,28 @@ marketcap_min = marketcap_min_M * 1_000_000
 marketcap_max = marketcap_max_M * 1_000_000
 
 # ====== ALTRI FILTRI ======
-min_open = st.sidebar.number_input("Open minimo", value=2.0)
+
+
+col_min_open, col_max_open = st.sidebar.columns(2)
+
+min_open = col_min_open.number_input(
+    "Open min ($)"
+    value=2.0,
+    min_value=0.0,
+    max_value=500.0,
+    help="prezzo minimo di Open"
+)
+
+max_open = col_max_open.number_input(
+    "Open max ($)"
+    value=500.0,
+    min_value=0.0,
+    max_value=500.0,
+    help="prezzo minimo di Open"
+)
+
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
-max_float = st.sidebar.number_input("Shs Float", value=1000000000)
+max_float = st.sidebar.number_input("Shs Float max", value=1000000000)
 param_sl = st.sidebar.number_input("%SL", value=30.0)
 param_tp = st.sidebar.number_input("%TP", value=-15.0)
 param_entry = st.sidebar.number_input("%entry", value=15.0)
@@ -117,7 +136,10 @@ if len(date_range) == 2:
         )
 
 # --- Filtro Open minimo e Gap% minimo ---
-filtered = filtered[filtered["Open"] >= min_open]
+filtered = filtered[
+    (filtered["Open"] >= min_open) &
+    (filtered["Open"] <= max_open)
+]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
 filtered = filtered[
