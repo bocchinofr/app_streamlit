@@ -108,7 +108,7 @@ max_open = col_max_open.number_input(
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float max", value=1000000000)
 
-with st.sidebar.expander("(clicca per espandere)"):
+with st.sidebar.expander("parametri strategia"):
 
     param_sl = st.number_input("%SL", value=30.0)
     param_tp = st.number_input("%TP", value=-15.0)
