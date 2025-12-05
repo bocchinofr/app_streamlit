@@ -108,14 +108,17 @@ max_open = col_max_open.number_input(
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 max_float = st.sidebar.number_input("Shs Float max", value=1000000000)
 
-with st.expander("(clicca per espandere)"):
+with st.sidebar.expander("(clicca per espandere)"):
 
-    param_sl = st.sidebar.number_input("%SL", value=30.0)
-    param_tp = st.sidebar.number_input("%TP", value=-15.0)
-    param_entry = st.sidebar.number_input("%entry", value=15.0)
-    param_BE = st.sidebar.number_input("%BEparam", value=0.0,
+    param_sl = st.number_input("%SL", value=30.0)
+    param_tp = st.number_input("%TP", value=-15.0)
+    param_entry = st.number_input("%entry", value=15.0)
+    param_BE = st.number_input(
+        "%BEparam",
+        value=0.0,
         help="Percentuale da aggiungere al prezzo di TP"
     )
+
 
 filtered = df.copy()
 
