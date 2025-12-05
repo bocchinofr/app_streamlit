@@ -90,7 +90,7 @@ marketcap_max = marketcap_max_M * 1_000_000
 col_min_open, col_max_open = st.sidebar.columns(2)
 
 min_open = col_min_open.number_input(
-    "Open min ($)"
+    "Open min ($)",
     value=2.0,
     min_value=0.0,
     max_value=500.0,
@@ -98,7 +98,7 @@ min_open = col_min_open.number_input(
 )
 
 max_open = col_max_open.number_input(
-    "Open max ($)"
+    "Open max ($)",
     value=500.0,
     min_value=0.0,
     max_value=500.0,
