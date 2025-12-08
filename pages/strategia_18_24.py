@@ -56,7 +56,7 @@ min_open = col_min_open.number_input("Open min ($)", value=2.0, min_value=0.0, m
 max_open = col_max_open.number_input("Open max ($)", value=500.0, min_value=0.0, max_value=500.0)
 
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
-max_float = st.sidebar.number_input("Shs Float max", value=1000000000)
+max_float = st.sidebar.number_input("Shares Out max", value=1000000000)
 
 with st.sidebar.expander("parametri strategia"):
     param_sl = st.number_input("%SL", value=30.0)
@@ -82,7 +82,7 @@ if len(date_range) == 2:
 # filtri base
 filtered = filtered[(filtered["Open"] >= min_open) & (filtered["Open"] <= max_open)]
 filtered = filtered[filtered["Gap%"] >= min_gap]
-filtered = filtered[filtered["Shs Float"] <= max_float]
+filtered = filtered[filtered["Shares Outstanding"] <= max_float]
 filtered = filtered[(filtered["Market Cap"] >= marketcap_min) & (filtered["Market Cap"] <= marketcap_max)]
 
 if selected_tickers:
