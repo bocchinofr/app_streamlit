@@ -20,7 +20,7 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 def load_data():
     usecols = [
         "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
-        "Close_1030", "High_90m", "Low_90m", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
+        "High_90m", "Low_90m", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
         "High_150m", "Low_150m", "High_210m", "Low_210m", "High_30m", "Low_30m", "Market Cap"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="Gapper2018_2024", usecols=usecols)
