@@ -11,7 +11,7 @@ st.set_page_config(page_title="Strategia Intraday", layout="wide")
 col1, col2 = st.columns([3, 1])
 
 with col1:
-    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday 2018/2024</h1>", unsafe_allow_html=True)
 
 # ---- CARICAMENTO DATI CON CACHE ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=xlsx"
@@ -34,7 +34,7 @@ df = load_data()
 
 # --- FILTRI LATERALI (uguali a prima) ---
 date_range = st.sidebar.date_input("Intervallo date", [])
-tickers = sorted(df["Ticker"].dropna().unique())
+tickers = sorted(df["Ticker"].dropna().astype(str).unique())
 selected_tickers = st.sidebar.multiselect("Ticker", options=tickers, default=[])
 
 # Market cap inputs (mantengo la UI come prima)
