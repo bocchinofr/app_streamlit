@@ -32,6 +32,11 @@ def load_data():
 df = load_data()
 
 
+st.write("Shape originale df:", df.shape)
+st.write(df.head())
+st.write(df.dtypes)
+
+
 # --- FILTRI LATERALI (uguali a prima) ---
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = sorted(df["Ticker"].dropna().astype(str).unique())
