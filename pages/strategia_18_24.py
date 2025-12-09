@@ -99,21 +99,16 @@ if pd.notna(min_date) and pd.notna(max_date):
 
 # elenco colonne timeframe che ci aspettiamo (opzione B)
 expected_high_cols = [
-    "High_1m","High_5m","High_30m","High_60m","High_90m","High_150m","High_210m","High_270m"
+    "High_1m","High_5m","High_30m","High_90m","High_150m","High_210m","High_270m"
 ]
 expected_low_cols = [
-    "Low_1m","Low_5m","Low_30m","Low_60m","Low_90m","Low_150m","Low_210m","Low_270m"
+    "Low_1m","Low_5m","Low_30m","Low_90m","Low_150m","Low_210m","Low_270m"
 ]
 
 # assicurati che le colonne esistano — se mancano creale con NaN (così non crasha)
 for c in expected_high_cols + expected_low_cols + ["High","Low","Close"]:
     if c not in filtered.columns:
         filtered[c] = np.nan
-
-# Ricostruisco High_60m / Low_60m se non esistono (o sono NaN)
-# Logica: se High_60m manca, prendo max tra High_30m e High_90m (si conserva comportamento cumulativo)
-filtered["High_60m"] = filtered["High_60m"].fillna(filtered[["High_30m","High_90m"]].max(axis=1))
-filtered["Low_60m"]  = filtered["Low_60m"].fillna(filtered[["Low_30m","Low_90m"]].min(axis=1))
 
 # Close giornaliero: se manca, usiamo Open come fallback (puoi cambiare fallback se preferisci)
 filtered["Close_day"] = filtered["Close"].fillna(filtered["Open"])
@@ -131,29 +126,31 @@ filtered["SL_price"] = filtered["Open"] * (1 + param_sl/100)
 filtered["TP_price"] = filtered["Open"] * (1 + param_tp/100)
 filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 
-# --- ATTIVAZIONE ENTRO 90 MINUTI
-# controlliamo tutti i timeframe fino a 90m (1m,5m,30m,60m,90m)
-activation_cols = [c for c in ["High_1m","High_5m","High_30m","High_60m","High_90m"] if c in filtered.columns]
-# creiamo la maschera in modo vettoriale (evitiamo iterrows per la performance)
+# --- ATTIVAZIONE ENTRO 90 MINUTI (senza usare 60m)
+# timeframe validi per l'attivazione: 1m, 5m, 30m, 90m
+activation_cols = [c for c in ["High_1m", "High_5m", "High_30m", "High_90m"] if c in filtered.columns]
+
 if activation_cols:
-    filtered["attivazione"] = (filtered[activation_cols].ge(filtered["Entry_price"], axis=0).any(axis=1)).astype(int)
+    # attivazione short: il prezzo deve salire fino a Entry_price
+    filtered["attivazione"] = (
+        filtered[activation_cols].ge(filtered["Entry_price"], axis=0).any(axis=1)
+    ).astype(int)
 else:
-    # se non abbiamo nessuna colonna rilevante, tutto a 0
     filtered["attivazione"] = 0
 
+
 # === TIMEFRAMES DA USARE PER VERIFICA TP/SL (OPZIONE B) ===
-# ordine: 1m,5m,30m,60m,90m,150m,210m,270m, poi fallback High/Low (giornaliero)
 timeframes_order = [
     ("High_1m","Low_1m"),
     ("High_5m","Low_5m"),
     ("High_30m","Low_30m"),
-    ("High_60m","Low_60m"),
     ("High_90m","Low_90m"),
     ("High_150m","Low_150m"),
     ("High_210m","Low_210m"),
     ("High_270m","Low_270m"),
-    ("High_day","Low_day")   # fallback giornaliero
+    ("High_day","Low_day")
 ]
+
 
 # inizializzo colonne
 filtered["SL"] = 0
@@ -361,8 +358,8 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 # =====================================================
 
 cols_to_show = [
-    "Date", "Ticker", "Gap%", "Open", "Close", "High_1m","Low_1m","High_5m","Low_5m","High_30m","Low_30m",
-    "High_60m","Low_60m","High_90m","Low_90m","High_150m","Low_150m","High_210m","Low_210m","High_270m","Low_270m",
+    "Date", "Ticker", "Gap%", "Open", "Close","High_5m","Low_5m","High_30m","Low_30m",
+    "High_90m","Low_90m","High_150m","Low_150m","High_210m","Low_210m","High_270m","Low_270m",
     "High_day","Low_day","Entry_price","SL_price","TP_price","TP_day%","attivazione","SL","TP","BEprofit"
 ]
 
