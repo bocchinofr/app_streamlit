@@ -127,8 +127,30 @@ marketcap_max_M = col_mc_max.number_input(
 marketcap_min = marketcap_min_M * 1_000_000
 marketcap_max = marketcap_max_M * 1_000_000
 
-max_float = st.sidebar.number_input("Sh Outstanding massimo", 0, 100_000_000_000, 50_000_000)
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
+
+# filtro sh outstanding
+col_shout_min, col_shout_max = st.sidebar.columns(2)
+
+shout_min = col_shout_min.number_input(
+    "ShOut MIN", 
+    value=0, 
+    step=100000,
+    min_value=0,
+    max_value=1000000000,
+    help="Valore minimo di Flottante"
+
+)
+
+shout_max = col_shout_max.number_input(
+    "ShOut MAX", 
+    value=5000000, 
+    step=100000,
+    min_value=0,
+    max_value=1000000000,
+    help="Valore massimo di Flottante"
+
+)
 
 # filtro OPEN price
 col_open_min, col_open_max = st.sidebar.columns(2)
@@ -156,8 +178,13 @@ open_max = col_open_max.number_input(
 filtered = df.copy()
 if tickers:
     filtered = filtered[filtered["Ticker"].isin(tickers)]
-filtered = filtered[(filtered["GAP"] >= min_gap) & (filtered["Shared Outstanding"] <= max_float)]
+filtered = filtered[(filtered["GAP"] >= min_gap)]
 filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
+
+filtered = filtered[
+    (filtered["Shared Outstanding"] >= shout_min) &
+    (filtered["Shared Outstanding"] <= shout_max)
+]
 
 filtered = filtered[
     (filtered["OPEN"] >= open_min) &
