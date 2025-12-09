@@ -124,7 +124,29 @@ marketcap_max_M = col_mc_max.number_input(
 marketcap_min = marketcap_min_M * 1_000_000
 marketcap_max = marketcap_max_M * 1_000_000
 
-max_float = st.sidebar.number_input("Float massimo", 0, 1_000_000_000, 5_000_000)
+# filtro flottante
+col_float_min, col_float_max = st.sidebar.columns(2)
+
+float_min = col_float_min.number_input(
+    "Flaot MIN", 
+    value=0, 
+    step=100000,
+    min_value=0,
+    max_value=1000000000,
+    help="Valore minimo di Flottante"
+
+)
+
+float_max = col_float_max.number_input(
+    "Flaot MAX", 
+    value=5000000, 
+    step=100000,
+    min_value=0,
+    max_value=1000000000,
+    help="Valore massimo di Flottante"
+
+)
+
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 
 # filtro OPEN price
@@ -153,8 +175,18 @@ open_max = col_open_max.number_input(
 filtered = df.copy()
 if tickers:
     filtered = filtered[filtered["Ticker"].isin(tickers)]
-filtered = filtered[(filtered["GAP"] >= min_gap) & (filtered["Float"] <= max_float)]
+filtered = filtered[(filtered["GAP"] >= min_gap)]
 filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
+
+filtered = filtered[
+    (filtered["Float"] >= float_min) &
+    (filtered["Float"] <= float_max)
+]
+
+filtered = filtered[
+    (filtered["OPEN"] >= open_min) &
+    (filtered["OPEN"] <= open_max)
+]
 
 filtered = filtered[
     (filtered["OPEN"] >= open_min) &
