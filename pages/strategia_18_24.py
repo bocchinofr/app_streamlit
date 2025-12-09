@@ -357,11 +357,11 @@ be_df = filtered[filtered["BEprofit"] == 1].copy()
 show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 
 # =====================================================
-# === TABELLA (adattata ai nomi storici) =
+# region === TABELLA (adattata ai nomi storici) =
 # =====================================================
 
 cols_to_show = [
-    "Date", "Ticker", "Gap%", "High_1m","Low_1m","High_5m","Low_5m","High_30m","Low_30m",
+    "Date", "Ticker", "Gap%", "Open", "Close", "High_1m","Low_1m","High_5m","Low_5m","High_30m","Low_30m",
     "High_60m","Low_60m","High_90m","Low_90m","High_150m","Low_150m","High_210m","Low_210m","High_270m","Low_270m",
     "High_day","Low_day","Entry_price","SL_price","TP_price","TP_day%","attivazione","SL","TP","BEprofit"
 ]
@@ -406,9 +406,9 @@ styled_df = (
 st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella filtrata</h3>', unsafe_allow_html=True)
 st.dataframe(styled_df, use_container_width=True)
 st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
-
+# endregion
 # =====================================================
-# === EQUITY & DRAWDOWN SIMULATION (adattata ai nomi) =
+# region === EQUITY & DRAWDOWN SIMULATION (adattata ai nomi) =
 # =====================================================
 
 st.markdown("### 📈 Simulazione Equity & Drawdown")
@@ -533,3 +533,5 @@ ax2.tick_params(axis='both', which='major', labelsize=7)
 ax2.set_xticks(range(0, len(df_display), max(1, len(df_display)//10)))
 plt.tight_layout()
 st.pyplot(fig2)
+
+# endregion
