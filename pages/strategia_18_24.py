@@ -358,8 +358,8 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 # =====================================================
 
 cols_to_show = [
-    "Date", "Ticker", "Gap%", "Open", "Close","High_5m","Low_5m","High_30m","Low_30m",
-    "High_90m","Low_90m","High_150m","Low_150m","High_270m","Low_270m",
+    "Date", "Ticker", "Gap%", "Open", "Close","High_30m","Low_30m",
+    "High_90m","Low_90m","High_270m","Low_270m",
     "High_day","Low_day","Entry_price","SL_price","TP_price","TP_day%","attivazione","SL","TP","BEprofit"
 ]
 
