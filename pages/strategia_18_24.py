@@ -264,7 +264,7 @@ RR_be = safe_div((filtered["Entry_price"].iloc[first] - filtered["BE_price"].ilo
                  (filtered["SL_price"].iloc[first] - filtered["Entry_price"].iloc[first]))
 
 # =====================================================
-# === KPI BOX (stesso layout, adattato ai nuovi nomi) =
+# region === KPI BOX (stesso layout, adattato ai nuovi nomi) =
 # =====================================================
 
 total = len(filtered)
@@ -329,9 +329,9 @@ st.markdown(f"""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
+# endregion
 # =====================================================
-# === SEZIONI A SCOMPARSA KPI (stessa funzione, riutilizzo) =
+# region === SEZIONI A SCOMPARSA KPI (stessa funzione, riutilizzo) =
 # =====================================================
 
 def show_kpi_section(df_section, title, box_color):
@@ -352,14 +352,14 @@ show_kpi_section(tp_df, "🟢 Take Profit", "#035506")
 
 be_df = filtered[filtered["BEprofit"] == 1].copy()
 show_kpi_section(be_df, "🟡 Break Even", "#705B15")
-
+# endregion
 # =====================================================
 # region === TABELLA (adattata ai nomi storici) =
 # =====================================================
 
 cols_to_show = [
     "Date", "Ticker", "Gap%", "Open", "Close","High_5m","Low_5m","High_30m","Low_30m",
-    "High_90m","Low_90m","High_150m","Low_150m","High_210m","Low_210m","High_270m","Low_270m",
+    "High_90m","Low_90m","High_150m","Low_150m","High_270m","Low_270m",
     "High_day","Low_day","Entry_price","SL_price","TP_price","TP_day%","attivazione","SL","TP","BEprofit"
 ]
 
