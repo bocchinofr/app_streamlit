@@ -128,7 +128,7 @@ marketcap_max = marketcap_max_M * 1_000_000
 col_float_min, col_float_max = st.sidebar.columns(2)
 
 float_min = col_float_min.number_input(
-    "Flaot MIN", 
+    "Float MIN", 
     value=0, 
     step=100000,
     min_value=0,
@@ -138,7 +138,7 @@ float_min = col_float_min.number_input(
 )
 
 float_max = col_float_max.number_input(
-    "Flaot MAX", 
+    "Float MAX", 
     value=5000000, 
     step=100000,
     min_value=0,
