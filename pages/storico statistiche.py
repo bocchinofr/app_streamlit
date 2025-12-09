@@ -188,6 +188,11 @@ filtered = filtered[
     (filtered["Float"] <= float_max)
 ]
 
+filtered = filtered[
+    (filtered["OPEN"] >= open_min) &
+    (filtered["OPEN"] <= open_max)
+]
+
 if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
