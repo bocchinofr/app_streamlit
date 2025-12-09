@@ -96,7 +96,7 @@ st.sidebar.header("🔍 Filtri")
 
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
-min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 0)
+min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 50)
 
 # ====== MARKET CAP: DUE BOX (IN MILIONI) ======
 # Valori fissi di default in Milioni
