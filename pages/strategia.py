@@ -107,9 +107,9 @@ max_open = col_max_open.number_input(
 
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
 
-col_float_open, col_float_open = st.sidebar.columns(2)
+col_float_min, col_float_max = st.sidebar.columns(2)
 
-min_float = col_float_open.number_input(
+min_float = col_float_min.number_input(
     "Shs float min",
     value=0,
     min_value=0,
@@ -117,7 +117,7 @@ min_float = col_float_open.number_input(
     help="Short float minimo"
 )
 
-max_float = col_float_open.number_input(
+max_float = col_float_max.number_input(
     "Shs float max",
     value=200000000,
     min_value=0,
