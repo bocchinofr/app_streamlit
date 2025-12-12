@@ -106,7 +106,24 @@ max_open = col_max_open.number_input(
 )
 
 min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
-max_float = st.sidebar.number_input("Shs Float max", value=1000000000)
+
+col_float_open, col_float_open = st.sidebar.columns(2)
+
+min_float = col_float_open.number_input(
+    "Shs float min",
+    value=0,
+    min_value=0,
+    max_value=500,
+    help="Short float minimo"
+)
+
+max_float = col_float_open.number_input(
+    "Shs float max",
+    value=200000000,
+    min_value=0,
+    max_value=1000000000
+    help="Short float massimo"
+)
 
 with st.sidebar.expander("parametri strategia"):
 
@@ -148,6 +165,12 @@ filtered = filtered[
 ]
 filtered = filtered[filtered["Gap%"] >= min_gap]
 filtered = filtered[filtered["Shs Float"] <= max_float]
+
+filtered = filtered[
+    (filtered["Shs Float"] >= min_float) &
+    (filtered["Shs Float"] <= max_float)
+]
+
 filtered = filtered[
     (filtered["Market Cap"] >= marketcap_min) &
     (filtered["Market Cap"] <= marketcap_max)
