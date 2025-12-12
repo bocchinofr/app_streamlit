@@ -121,7 +121,7 @@ max_float = col_float_open.number_input(
     "Shs float max",
     value=200000000,
     min_value=0,
-    max_value=1000000000
+    max_value=1000000000,
     help="Short float massimo"
 )
 
