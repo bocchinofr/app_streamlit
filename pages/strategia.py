@@ -113,7 +113,7 @@ min_float = col_float_min.number_input(
     "Shs float min",
     value=0,
     min_value=0,
-    max_value=500,
+    max_value=1000000000,
     help="Short float minimo"
 )
 
