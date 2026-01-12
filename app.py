@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 from dateutil import parser
 import numpy as np
+import yfinance as yf
+
 
 
 # ---- CONFIGURAZIONE ----
