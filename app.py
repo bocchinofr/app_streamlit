@@ -185,8 +185,11 @@ open_max = col_open_max.number_input(
 )
 
 filtered = df.copy()
-if tickers:
+if ticker_input:
     filtered = filtered[filtered["Ticker"] == ticker_input]
+if ticker_input and ticker_input not in df["Ticker"].unique():
+    st.warning(f"⚠️ Il ticker {ticker_input} non è presente nei dati intraday.")
+
 filtered = filtered[(filtered["GAP"] >= min_gap)]
 filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
 
