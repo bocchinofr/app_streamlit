@@ -17,61 +17,6 @@ ticker_input = st.text_input(
     placeholder="Lascia vuoto per usare solo i dati intraday"
 ).upper().strip()
 
-# ---- SLIDER SEZIONE STORICA (solo se ticker valorizzato) ----
-if ticker_input:
-    st.markdown("---")
-    st.markdown(f"### 📊 Storico gap giornaliero – filtri per {ticker_input}")
-
-    # Slider GAP (%) - intervallo
-    gap_min_max = st.slider(
-        "GAP (%)",
-        min_value=0,
-        max_value=1000,
-        value=(30, 1000),  # default minimo 30, massimo 1000
-        step=1
-    )
-    gap_min, gap_max = gap_min_max
-
-    # Slider Volume minimo ($M)
-    volume_min_M = st.slider(
-        "Volume minimo ($M)",
-        min_value=0,
-        max_value=1000,
-        value=0,
-        step=1
-    )
-    volume_min = volume_min_M * 1_000_000  # conversione in valori reali
-
-    # Slider Open ($) - intervallo
-    open_min_max = st.slider(
-        "Open ($)",
-        min_value=0.0,
-        max_value=200.0,
-        value=(2.0, 200.0),
-        step=0.1
-    )
-    open_min, open_max = open_min_max
-
-    # Applico i filtri al dataframe storica
-    # Copia df per lavoro storico
-    historical_filtered = df.copy()
-
-    if ticker_input:  # solo se l'utente ha inserito un ticker
-        historical_filtered = historical_filtered[historical_filtered["Ticker"] == ticker_input].copy()
-
-
-    historical_filtered = historical_filtered[
-        (historical_filtered["GAP"] >= gap_min) &
-        (historical_filtered["GAP"] <= gap_max) &
-        (historical_filtered["Volume"] >= volume_min*1_000_000) &
-        (historical_filtered["OPEN"] >= open_min) &
-        (historical_filtered["OPEN"] <= open_max)
-    ]
-
-    st.write(f"Record filtrati: {len(historical_filtered)}")
-
-
-
 # ---- CARICAMENTO DATI ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
 df = pd.read_csv(SHEET_URL)
@@ -149,6 +94,67 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
             st.dataframe(invalid_nums[["Ticker", col]])
 
 # endregion
+
+
+# ---- SLIDER SEZIONE STORICA (solo se ticker valorizzato) ----
+if ticker_input:
+    st.markdown("---")
+    st.markdown(f"### 📊 Storico gap giornaliero – filtri per {ticker_input}")
+
+    # Slider GAP (%) - intervallo
+    gap_min_max = st.slider(
+        "GAP (%)",
+        min_value=0,
+        max_value=1000,
+        value=(30, 1000),  # default minimo 30, massimo 1000
+        step=1
+    )
+    gap_min, gap_max = gap_min_max
+
+    # Slider Volume minimo ($M)
+    volume_min_M = st.slider(
+        "Volume minimo ($M)",
+        min_value=0,
+        max_value=1000,
+        value=0,
+        step=1
+    )
+    volume_min = volume_min_M * 1_000_000  # conversione in valori reali
+
+    # Slider Open ($) - intervallo
+    open_min_max = st.slider(
+        "Open ($)",
+        min_value=0.0,
+        max_value=200.0,
+        value=(2.0, 200.0),
+        step=0.1
+    )
+    open_min, open_max = open_min_max
+
+    # Applico i filtri al dataframe storica
+    # Copia df per lavoro storico
+    historical_filtered = df.copy()
+
+    if ticker_input:  # solo se l'utente ha inserito un ticker
+        historical_filtered = historical_filtered[historical_filtered["Ticker"] == ticker_input].copy()
+
+
+    historical_filtered = historical_filtered[
+        (historical_filtered["GAP"] >= gap_min) &
+        (historical_filtered["GAP"] <= gap_max) &
+        (historical_filtered["Volume"] >= volume_min*1_000_000) &
+        (historical_filtered["OPEN"] >= open_min) &
+        (historical_filtered["OPEN"] <= open_max)
+    ]
+
+    st.write(f"Record filtrati: {len(historical_filtered)}")
+
+
+
+
+
+
+
 
 # region ---- FILTRI ----
 st.sidebar.header("🔍 Filtri")
