@@ -10,6 +10,18 @@ import numpy as np
 st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
 st.title("📈 Dashboard Analisi Small Cap")
 
+st.markdown("### 🔎 Analisi storica gap per singolo ticker")
+
+ticker_input = st.text_input(
+    "Inserisci un ticker (es. MARA, TSLA, AAPL)",
+    placeholder="Lascia vuoto per usare solo i dati intraday"
+).upper().strip()
+
+if ticker_input:
+    st.markdown("---")
+    st.markdown(f"## 📊 Storico gap giornalieri – {ticker_input}")
+
+
 # ---- CARICAMENTO DATI ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
 df = pd.read_csv(SHEET_URL)
@@ -92,7 +104,7 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 st.sidebar.header("🔍 Filtri")
 
 date_range = st.sidebar.date_input("Intervallo date", [])
-tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
+#tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
 min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 0)
 
 # ====== MARKET CAP: DUE BOX (IN MILIONI) ======
@@ -174,7 +186,7 @@ open_max = col_open_max.number_input(
 
 filtered = df.copy()
 if tickers:
-    filtered = filtered[filtered["Ticker"].isin(tickers)]
+    filtered = filtered[filtered["Ticker"] == ticker_input]
 filtered = filtered[(filtered["GAP"] >= min_gap)]
 filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
 
