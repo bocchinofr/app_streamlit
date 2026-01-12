@@ -111,16 +111,6 @@ if ticker_input:
     )
     gap_min, gap_max = gap_min_max
 
-    # Slider Volume minimo ($M)
-    volume_min_M = st.slider(
-        "Volume minimo ($M)",
-        min_value=0,
-        max_value=1000,
-        value=0,
-        step=1
-    )
-    volume_min = volume_min_M * 1_000_000  # conversione in valori reali
-
     # Slider Open ($) - intervallo
     open_min_max = st.slider(
         "Open ($)",
@@ -142,7 +132,6 @@ if ticker_input:
     historical_filtered = historical_filtered[
         (historical_filtered["GAP"] >= gap_min) &
         (historical_filtered["GAP"] <= gap_max) &
-        (historical_filtered["Volume"] >= volume_min*1_000_000) &
         (historical_filtered["OPEN"] >= open_min) &
         (historical_filtered["OPEN"] <= open_max)
     ]
