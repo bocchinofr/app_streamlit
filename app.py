@@ -96,7 +96,6 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 
 # ---- SLIDER SEZIONE STORICA (solo se ticker valorizzato) ----
 if ticker_input:
-    st.markdown("---")
     st.markdown(f"### 📊 Storico gap giornaliero – filtri per {ticker_input}")
 
     col1, spacer, col2 = st.columns([4, 1, 4])  # proporzioni: slider1=4, spazio=1, slider2=4
