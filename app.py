@@ -137,28 +137,33 @@ if ticker_input:
 
     st.write(f"Record filtrati: {len(historical_filtered)}")
 
-    # Scarico i dati storici, ad esempio ultimi 6 mesi
     try:
+        # Scarico gli ultimi 6 mesi (o puoi cambiare period)
         ticker_yf = yf.Ticker(ticker_input)
-        df_yf = ticker_yf.history(period="6mo")  # puoi cambiare il periodo: '1y', '3mo', ecc.
-        df_yf.reset_index(inplace=True)  # Date diventa colonna
+        df_yf = ticker_yf.history(period="6mo")
+        df_yf.reset_index(inplace=True)
 
-        # Rinominare colonne per chiarezza
-        df_yf.rename(columns={
-            "Open": "Open $",
-            "High": "High $",
-            "Low": "Low $",
-            "Close": "Close $",
-            "Volume": "Volume"
-        }, inplace=True)
+        # Calcolo GAP% = (Open - Close_giorno_precedente)/Close_giorno_precedente * 100
+        df_yf["Gap%"] = df_yf["Open"].pct_change() * 100
+        df_yf["Gap%"] = df_yf["Gap%"].fillna(0).round(2)
 
-        # Mostro solo alcune colonne principali
-        st.dataframe(
-            df_yf[["Date", "Open $", "High $", "Low $", "Close $", "Volume"]],
-            width='stretch'
-        )
+        # Applico filtri slider GAP e Open
+        df_yf_filtered = df_yf[
+            (df_yf["Gap%"] >= gap_min) & (df_yf["Gap%"] <= gap_max) &
+            (df_yf["Open"] >= open_min) & (df_yf["Open"] <= open_max)
+        ].copy()
 
-        st.caption(f"Ultimi {len(df_yf)} record storici di {ticker_input}")
+        # Aggiungo colonna ticker
+        df_yf_filtered["Ticker"] = ticker_input
+
+        # Riformatto data
+        df_yf_filtered["Data"] = df_yf_filtered["Date"].dt.strftime("%d-%m-%Y")
+
+        # Seleziono colonne finali
+        df_display = df_yf_filtered[["Ticker", "Data", "Gap%", "Open", "High", "Low", "Close"]]
+
+        st.dataframe(df_display, width='stretch')
+        st.caption(f"Record storici filtrati: {len(df_display)}")
 
     except Exception as e:
         st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
