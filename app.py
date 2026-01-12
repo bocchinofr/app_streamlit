@@ -142,11 +142,17 @@ try:
 
     # Scarico dati ultimi 6 mesi
     ticker_yf = yf.Ticker(ticker_input)
-    df_yf = ticker_yf.history(period="6mo")  # puoi cambiare il periodo
+    df_yf = ticker_yf.history(period="6mo")  # ultimi 6 mesi
     df_yf.reset_index(inplace=True)  # 'Date' diventa colonna
 
+    # Assicuriamoci che ci siano le colonne necessarie
+    for col in ["Open", "High", "Low", "Close"]:
+        if col not in df_yf.columns:
+            st.error(f"Colonna '{col}' mancante nei dati di {ticker_input}")
+            raise ValueError(f"Colonna '{col}' mancante nei dati di {ticker_input}")
+
     # ---------------------------
-    # 1️⃣ Calcolo prezzi rettificati per split/dividendi
+    # 1️⃣ Calcolo prezzi rettificati
     # ---------------------------
     if "Adj Close" in df_yf.columns:
         df_yf["Open_adj"]  = df_yf["Open"]  * df_yf["Adj Close"] / df_yf["Close"]
@@ -193,7 +199,6 @@ try:
         "Close_adj": "Close $"
     }, inplace=True)
 
-    # Mostro tabella
     st.dataframe(df_filtered[display_cols], width='stretch')
     st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
