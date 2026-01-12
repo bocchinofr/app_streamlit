@@ -138,13 +138,14 @@ if ticker_input:
     st.write(f"Record filtrati: {len(historical_filtered)}")
 
     try:
-        # Scarico gli ultimi 6 mesi (o puoi cambiare period)
+        # Scarico gli ultimi 6 mesi (o cambia period)
         ticker_yf = yf.Ticker(ticker_input)
         df_yf = ticker_yf.history(period="6mo")
         df_yf.reset_index(inplace=True)
 
-        # Calcolo GAP% = (Open - Close_giorno_precedente)/Close_giorno_precedente * 100
-        df_yf["Gap%"] = df_yf["Open"].pct_change() * 100
+        # Calcolo GAP corretto: (Open - Adj Close ieri) / Adj Close ieri
+        df_yf["Adj Close Shifted"] = df_yf["Adj Close"].shift(1)
+        df_yf["Gap%"] = ((df_yf["Open"] - df_yf["Adj Close Shifted"]) / df_yf["Adj Close Shifted"]) * 100
         df_yf["Gap%"] = df_yf["Gap%"].fillna(0).round(2)
 
         # Applico filtri slider GAP e Open
