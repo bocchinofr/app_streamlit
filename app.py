@@ -142,29 +142,34 @@ try:
     df_yf = ticker_yf.history(period="6mo")
     df_yf.reset_index(inplace=True)
 
-    # Recupero split
-    splits = ticker_yf.splits
+    # 1️⃣ Prev Close RAW (non aggiustato) – fondamentale per il giorno dello split
+    df_yf["Prev_Close_raw"] = df_yf["Close"].shift(1)
 
-    # Creo colonna factor iniziale
+    # 2️⃣ Recupero split
+    splits = ticker_yf.splits
     df_yf["factor"] = 1.0
 
     for date, ratio in splits.items():
         split_date = pd.to_datetime(date)
-        # Applico il fattore solo ai giorni PRECEDENTI lo split
+        # Applico SOLO ai giorni precedenti allo split
         df_yf.loc[df_yf["Date"] < split_date, "factor"] *= ratio
 
-    # Applico i fattori solo ai prezzi pre-split
+    # 3️⃣ Prezzi aggiustati (solo pre-split)
     df_yf["Open_adj"] = df_yf["Open"] * df_yf["factor"]
     df_yf["High_adj"] = df_yf["High"] * df_yf["factor"]
     df_yf["Low_adj"] = df_yf["Low"] * df_yf["factor"]
     df_yf["Close_adj"] = df_yf["Close"] * df_yf["factor"]
 
-    # Calcolo Gap% usando Open_adj e Close_adj
-    df_yf["Prev_Close"] = df_yf["Close_adj"].shift(1)
-    df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
+    # 4️⃣ Gap% CORRETTO
+    # Open aggiustato vs Close RAW del giorno prima
+    df_yf["Gap%"] = (
+        (df_yf["Open_adj"] - df_yf["Prev_Close_raw"])
+        / df_yf["Prev_Close_raw"]
+    ) * 100
+
     df_yf["Gap%"] = df_yf["Gap%"].fillna(0).round(2)
 
-    # Filtro slider
+    # 5️⃣ Filtro slider
     df_filtered = df_yf[
         (df_yf["Gap%"] >= gap_min) &
         (df_yf["Gap%"] <= gap_max) &
@@ -172,7 +177,7 @@ try:
         (df_yf["Open_adj"] <= open_max)
     ].copy()
 
-    # Rinomino colonne e formatto data
+    # 6️⃣ Rinomino colonne
     df_filtered.rename(columns={
         "Open_adj": "Open $",
         "High_adj": "High $",
@@ -180,13 +185,13 @@ try:
         "Close_adj": "Close $",
     }, inplace=True)
 
+    # 7️⃣ Formato data e ticker
     df_filtered["Date"] = df_filtered["Date"].dt.strftime('%d-%m-%Y')
     df_filtered["Ticker"] = ticker_input
 
     display_cols = ["Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $"]
-    st.dataframe(df_filtered[display_cols], width='stretch')
+    st.dataframe(df_filtered[display_cols], width="stretch")
     st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
-
 
 except Exception as e:
     st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
