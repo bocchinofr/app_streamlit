@@ -140,34 +140,28 @@ if ticker_input:
 try:
     import yfinance as yf
 
-    # Scarico dati ultimi 6 mesi
+    # Scarico i dati storici, ultimi 6 mesi
     ticker_yf = yf.Ticker(ticker_input)
     df_yf = ticker_yf.history(period="6mo")
     df_yf.reset_index(inplace=True)
 
-    # Controllo colonne base
-    for col in ["Open", "High", "Low", "Close"]:
-        if col not in df_yf.columns:
-            raise ValueError(f"Colonna '{col}' mancante nei dati di {ticker_input}")
+    # --- ADJUST REVERSE SPLITS ---
+    splits = ticker_yf.splits
+    df_yf["factor"] = 1.0
+    for date, ratio in splits.items():
+        df_yf.loc[df_yf["Date"] < pd.to_datetime(date), "factor"] *= ratio
 
-    # Calcolo prezzi rettificati
-    if "Adj Close" in df_yf.columns:
-        df_yf["Open_adj"] = df_yf["Open"] * df_yf["Adj Close"] / df_yf["Close"]
-        df_yf["High_adj"] = df_yf["High"] * df_yf["Adj Close"] / df_yf["Close"]
-        df_yf["Low_adj"] = df_yf["Low"] * df_yf["Adj Close"] / df_yf["Close"]
-        df_yf["Close_adj"] = df_yf["Adj Close"]
-    else:
-        df_yf["Open_adj"] = df_yf["Open"]
-        df_yf["High_adj"] = df_yf["High"]
-        df_yf["Low_adj"] = df_yf["Low"]
-        df_yf["Close_adj"] = df_yf["Close"]
+    df_yf["Open_adj"] = df_yf["Open"] * df_yf["factor"]
+    df_yf["High_adj"] = df_yf["High"] * df_yf["factor"]
+    df_yf["Low_adj"] = df_yf["Low"] * df_yf["factor"]
+    df_yf["Close_adj"] = df_yf["Close"] * df_yf["factor"]
 
-    # Calcolo Gap %
-    df_yf["Prev_Close_adj"] = df_yf["Close_adj"].shift(1)
-    df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close_adj"]) / df_yf["Prev_Close_adj"]) * 100
-    df_yf["Gap%"] = df_yf["Gap%"].round(2).fillna(0)
+    # --- CALCOLO GAP % ---
+    df_yf["Prev_Close"] = df_yf["Close_adj"].shift(1)
+    df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
+    df_yf["Gap%"] = df_yf["Gap%"].fillna(0).round(2)
 
-    # Filtri slider
+    # --- FILTRO SLIDER ---
     df_filtered = df_yf[
         (df_yf["Gap%"] >= gap_min) &
         (df_yf["Gap%"] <= gap_max) &
@@ -175,22 +169,21 @@ try:
         (df_yf["Open_adj"] <= open_max)
     ].copy()
 
-    # Rinominazione colonne **solo ora**
+    # --- RINOMINO COLONNE E FORMATTO DATA ---
     df_filtered.rename(columns={
         "Open_adj": "Open $",
         "High_adj": "High $",
         "Low_adj": "Low $",
-        "Close_adj": "Close $"
+        "Close_adj": "Close $",
     }, inplace=True)
 
-    # Formatto data e aggiungo ticker
     df_filtered["Date"] = df_filtered["Date"].dt.strftime('%d-%m-%Y')
     df_filtered["Ticker"] = ticker_input
 
     display_cols = ["Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $"]
-
     st.dataframe(df_filtered[display_cols], width='stretch')
     st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
+
 
 except Exception as e:
     st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
