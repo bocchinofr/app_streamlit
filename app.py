@@ -22,73 +22,44 @@ if ticker_input:
     st.markdown("---")
     st.markdown(f"### 📊 Storico gap giornaliero – filtri per {ticker_input}")
 
-    # Intervallo GAP %
-    gap_min = st.slider(
-        "GAP minimo (%)",
+    # Slider GAP (%) - intervallo
+    gap_min_max = st.slider(
+        "GAP (%)",
         min_value=0,
-        max_value=100,
+        max_value=1000,
+        value=(30, 1000),  # default minimo 30, massimo 1000
+        step=1
+    )
+    gap_min, gap_max = gap_min_max
+
+    # Slider Volume minimo ($M)
+    volume_min_M = st.slider(
+        "Volume minimo ($M)",
+        min_value=0,
+        max_value=1000,
         value=0,
         step=1
     )
+    volume_min = volume_min_M * 1_000_000  # conversione in valori reali
 
-    # Market Cap in milioni
-    mc_min = st.slider(
-        "Market Cap minimo ($M)",
-        min_value=0,
-        max_value=2000,
-        value=0,
-        step=10
-    )
-    mc_max = st.slider(
-        "Market Cap massimo ($M)",
-        min_value=0,
-        max_value=2000,
-        value=2000,
-        step=10
-    )
-
-    # Flottante
-    float_min_slider = st.slider(
-        "Flottante minimo",
-        min_value=0,
-        max_value=100_000_000,
-        value=0,
-        step=100_000
-    )
-    float_max_slider = st.slider(
-        "Flottante massimo",
-        min_value=0,
-        max_value=100_000_000,
-        value=5_000_000,
-        step=100_000
-    )
-
-    # Prezzo Open
-    open_min_slider = st.slider(
-        "Open minimo",
+    # Slider Open ($) - intervallo
+    open_min_max = st.slider(
+        "Open ($)",
         min_value=0.0,
-        max_value=100.0,
-        value=1.0,
+        max_value=200.0,
+        value=(2.0, 200.0),
         step=0.1
     )
-    open_max_slider = st.slider(
-        "Open massimo",
-        min_value=0.0,
-        max_value=100.0,
-        value=100.0,
-        step=0.1
-    )
+    open_min, open_max = open_min_max
 
     # Applico i filtri al dataframe storica
     historical_filtered = df[df["Ticker"] == ticker_input].copy()
     historical_filtered = historical_filtered[
         (historical_filtered["GAP"] >= gap_min) &
-        (historical_filtered["Market Cap"] >= mc_min*1_000_000) &
-        (historical_filtered["Market Cap"] <= mc_max*1_000_000) &
-        (historical_filtered["Float"] >= float_min_slider) &
-        (historical_filtered["Float"] <= float_max_slider) &
-        (historical_filtered["OPEN"] >= open_min_slider) &
-        (historical_filtered["OPEN"] <= open_max_slider)
+        (historical_filtered["GAP"] <= gap_max) &
+        (historical_filtered["Market Cap"] >= volume_min) &
+        (historical_filtered["OPEN"] >= open_min) &
+        (historical_filtered["OPEN"] <= open_max)
     ]
 
     st.write(f"Record filtrati: {len(historical_filtered)}")
