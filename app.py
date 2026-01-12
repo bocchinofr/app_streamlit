@@ -53,11 +53,17 @@ if ticker_input:
     open_min, open_max = open_min_max
 
     # Applico i filtri al dataframe storica
-    historical_filtered = df[df["Ticker"] == ticker_input].copy()
+    # Copia df per lavoro storico
+    historical_filtered = df.copy()
+
+    if ticker_input:  # solo se l'utente ha inserito un ticker
+        historical_filtered = historical_filtered[historical_filtered["Ticker"] == ticker_input].copy()
+
+
     historical_filtered = historical_filtered[
         (historical_filtered["GAP"] >= gap_min) &
         (historical_filtered["GAP"] <= gap_max) &
-        (historical_filtered["Market Cap"] >= volume_min) &
+        (historical_filtered["Volume"] >= volume_min*1_000_000) &
         (historical_filtered["OPEN"] >= open_min) &
         (historical_filtered["OPEN"] <= open_max)
     ]
