@@ -208,9 +208,6 @@ try:
     with right_col:
         st.dataframe(df_filtered[display_cols], width="stretch")
 
-
-    st.dataframe(df_filtered[display_cols], width="stretch")
-
     st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
 except Exception as e:
