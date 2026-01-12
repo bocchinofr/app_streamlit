@@ -101,25 +101,25 @@ if ticker_input:
     st.markdown("---")
     st.markdown(f"### 📊 Storico gap giornaliero – filtri per {ticker_input}")
 
-    # Slider GAP (%) - intervallo
-    gap_min_max = st.slider(
-        "GAP (%)",
-        min_value=0,
-        max_value=1000,
-        value=(30, 1000),  # default minimo 30, massimo 1000
-        step=1
-    )
-    gap_min, gap_max = gap_min_max
+    col1, col2 = st.columns(2)
 
-    # Slider Open ($) - intervallo
-    open_min_max = st.slider(
-        "Open ($)",
-        min_value=0.0,
-        max_value=200.0,
-        value=(2.0, 200.0),
-        step=0.1
-    )
-    open_min, open_max = open_min_max
+    with col1:
+        # Slider GAP %
+        gap_min, gap_max = st.slider(
+            "GAP (%)",
+            min_value=0,
+            max_value=1000,
+            value=(30, 1000)
+        )
+
+    with col2:
+        # Slider Open $
+        open_min, open_max = st.slider(
+            "Open ($)",
+            min_value=0,
+            max_value=200,
+            value=(2, 200)
+        )
 
     # Applico i filtri al dataframe storica
     # Copia df per lavoro storico
