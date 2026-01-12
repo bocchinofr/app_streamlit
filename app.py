@@ -139,7 +139,7 @@ if ticker_input:
 
 try:
     ticker_yf = yf.Ticker(ticker_input)
-    df_yf = ticker_yf.history(period="6mo")
+    df_yf = ticker_yf.history(period="9mo")
     df_yf.reset_index(inplace=True)
 
     # 1️⃣ Prev Close RAW (non aggiustato) – fondamentale per il giorno dello split
