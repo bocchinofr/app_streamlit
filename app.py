@@ -135,7 +135,31 @@ if ticker_input:
 
     st.write(f"Record filtrati: {len(historical_filtered)}")
 
+    # Scarico i dati storici, ad esempio ultimi 6 mesi
+    try:
+        ticker_yf = yf.Ticker(ticker_input)
+        df_yf = ticker_yf.history(period="6mo")  # puoi cambiare il periodo: '1y', '3mo', ecc.
+        df_yf.reset_index(inplace=True)  # Date diventa colonna
 
+        # Rinominare colonne per chiarezza
+        df_yf.rename(columns={
+            "Open": "Open $",
+            "High": "High $",
+            "Low": "Low $",
+            "Close": "Close $",
+            "Volume": "Volume"
+        }, inplace=True)
+
+        # Mostro solo alcune colonne principali
+        st.dataframe(
+            df_yf[["Date", "Open $", "High $", "Low $", "Close $", "Volume"]],
+            width='stretch'
+        )
+
+        st.caption(f"Ultimi {len(df_yf)} record storici di {ticker_input}")
+
+    except Exception as e:
+        st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
 
 
 
