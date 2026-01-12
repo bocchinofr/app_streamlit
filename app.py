@@ -175,6 +175,17 @@ try:
     df_filtered["Date"] = df_filtered["Date"].dt.strftime("%d-%m-%Y")
     df_filtered["Ticker"] = ticker_input
 
+    # ===== SEZIONE REVERSE SPLIT =====
+    split_info = []
+
+    for date, ratio in splits.items():
+        if ratio < 1:  # reverse split
+            split_info.append({
+                "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
+                "Reverse Split": f"1 : {int(round(1 / ratio))}"
+            })
+
+
     df_filtered.rename(columns={
         "Open_adj": "Open $",
         "High_adj": "High $",
