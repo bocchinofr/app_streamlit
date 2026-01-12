@@ -138,30 +138,33 @@ if ticker_input:
     st.write(f"Record filtrati: {len(historical_filtered)}")
 
 try:
-    import yfinance as yf
-
-    # Scarico i dati storici, ultimi 6 mesi
     ticker_yf = yf.Ticker(ticker_input)
     df_yf = ticker_yf.history(period="6mo")
     df_yf.reset_index(inplace=True)
 
-    # --- ADJUST REVERSE SPLITS ---
+    # Recupero split
     splits = ticker_yf.splits
-    df_yf["factor"] = 1.0
-    for date, ratio in splits.items():
-        df_yf.loc[df_yf["Date"] < pd.to_datetime(date), "factor"] *= ratio
 
+    # Creo colonna factor iniziale
+    df_yf["factor"] = 1.0
+
+    for date, ratio in splits.items():
+        split_date = pd.to_datetime(date)
+        # Applico il fattore solo ai giorni PRECEDENTI lo split
+        df_yf.loc[df_yf["Date"] < split_date, "factor"] *= ratio
+
+    # Applico i fattori solo ai prezzi pre-split
     df_yf["Open_adj"] = df_yf["Open"] * df_yf["factor"]
     df_yf["High_adj"] = df_yf["High"] * df_yf["factor"]
     df_yf["Low_adj"] = df_yf["Low"] * df_yf["factor"]
     df_yf["Close_adj"] = df_yf["Close"] * df_yf["factor"]
 
-    # --- CALCOLO GAP % ---
+    # Calcolo Gap% usando Open_adj e Close_adj
     df_yf["Prev_Close"] = df_yf["Close_adj"].shift(1)
     df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
     df_yf["Gap%"] = df_yf["Gap%"].fillna(0).round(2)
 
-    # --- FILTRO SLIDER ---
+    # Filtro slider
     df_filtered = df_yf[
         (df_yf["Gap%"] >= gap_min) &
         (df_yf["Gap%"] <= gap_max) &
@@ -169,7 +172,7 @@ try:
         (df_yf["Open_adj"] <= open_max)
     ].copy()
 
-    # --- RINOMINO COLONNE E FORMATTO DATA ---
+    # Rinomino colonne e formatto data
     df_filtered.rename(columns={
         "Open_adj": "Open $",
         "High_adj": "High $",
