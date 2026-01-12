@@ -138,33 +138,46 @@ if ticker_input:
     st.write(f"Record filtrati: {len(historical_filtered)}")
 
     try:
-        # Scarico gli ultimi 6 mesi (o cambia period)
         ticker_yf = yf.Ticker(ticker_input)
-        df_yf = ticker_yf.history(period="6mo")
-        df_yf.reset_index(inplace=True)
+        df_yf = ticker_yf.history(period="6mo")  # ultimi 6 mesi
+        df_yf.reset_index(inplace=True)  # 'Date' diventa colonna
 
-        # Calcolo GAP corretto: (Open - Adj Close ieri) / Adj Close ieri
-        df_yf["Adj Close Shifted"] = df_yf["Adj Close"].shift(1)
-        df_yf["Gap%"] = ((df_yf["Open"] - df_yf["Adj Close Shifted"]) / df_yf["Adj Close Shifted"]) * 100
+        # Calcolo Gap %: fallback su Close se Adj Close non presente
+        if "Adj Close" in df_yf.columns:
+            df_yf["Prev_Close"] = df_yf["Adj Close"].shift(1)
+        else:
+            df_yf["Prev_Close"] = df_yf["Close"].shift(1)
+
+        df_yf["Gap%"] = ((df_yf["Open"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
         df_yf["Gap%"] = df_yf["Gap%"].fillna(0).round(2)
 
-        # Applico filtri slider GAP e Open
-        df_yf_filtered = df_yf[
-            (df_yf["Gap%"] >= gap_min) & (df_yf["Gap%"] <= gap_max) &
-            (df_yf["Open"] >= open_min) & (df_yf["Open"] <= open_max)
+        # Filtro per GAP e Open dagli slider
+        df_filtered = df_yf[
+            (df_yf["Gap%"] >= gap_min) &
+            (df_yf["Gap%"] <= gap_max) &
+            (df_yf["Open"] >= open_min) &
+            (df_yf["Open"] <= open_max)
         ].copy()
 
-        # Aggiungo colonna ticker
-        df_yf_filtered["Ticker"] = ticker_input
+        # Rinominare colonne per chiarezza
+        df_filtered.rename(columns={
+            "Open": "Open $",
+            "High": "High $",
+            "Low": "Low $",
+            "Close": "Close $",
+        }, inplace=True)
 
-        # Riformatto data
-        df_yf_filtered["Data"] = df_yf_filtered["Date"].dt.strftime("%d-%m-%Y")
+        # Formatto data
+        df_filtered["Date"] = df_filtered["Date"].dt.strftime('%d-%m-%Y')
 
-        # Seleziono colonne finali
-        df_display = df_yf_filtered[["Ticker", "Data", "Gap%", "Open", "High", "Low", "Close"]]
+        # Aggiungo colonna Ticker
+        df_filtered["Ticker"] = ticker_input
 
-        st.dataframe(df_display, width='stretch')
-        st.caption(f"Record storici filtrati: {len(df_display)}")
+        # Ordine colonne
+        display_cols = ["Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $"]
+
+        st.dataframe(df_filtered[display_cols], width='stretch')
+        st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
     except Exception as e:
         st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
