@@ -137,81 +137,81 @@ if ticker_input:
 
     st.write(f"Record filtrati: {len(historical_filtered)}")
 
-try:
-    ticker_yf = yf.Ticker(ticker_input)
-    df_yf = ticker_yf.history(period="6mo", auto_adjust=False)
-    df_yf.reset_index(inplace=True)
+    try:
+        ticker_yf = yf.Ticker(ticker_input)
+        df_yf = ticker_yf.history(period="6mo", auto_adjust=False)
+        df_yf.reset_index(inplace=True)
 
-    # Ordine temporale garantito
-    df_yf = df_yf.sort_values("Date").reset_index(drop=True)
+        # Ordine temporale garantito
+        df_yf = df_yf.sort_values("Date").reset_index(drop=True)
 
-    # ===== SPLIT =====
-    splits = ticker_yf.splits
+        # ===== SPLIT =====
+        splits = ticker_yf.splits
 
-    df_yf["factor"] = 1.0
-    for date, ratio in splits.items():
-        split_date = pd.to_datetime(date)
-        df_yf.loc[df_yf["Date"] < split_date, "factor"] *= ratio
+        df_yf["factor"] = 1.0
+        for date, ratio in splits.items():
+            split_date = pd.to_datetime(date)
+            df_yf.loc[df_yf["Date"] < split_date, "factor"] *= ratio
 
-    # ===== PREZZI AGGIUSTATI =====
-    for col in ["Open", "High", "Low", "Close"]:
-        df_yf[f"{col}_adj"] = df_yf[col] * df_yf["factor"]
+        # ===== PREZZI AGGIUSTATI =====
+        for col in ["Open", "High", "Low", "Close"]:
+            df_yf[f"{col}_adj"] = df_yf[col] * df_yf["factor"]
 
-    # ===== GAP CORRETTO =====
-    # Prev close NON adjusted (continuità reale)
-    df_yf["Prev_Close"] = df_yf["Close"].shift(1) * df_yf["factor"]
-    df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
-    df_yf["Gap%"] = df_yf["Gap%"].round(2)
+        # ===== GAP CORRETTO =====
+        # Prev close NON adjusted (continuità reale)
+        df_yf["Prev_Close"] = df_yf["Close"].shift(1) * df_yf["factor"]
+        df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
+        df_yf["Gap%"] = df_yf["Gap%"].round(2)
 
-    # ===== FILTRI =====
-    df_filtered = df_yf[
-        (df_yf["Gap%"] >= gap_min) &
-        (df_yf["Gap%"] <= gap_max) &
-        (df_yf["Open"] >= open_min) &
-        (df_yf["Open"] <= open_max)
-    ].copy()
+        # ===== FILTRI =====
+        df_filtered = df_yf[
+            (df_yf["Gap%"] >= gap_min) &
+            (df_yf["Gap%"] <= gap_max) &
+            (df_yf["Open"] >= open_min) &
+            (df_yf["Open"] <= open_max)
+        ].copy()
 
-    # ===== FORMAT =====
-    df_filtered["Date"] = df_filtered["Date"].dt.strftime("%d-%m-%Y")
-    df_filtered["Ticker"] = ticker_input
+        # ===== FORMAT =====
+        df_filtered["Date"] = df_filtered["Date"].dt.strftime("%d-%m-%Y")
+        df_filtered["Ticker"] = ticker_input
 
-    # ===== SEZIONE REVERSE SPLIT =====
-    split_info = []
+        # ===== SEZIONE REVERSE SPLIT =====
+        split_info = []
 
-    for date, ratio in splits.items():
-        if ratio < 1:  # reverse split
-            split_info.append({
-                "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
-                "Reverse Split": f"1 : {int(round(1 / ratio))}"
-            })
+        for date, ratio in splits.items():
+            if ratio < 1:  # reverse split
+                split_info.append({
+                    "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
+                    "Reverse Split": f"1 : {int(round(1 / ratio))}"
+                })
 
 
-    df_filtered.rename(columns={
-        "Open_adj": "Open $",
-        "High_adj": "High $",
-        "Low_adj": "Low $",
-        "Close_adj": "Close $",
-    }, inplace=True)
+        df_filtered.rename(columns={
+            "Open_adj": "Open $",
+            "High_adj": "High $",
+            "Low_adj": "Low $",
+            "Close_adj": "Close $",
+        }, inplace=True)
 
-    display_cols = ["Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $"]
+        display_cols = ["Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $"]
 
-    left_col, right_col = st.columns([1, 4])
-    with left_col:
-        st.markdown("### 🔁 Reverse split")
+        left_col, right_col = st.columns([1, 4])
+        with left_col:
+            st.markdown("### 🔁 Reverse split")
 
-        if split_info:
-            for s in split_info:
-                st.markdown(f"- **{s['Date']}** → {s['Reverse Split']}")
-        else:
-            st.caption("Nessun reverse split rilevato")
+            if split_info:
+                for s in split_info:
+                    st.markdown(f"- **{s['Date']}** → {s['Reverse Split']}")
+            else:
+                st.caption("Nessun reverse split rilevato")
 
-    with right_col:
-        st.dataframe(df_filtered[display_cols], width="stretch")
+        with right_col:
+            st.dataframe(df_filtered[display_cols], width="stretch")
 
-    st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
+        st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
-except Exception as e:
-    st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
+    except Exception as e:
+        st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
 
 
 
