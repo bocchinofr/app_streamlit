@@ -17,9 +17,82 @@ ticker_input = st.text_input(
     placeholder="Lascia vuoto per usare solo i dati intraday"
 ).upper().strip()
 
+# ---- SLIDER SEZIONE STORICA (solo se ticker valorizzato) ----
 if ticker_input:
     st.markdown("---")
-    st.markdown(f"## 📊 Storico gap giornalieri – {ticker_input}")
+    st.markdown(f"### 📊 Storico gap giornaliero – filtri per {ticker_input}")
+
+    # Intervallo GAP %
+    gap_min = st.slider(
+        "GAP minimo (%)",
+        min_value=0,
+        max_value=100,
+        value=0,
+        step=1
+    )
+
+    # Market Cap in milioni
+    mc_min = st.slider(
+        "Market Cap minimo ($M)",
+        min_value=0,
+        max_value=2000,
+        value=0,
+        step=10
+    )
+    mc_max = st.slider(
+        "Market Cap massimo ($M)",
+        min_value=0,
+        max_value=2000,
+        value=2000,
+        step=10
+    )
+
+    # Flottante
+    float_min_slider = st.slider(
+        "Flottante minimo",
+        min_value=0,
+        max_value=100_000_000,
+        value=0,
+        step=100_000
+    )
+    float_max_slider = st.slider(
+        "Flottante massimo",
+        min_value=0,
+        max_value=100_000_000,
+        value=5_000_000,
+        step=100_000
+    )
+
+    # Prezzo Open
+    open_min_slider = st.slider(
+        "Open minimo",
+        min_value=0.0,
+        max_value=100.0,
+        value=1.0,
+        step=0.1
+    )
+    open_max_slider = st.slider(
+        "Open massimo",
+        min_value=0.0,
+        max_value=100.0,
+        value=100.0,
+        step=0.1
+    )
+
+    # Applico i filtri al dataframe storica
+    historical_filtered = df[df["Ticker"] == ticker_input].copy()
+    historical_filtered = historical_filtered[
+        (historical_filtered["GAP"] >= gap_min) &
+        (historical_filtered["Market Cap"] >= mc_min*1_000_000) &
+        (historical_filtered["Market Cap"] <= mc_max*1_000_000) &
+        (historical_filtered["Float"] >= float_min_slider) &
+        (historical_filtered["Float"] <= float_max_slider) &
+        (historical_filtered["OPEN"] >= open_min_slider) &
+        (historical_filtered["OPEN"] <= open_max_slider)
+    ]
+
+    st.write(f"Record filtrati: {len(historical_filtered)}")
+
 
 
 # ---- CARICAMENTO DATI ----
