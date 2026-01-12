@@ -194,6 +194,21 @@ try:
     }, inplace=True)
 
     display_cols = ["Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $"]
+
+    left_col, right_col = st.columns([1, 4])
+    with left_col:
+        st.markdown("### 🔁 Reverse split")
+
+        if split_info:
+            for s in split_info:
+                st.markdown(f"- **{s['Date']}** → {s['Reverse Split']}")
+        else:
+            st.caption("Nessun reverse split rilevato")
+
+    with right_col:
+        st.dataframe(df_filtered[display_cols], width="stretch")
+
+
     st.dataframe(df_filtered[display_cols], width="stretch")
 
     st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
