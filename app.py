@@ -10,8 +10,6 @@ import numpy as np
 st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
 st.title("📈 Dashboard Analisi Small Cap")
 
-st.markdown("### 🔎 Analisi storica gap per singolo ticker")
-
 ticker_input = st.text_input(
     "Inserisci un ticker (es. MARA, TSLA, AAPL)",
     placeholder="Lascia vuoto per usare solo i dati intraday"
@@ -101,7 +99,7 @@ if ticker_input:
     st.markdown("---")
     st.markdown(f"### 📊 Storico gap giornaliero – filtri per {ticker_input}")
 
-    col1, col2 = st.columns(2)
+    col1, spacer, col2 = st.columns([4, 1, 4])  # proporzioni: slider1=4, spazio=1, slider2=4
 
     with col1:
         # Slider GAP %
