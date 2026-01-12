@@ -8,3 +8,4 @@ gspread
 gspread-dataframe
 google-auth
 openai
+yfinance
