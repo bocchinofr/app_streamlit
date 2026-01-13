@@ -116,8 +116,8 @@ if ticker_input:
         open_min, open_max = st.slider(
             "Open ($)",
             min_value=0,
-            max_value=200,
-            value=(2, 200)
+            max_value=100,
+            value=(2, 100)
         )
 
     # Applico i filtri al dataframe storica
