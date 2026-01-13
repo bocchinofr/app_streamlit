@@ -139,7 +139,7 @@ if ticker_input:
 
     try:
         ticker_yf = yf.Ticker(ticker_input)
-        df_yf = ticker_yf.history(period="6mo", auto_adjust=False)
+        df_yf = ticker_yf.history(period="1y", auto_adjust=False)
         df_yf.reset_index(inplace=True)
 
         # Ordine temporale garantito
