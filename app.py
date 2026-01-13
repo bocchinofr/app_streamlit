@@ -141,13 +141,10 @@ if ticker_input:
         ticker_yf = yf.Ticker(ticker_input)
         df_yf = ticker_yf.history(period="4y", auto_adjust=False)
         df_yf.reset_index(inplace=True)
-
-        # Ordine temporale garantito
         df_yf = df_yf.sort_values("Date").reset_index(drop=True)
 
         # ===== SPLIT =====
         splits = ticker_yf.splits
-
         df_yf["factor"] = 1.0
         for date, ratio in splits.items():
             split_date = pd.to_datetime(date)
@@ -157,48 +154,62 @@ if ticker_input:
         for col in ["Open", "High", "Low", "Close"]:
             df_yf[f"{col}_adj"] = df_yf[col] * df_yf["factor"]
 
+        # ===== VOLUME =====
+        df_yf["Volume_adj"] = df_yf["Volume"]  # volume giornaliero reale
+
         # ===== GAP CORRETTO =====
-        # Prev close NON adjusted (continuità reale)
         df_yf["Prev_Close"] = df_yf["Close"].shift(1) * df_yf["factor"]
         df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
         df_yf["Gap%"] = df_yf["Gap%"].round(2)
 
-        # ===== FILTRI =====
+        # ===== FILTRI SLIDER =====
         df_filtered = df_yf[
             (df_yf["Gap%"] >= gap_min) &
             (df_yf["Gap%"] <= gap_max) &
-            (df_yf["Open"] >= open_min) &
-            (df_yf["Open"] <= open_max)
+            (df_yf["Open_adj"] >= open_min) &
+            (df_yf["Open_adj"] <= open_max)
         ].copy()
+
+        # ===== NUOVE COLONNE CALCOLATE =====
+        df_filtered["% High"] = ((df_filtered["High_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
+        df_filtered["% Low"] = ((df_filtered["Low_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
+        df_filtered["% Close"] = ((df_filtered["Close_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
+
+        # Colonna colore / simbolo per close vs open
+        # 1 = close > open (verde), -1 = close < open (rosso), 0 = close == open
+        df_filtered["Close_Signal"] = df_filtered.apply(
+            lambda row: 1 if row["Close_adj"] > row["Open_adj"] else (-1 if row["Close_adj"] < row["Open_adj"] else 0),
+            axis=1
+        )
 
         # ===== FORMAT =====
         df_filtered["Date"] = df_filtered["Date"].dt.strftime("%d-%m-%Y")
         df_filtered["Ticker"] = ticker_input
 
-        # ===== SEZIONE REVERSE SPLIT =====
-        split_info = []
-
-        for date, ratio in splits.items():
-            if ratio < 1:  # reverse split
-                split_info.append({
-                    "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
-                    "Reverse Split": f"1 : {int(round(1 / ratio))}"
-                })
-
-
+        # Rinomino colonne per visualizzazione
         df_filtered.rename(columns={
             "Open_adj": "Open $",
             "High_adj": "High $",
             "Low_adj": "Low $",
             "Close_adj": "Close $",
+            "Volume_adj": "Volume"
         }, inplace=True)
 
-        display_cols = ["Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $"]
+        display_cols = [
+            "Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $",
+            "% High", "% Low", "% Close", "Close_Signal", "Volume"
+        ]
 
         left_col, right_col = st.columns([1, 4])
         with left_col:
             st.markdown("### 🔁 Reverse split")
-
+            split_info = []
+            for date, ratio in splits.items():
+                if ratio < 1:  # reverse split
+                    split_info.append({
+                        "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
+                        "Reverse Split": f"1 : {int(round(1 / ratio))}"
+                    })
             if split_info:
                 for s in split_info:
                     st.markdown(f"- **{s['Date']}** → {s['Reverse Split']}")
@@ -207,6 +218,8 @@ if ticker_input:
 
         with right_col:
             st.dataframe(df_filtered[display_cols], width="stretch")
+
+            
 
         # HEAT MAP  
         st.markdown("---")
