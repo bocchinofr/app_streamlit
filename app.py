@@ -182,42 +182,36 @@ if ticker_input:
             axis=1
         )
 
-        # ===== FORMAT =====
-        df_filtered["Date"] = df_filtered["Date"].dt.strftime("%d-%m-%Y")
-        df_filtered["Ticker"] = ticker_input
+        # ===== FORMAT FINALI =====
+        df_filtered = df_filtered.copy()  # evitare warning di SettingWithCopy
 
-        # Rinomino colonne per visualizzazione
-        df_filtered.rename(columns={
+        # Rinomina colonne solo se non esistono già
+        rename_map = {
             "Open_adj": "Open $",
             "High_adj": "High $",
             "Low_adj": "Low $",
             "Close_adj": "Close $",
             "Volume_adj": "Volume"
-        }, inplace=True)
+        }
+
+        for old_col, new_col in rename_map.items():
+            if old_col in df_filtered.columns and new_col not in df_filtered.columns:
+                df_filtered.rename(columns={old_col: new_col}, inplace=True)
+
+        # Formatto date
+        df_filtered["Date"] = df_filtered["Date"].dt.strftime("%d-%m-%Y")
+
+        # Aggiungo ticker solo se non presente
+        if "Ticker" not in df_filtered.columns:
+            df_filtered["Ticker"] = ticker_input
 
         display_cols = [
             "Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $",
             "% High", "% Low", "% Close", "Close_Signal", "Volume"
         ]
 
-        left_col, right_col = st.columns([1, 4])
-        with left_col:
-            st.markdown("### 🔁 Reverse split")
-            split_info = []
-            for date, ratio in splits.items():
-                if ratio < 1:  # reverse split
-                    split_info.append({
-                        "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
-                        "Reverse Split": f"1 : {int(round(1 / ratio))}"
-                    })
-            if split_info:
-                for s in split_info:
-                    st.markdown(f"- **{s['Date']}** → {s['Reverse Split']}")
-            else:
-                st.caption("Nessun reverse split rilevato")
+        st.dataframe(df_filtered[display_cols], width="stretch")
 
-        with right_col:
-            st.dataframe(df_filtered[display_cols], width="stretch")
 
             
 
