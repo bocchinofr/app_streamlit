@@ -236,7 +236,7 @@ if ticker_input:
                 .groupby(["Year", "Month"])["Gap%"]
                 .mean()
                 .unstack()
-                .round(2)
+                .round(0)
             )
 
         # Ordino mesi da Gen a Dic
@@ -250,8 +250,14 @@ if ticker_input:
 
         heatmap_data.rename(columns=month_names, inplace=True)
 
+        # Copia solo per styling
+        heatmap_display = heatmap_data.copy()
+
+        # Zeri non colorati
+        heatmap_display = heatmap_display.replace(0, np.nan)
+
         st.dataframe(
-            heatmap_data.style.background_gradient(
+            heatmap_display.style.background_gradient(
                 cmap="Reds",
                 axis=None
             ),
