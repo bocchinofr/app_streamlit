@@ -208,6 +208,56 @@ if ticker_input:
         with right_col:
             st.dataframe(df_filtered[display_cols], width="stretch")
 
+        # HEAT MAP  
+        st.markdown("---")
+        st.markdown("### 🔥 Heatmap gap per anno / mese")
+
+        metric_choice = st.selectbox(
+            "Metrica heatmap",
+            ["Conteggio gap", "Gap medio (%)"]
+        )
+        # ===== PREPARAZIONE DATI HEATMAP =====
+        df_heat = df_yf.copy()
+
+        df_heat["Year"] = df_heat["Date"].dt.year
+        df_heat["Month"] = df_heat["Date"].dt.month
+
+        if metric_choice == "Conteggio gap":
+            heatmap_data = (
+                df_heat[df_heat["Gap%"] >= gap_min]
+                .groupby(["Year", "Month"])
+                .size()
+                .unstack(fill_value=0)
+            )
+
+        else:  # Gap medio
+            heatmap_data = (
+                df_heat[df_heat["Gap%"] >= gap_min]
+                .groupby(["Year", "Month"])["Gap%"]
+                .mean()
+                .unstack()
+                .round(2)
+            )
+
+        # Ordino mesi da Gen a Dic
+        heatmap_data = heatmap_data.reindex(columns=range(1, 13))
+
+        month_names = {
+            1: "Gen", 2: "Feb", 3: "Mar", 4: "Apr",
+            5: "Mag", 6: "Giu", 7: "Lug", 8: "Ago",
+            9: "Set", 10: "Ott", 11: "Nov", 12: "Dic"
+        }
+
+        heatmap_data.rename(columns=month_names, inplace=True)
+
+        st.dataframe(
+            heatmap_data.style.background_gradient(
+                cmap="Reds",
+                axis=None
+            ),
+            width="stretch"
+        )
+
         st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
     except Exception as e:
