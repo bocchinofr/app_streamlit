@@ -255,8 +255,9 @@ if ticker_input:
 
         st.dataframe(
             heatmap_display.style.background_gradient(
-                cmap="Reds",
-                axis=None
+                cmap="Greens",
+                axis=None,
+                vmin=heatmap_display.replace(0, pd.NA).min().min()
             ),
             width="stretch"
         )
