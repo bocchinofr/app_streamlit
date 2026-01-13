@@ -252,8 +252,6 @@ if ticker_input:
 
         heatmap_display = heatmap_data.copy()
         heatmap_display = heatmap_display.astype("Int64")
-        heatmap_display = heatmap_data.mask(heatmap_data == 0)
-
 
         st.dataframe(
             heatmap_display.style.background_gradient(
