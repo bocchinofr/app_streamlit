@@ -210,8 +210,6 @@ if ticker_input:
             "% High", "% Low", "% Close", "Close_Signal", "Volume"
         ]
 
-        st.dataframe(df_filtered[display_cols], width="stretch")
-
         left_col, right_col = st.columns([1, 4])
         with left_col:
             st.markdown("### 🔁 Reverse split")
