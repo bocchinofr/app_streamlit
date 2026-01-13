@@ -212,6 +212,24 @@ if ticker_input:
 
         st.dataframe(df_filtered[display_cols], width="stretch")
 
+        left_col, right_col = st.columns([1, 4])
+        with left_col:
+            st.markdown("### 🔁 Reverse split")
+            split_info = []
+            for date, ratio in splits.items():
+                if ratio < 1:  # reverse split
+                    split_info.append({
+                        "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
+                        "Reverse Split": f"1 : {int(round(1 / ratio))}"
+                    })
+            if split_info:
+                for s in split_info:
+                    st.markdown(f"- **{s['Date']}** → {s['Reverse Split']}")
+            else:
+                st.caption("Nessun reverse split rilevato")
+
+        with right_col:
+            st.dataframe(df_filtered[display_cols], width="stretch")
 
             
 
