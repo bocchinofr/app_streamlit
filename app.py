@@ -264,14 +264,21 @@ if ticker_input:
             vmax = vmin + 1
 
         st.dataframe(
-            heatmap_display.style.background_gradient(
-                cmap="Greens",
-                axis=None,
-                vmin=vmin,
-                vmax=vmax
-            ),
+            heatmap_display.style
+                # maschero None e 0 → restano bianchi
+                .background_gradient(
+                    cmap="Greens",
+                    axis=None,
+                    vmin=vmin,
+                    vmax=vmax
+                )
+                .apply(
+                    lambda x: ["background-color: transparent" if (pd.isna(v) or v == 0) else "" for v in x],
+                    axis=1
+                ),
             width="stretch"
         )
+
 
         st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
