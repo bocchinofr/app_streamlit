@@ -170,17 +170,22 @@ if ticker_input:
             (df_yf["Open_adj"] <= open_max)
         ].copy()
 
-        # ===== NUOVE COLONNE CALCOLATE =====
+        # ===== CALCOLI AGGIUNTIVI =====
         df_filtered["% High"] = ((df_filtered["High_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
         df_filtered["% Low"] = ((df_filtered["Low_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
         df_filtered["% Close"] = ((df_filtered["Close_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
 
-        # Colonna colore / simbolo per close vs open
-        # 1 = close > open (verde), -1 = close < open (rosso), 0 = close == open
-        df_filtered["Close_Signal"] = df_filtered.apply(
-            lambda row: 1 if row["Close_adj"] > row["Open_adj"] else (-1 if row["Close_adj"] < row["Open_adj"] else 0),
-            axis=1
-        )
+        # Colonna chiusura con pallino
+        def chiusura_signal(row):
+            if row["Close_adj"] > row["Open_adj"]:
+                return "🟢"
+            elif row["Close_adj"] < row["Open_adj"]:
+                return "🔴"
+            else:
+                return "🟡"
+
+        df_filtered["Chiusura"] = df_filtered.apply(chiusura_signal, axis=1)
+
 
         # ===== FORMAT FINALI =====
         df_filtered = df_filtered.copy()  # evitare warning di SettingWithCopy
@@ -207,7 +212,7 @@ if ticker_input:
 
         display_cols = [
             "Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $",
-            "% High", "% Low", "% Close", "Close_Signal", "Volume"
+            "% High", "% Low", "% Close", "Chiusura", "Volume"
         ]
 
         left_col, right_col = st.columns([1, 4])
