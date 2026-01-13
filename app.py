@@ -233,11 +233,11 @@ if ticker_input:
 
         with right_col:
             st.dataframe(df_filtered[display_cols], width="stretch")
+            st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
             
 
         # HEAT MAP  
-        st.markdown("---")
         st.markdown("### 🔥 Heatmap gap per anno / mese")
 
         metric_choice = st.selectbox(
@@ -306,10 +306,6 @@ if ticker_input:
                 ),
             width="stretch"
         )
-
-
-        st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
-
     except Exception as e:
         st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
 
