@@ -253,11 +253,15 @@ if ticker_input:
         heatmap_display = heatmap_data.copy()
         heatmap_display = heatmap_display.astype("Int64")
 
-        # Calcolo range valido (solo valori > 0)
+        # Valori validi (>0)
         valid_values = heatmap_display[heatmap_display > 0]
 
         vmin = valid_values.min().min()
         vmax = valid_values.max().max()
+
+        # 🔑 CASO LIMITE: se tutti i valori sono uguali (es. solo 1)
+        if pd.isna(vmin) or vmin == vmax:
+            vmax = vmin + 1
 
         st.dataframe(
             heatmap_display.style.background_gradient(
