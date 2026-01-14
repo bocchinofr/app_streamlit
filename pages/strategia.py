@@ -269,7 +269,7 @@ if mode == "90 minuti":
 
         # calcolo performance % in base a chi ha colpito
         close_price = row["Close_1100"] if filtered.at[idx, "TP"] == 0 else tp_price
-        filtered.at[idx, "TP_90m%"] = (("Close_1100" - entry) / entry * 100)
+        filtered.at[idx, "TP_90m%"] = ((row["Close_1100"] - entry) / entry * 100)
 else:
     # modalità fino a chiusura: aggiungiamo anche 30 minuti al primo timeframe
     timeframes = [
