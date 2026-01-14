@@ -317,7 +317,7 @@ else:
 
         # calcolo performance % in base a chi ha colpito
         close_price = row["Close"] if filtered.at[idx, "TP"] == 0 else tp_price
-        filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
+        filtered.at[idx, "TP_90m%"] = ((row["Close"] - entry) / entry * 100)
 
 
 
