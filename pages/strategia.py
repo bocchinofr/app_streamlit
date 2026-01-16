@@ -289,8 +289,15 @@ if mode == "90 minuti":
 
 
         # calcolo performance % in base a chi ha colpito
-        close_price = row["Close_1100"] if filtered.at[idx, "TP"] == 0 else tp_price
-        filtered.at[idx, "TP_90m%"] = ((row["Close_1100"] - entry) / entry * 100)
+        if filtered.at[idx, "TP"] == 1:
+            exit_price = tp_price
+        elif filtered.at[idx, "SL"] == 1:
+            exit_price = sl_price
+        else:
+            exit_price = row["Close_1100"]
+
+        filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
+
 else:
     # modalità fino a chiusura: aggiungiamo anche 30 minuti al primo timeframe
     timeframes = [
@@ -337,8 +344,15 @@ else:
 
 
         # calcolo performance % in base a chi ha colpito
-        close_price = row["Close"] if filtered.at[idx, "TP"] == 0 else tp_price
-        filtered.at[idx, "TP_90m%"] = ((row["Close"] - entry) / entry * 100)
+        if filtered.at[idx, "TP"] == 1:
+            exit_price = tp_price
+        elif filtered.at[idx, "SL"] == 1:
+            exit_price = sl_price
+        else:
+            exit_price = row["Close_1100"]
+
+        filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
+
 
 
 # Coerenza finale
