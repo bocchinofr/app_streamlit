@@ -29,7 +29,7 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 def load_data():
     usecols = [
         "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
-        "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
+        "Close_1030", "High_1m","High_5m","Low_1m","Low_5m","High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
         "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m", "Market Cap"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
@@ -225,47 +225,64 @@ filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 
 filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).astype(int)
 
+# ---- ENTRY BUCKET (minimo timeframe in cui l'entry viene raggiunta) ----
+def get_entry_bucket(row):
+    if row.get("High_1m", -np.inf) >= row["Entry_price"]:
+        return 1
+    elif row.get("High_5m", -np.inf) >= row["Entry_price"]:
+        return 5
+    elif row.get("High_30m", -np.inf) >= row["Entry_price"]:
+        return 30
+    elif row.get("High_60m", -np.inf) >= row["Entry_price"]:
+        return 60
+    elif row.get("High_90m", -np.inf) >= row["Entry_price"]:
+        return 90
+    elif row.get("High_120m", -np.inf) >= row["Entry_price"]:
+        return 120
+    elif row.get("High_240m", -np.inf) >= row["Entry_price"]:
+        return 240
+    else:
+        return None
+
+filtered["entry_bucket"] = filtered.apply(get_entry_bucket, axis=1)
+
 if mode == "90 minuti":
-    # usiamo timeframes 30m, 60m, 90m
     timeframes_90m = [
-        ("High_30m", "Low_30m"),
-        ("High_60m", "Low_60m"),
-        ("High_90m", "Low_90m")
+        (1, "High_1m", "Low_1m"),
+        (5, "High_5m", "Low_5m"),
+        (30, "High_30m", "Low_30m"),
+        (60, "High_60m", "Low_60m"),
+        (90, "High_90m", "Low_90m")
     ]
 
-    # inizializzo colonne
-    filtered["SL"] = 0
-    filtered["TP"] = 0
-    filtered["TP_90m%"] = 0.0
-    filtered["Outcome"] = "Hold"
-
     for idx, row in filtered.iterrows():
-        if row["attivazione"] != 1:
+        if row["attivazione"] != 1 or row["entry_bucket"] is None:
             continue
-        
+
         entry = row["Entry_price"]
         sl_price = row["SL_price"]
         tp_price = row["TP_price"]
-        sl_hit = False
-        tp_hit = False
 
-        for high_col, low_col in timeframes_90m:
-            high = row[high_col]
-            low = row[low_col]
+        for tf, high_col, low_col in timeframes_90m:
 
-            # SHORT: SL se prezzo sale sopra SL_price
-            if not sl_hit and high >= sl_price:
+            # ⛔ ignora bucket <= entry (no ordine temporale affidabile)
+            if tf <= row["entry_bucket"]:
+                continue
+
+            high = row.get(high_col, np.nan)
+            low = row.get(low_col, np.nan)
+
+            # ❗ CASO PEGGIORATIVO: SL PRIORITARIO
+            if pd.notna(high) and high >= sl_price:
                 filtered.at[idx, "SL"] = 1
                 filtered.at[idx, "Outcome"] = "SL"
-                sl_hit = True
-                break  # fermiamo al primo evento
+                break
 
-            # SHORT: TP se prezzo scende sotto TP_price
-            if not tp_hit and low <= tp_price:
+            if pd.notna(low) and low <= tp_price:
                 filtered.at[idx, "TP"] = 1
                 filtered.at[idx, "Outcome"] = "TP"
-                tp_hit = True
                 break
+
 
         # calcolo performance % in base a chi ha colpito
         close_price = row["Close_1100"] if filtered.at[idx, "TP"] == 0 else tp_price
@@ -273,53 +290,51 @@ if mode == "90 minuti":
 else:
     # modalità fino a chiusura: aggiungiamo anche 30 minuti al primo timeframe
     timeframes = [
-        ("High_30m", "Low_30m"),
-        ("High_60m", "Low_60m"),
-        ("High_90m", "Low_90m"),
-        ("High_120m", "Low_120m"),
-        ("High_240m", "Low_240m"),
-        ("High", "Low")  # fallback finale
+        (1, "High_1m", "Low_1m"),
+        (5, "High_5m", "Low_5m"),
+        (30, "High_30m", "Low_30m"),
+        (60, "High_60m", "Low_60m"),
+        (90, "High_90m", "Low_90m"),
+        (120, "High_120m", "Low_120m"),
+        (240, "High_240m", "Low_240m"),
+        ("close", "High", "Low")
     ]
 
-    # inizializzo colonne
-    filtered["SL"] = 0
-    filtered["TP"] = 0
-    filtered["TP_90m%"] = 0.0
-    filtered["Outcome"] = "Hold"
-
     for idx, row in filtered.iterrows():
-        if row["attivazione"] != 1:
+        if row["attivazione"] != 1 or row["entry_bucket"] is None:
             continue
-        
+
         entry = row["Entry_price"]
         sl_price = row["SL_price"]
         tp_price = row["TP_price"]
-        sl_hit = False
-        tp_hit = False
 
-        for high_col, low_col in timeframes:
-            high = row[high_col]
-            low = row[low_col]
+        for tf, high_col, low_col in timeframes:
 
-            # SHORT: SL se prezzo sale sopra SL_price
-            if not sl_hit and high >= sl_price:
+            if tf != "close" and tf <= row["entry_bucket"]:
+                continue
+
+            high = row.get(high_col, np.nan)
+            low = row.get(low_col, np.nan)
+
+            # ❗ CASO PEGGIORATIVO
+            if pd.notna(high) and high >= sl_price:
                 filtered.at[idx, "SL"] = 1
                 filtered.at[idx, "Outcome"] = "SL"
-                sl_hit = True
                 break
 
-            # SHORT: TP se prezzo scende sotto TP_price
-            if not tp_hit and low <= tp_price:
+            if pd.notna(low) and low <= tp_price:
                 filtered.at[idx, "TP"] = 1
                 filtered.at[idx, "Outcome"] = "TP"
-                tp_hit = True
                 break
+
 
         # calcolo performance % in base a chi ha colpito
         close_price = row["Close"] if filtered.at[idx, "TP"] == 0 else tp_price
         filtered.at[idx, "TP_90m%"] = ((row["Close"] - entry) / entry * 100)
 
 
+# Coerenza finale
+filtered.loc[filtered["SL"] == 1, "TP"] = 0
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
