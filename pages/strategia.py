@@ -40,7 +40,7 @@ def load_data():
 
 df = load_data()
 
-st.markdown("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar.Solo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
+st.markdown("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar. /n Solo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
 
 
 # region Filtri
