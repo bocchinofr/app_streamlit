@@ -493,7 +493,7 @@ filtered = filtered[
 ]
 
 if len(date_range) == 2:
-    start, end = date_range
+    st.session_state.start, st.session_state.end = date_range
     filtered = filtered[(filtered["Date"] >= st.session_state.start) & (filtered["Date"] <= st.session_state.end)]
 
 filtered = filtered[
