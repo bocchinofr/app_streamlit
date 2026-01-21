@@ -25,6 +25,27 @@ st.title("📈 Dashboard Analisi Small Cap")
 #   FILTRI 
 # ============
 
+# ======================
+# SESSION STATE DEFAULTS
+# ======================
+defaults = {
+    "show_filters": False,
+    "date_range": [],
+    "min_gap": 0,
+    "marketcap_min_M": 0,
+    "marketcap_max_M": 2000,
+    "float_min": 0,
+    "float_max": 5_000_000,
+    "min_open_pmh": -100,
+    "open_min": 1.0,
+    "open_max": 100.0,
+}
+
+for k, v in defaults.items():
+    if k not in st.session_state:
+        st.session_state[k] = v
+
+
 if st.session_state.show_filters:
 
     with st.container():
@@ -405,29 +426,6 @@ if ticker_input:
 
 
 # region ---- FILTRI ----
-
-# ===============================
-# DEFAULT FILTRI (sempre definiti)
-# ===============================
-
-min_gap = 0
-min_open_pmh = -100
-
-default_mc_min_M = 0
-default_mc_max_M = 2000
-
-marketcap_min = default_mc_min_M * 1_000_000
-marketcap_max = default_mc_max_M * 1_000_000
-
-float_min = 0
-float_max = 5_000_000
-
-open_min = 1.0
-open_max = 100.0
-
-date_range = []
-
-
 
 if st.sidebar.button("🔍", help="Apri filtri"):
     st.session_state.show_filters = True
