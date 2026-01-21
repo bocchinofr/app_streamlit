@@ -76,7 +76,7 @@ if st.session_state.show_filters:
         # ======================
         # RIGA 1
         # ======================
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4, col5, col6 = st.columns(6)
 
         with col1:
             st.session_state.date_range = st.date_input(
@@ -125,13 +125,6 @@ if st.session_state.show_filters:
         # Converti MC in valori reali
         marketcap_min = st.session_state.marketcap_min_M * 1_000_000
         marketcap_max = st.session_state.marketcap_max_M * 1_000_000
-
-        st.markdown("---")
-
-        # ======================
-        # RIGA 2 – OPEN / PMH
-        # ======================
-        col4, col5, col6 = st.columns(3)
 
         with col4:
             st.session_state.min_open_pmh = st.number_input(
