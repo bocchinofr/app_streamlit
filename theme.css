@@ -16,3 +16,12 @@
     padding: 2px 6px;
     border-radius: 4px;
 }
+
+/* Sidebar compatta */
+section[data-testid="stSidebar"] {
+    width: 64px !important;
+}
+
+section[data-testid="stSidebar"] > div {
+    width: 64px !important;
+}
