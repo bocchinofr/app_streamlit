@@ -3,14 +3,155 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from dateutil import parser
-import numpy as np
 import yfinance as yf
 
+# ---------------------
+# Funzione per caricare CSS
+# ---------------------
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+# Usa il file theme.css
+local_css("theme.css")  # o "assets/theme.css" se lo metti in una cartella
 
-# ---- CONFIGURAZIONE ----
+# ---------------------
+# Session state default
+# ---------------------
+defaults = {
+    "show_filters": False,
+    "date_range": [],
+    "min_gap": 0,
+    "marketcap_min_M": 0,
+    "marketcap_max_M": 2000,
+    "float_min": 0,
+    "float_max": 5_000_000,
+    "min_open_pmh": -100,
+    "open_min": 1.0,
+    "open_max": 100.0,
+}
+
+for k, v in defaults.items():
+    if k not in st.session_state:
+        st.session_state[k] = v
+
+# ---------------------
+# Configurazione pagina
+# ---------------------
 st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
 st.title("📈 Dashboard Analisi Small Cap")
+
+# ---------------------
+# Pulsante sidebar
+# ---------------------
+def open_filters():
+    st.session_state.show_filters = True
+
+st.sidebar.button(
+    "🔍",
+    help="Apri filtri",
+    on_click=open_filters
+)
+
+# ---------------------
+# Pannello filtri
+# ---------------------
+if st.session_state.show_filters:
+    with st.container():
+
+        # Header pannello filtri
+        col_title, col_close = st.columns([10, 1])
+        with col_title:
+            st.markdown("## Filtri")
+        with col_close:
+            # Usa on_click per chiudere subito
+            def close_filters():
+                st.session_state.show_filters = False
+
+            st.button("❌", help="Chiudi filtri", on_click=close_filters)
+
+        st.markdown("---")
+
+
+        # ======================
+        # RIGA 1
+        # ======================
+        col1, col2, col3, col4, col5, col6 = st.columns(6)
+
+        with col1:
+            st.session_state.date_range = st.date_input(
+                "Intervallo date",
+                value=st.session_state.date_range
+            )
+            st.session_state.min_gap = st.number_input(
+                "GAP minimo (%)",
+                min_value=0,
+                max_value=1000,
+                value=st.session_state.min_gap
+            )
+
+        with col2:
+            st.session_state.marketcap_min_M = st.number_input(
+                "MC Min ($M)",
+                min_value=0,
+                max_value=2000,
+                value=st.session_state.marketcap_min_M,
+                step=10
+            )
+            st.session_state.marketcap_max_M = st.number_input(
+                "MC Max ($M)",
+                min_value=0,
+                max_value=2000,
+                value=st.session_state.marketcap_max_M,
+                step=10
+            )
+
+        with col3:
+            st.session_state.float_min = st.number_input(
+                "Float MIN",
+                min_value=0,
+                max_value=1_000_000_000,
+                value=st.session_state.float_min,
+                step=100_000
+            )
+            st.session_state.float_max = st.number_input(
+                "Float MAX",
+                min_value=0,
+                max_value=1_000_000_000,
+                value=st.session_state.float_max,
+                step=100_000
+            )
+
+        # Converti MC in valori reali
+        marketcap_min = st.session_state.marketcap_min_M * 1_000_000
+        marketcap_max = st.session_state.marketcap_max_M * 1_000_000
+
+        with col4:
+            st.session_state.min_open_pmh = st.number_input(
+                "%Open_PMH minimo",
+                min_value=-100,
+                max_value=100,
+                value=st.session_state.min_open_pmh
+            )
+
+        with col5:
+            st.session_state.open_min = st.number_input(
+                "Open MIN (%)",
+                min_value=0.0,
+                max_value=100.0,
+                value=st.session_state.open_min,
+                step=0.1
+            )
+
+        with col6:
+            st.session_state.open_max = st.number_input(
+                "Open MAX (%)",
+                min_value=0.0,
+                max_value=100.0,
+                value=st.session_state.open_max,
+                step=0.1
+            )
+
 
 ticker_input = st.text_input(
     "Inserisci un ticker (es. MARA, TSLA, AAPL)",
@@ -317,88 +458,17 @@ if ticker_input:
 
 
 # region ---- FILTRI ----
-st.sidebar.header("🔍 Filtri")
 
-date_range = st.sidebar.date_input("Intervallo date", [])
-#tickers = st.sidebar.multiselect("Ticker", sorted(df["Ticker"].dropna().unique()))
-min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 0)
+with st.sidebar:
+    if st.session_state.show_filters:
+        st.markdown("### Filtri")
 
-# ====== MARKET CAP: DUE BOX (IN MILIONI) ======
-# Valori fissi di default in Milioni
-default_mc_min_M = 0
-default_mc_max_M = 2000
+        date_range = st.date_input(
+            "Intervallo date",
+            value=st.session_state.get("date_range", None)
+        )
 
-col_mc_min, col_mc_max = st.sidebar.columns(2)
 
-marketcap_min_M = col_mc_min.number_input(
-    "MC Min ($M)", 
-    value=default_mc_min_M, 
-    step=10,
-    min_value=0,
-    max_value=2000,
-    help="Valore minimo di Market Cap in Milioni"
-)
-
-marketcap_max_M = col_mc_max.number_input(
-    "MC Max ($M)", 
-    value=default_mc_max_M, 
-    step=10,
-    min_value=0,
-    max_value=2000,
-    help="Valore massimo di Market Cap in Milioni"
-)
-
-# Converti in valori reali per il filtro
-marketcap_min = marketcap_min_M * 1_000_000
-marketcap_max = marketcap_max_M * 1_000_000
-
-# filtro flottante
-col_float_min, col_float_max = st.sidebar.columns(2)
-
-float_min = col_float_min.number_input(
-    "Float MIN", 
-    value=0, 
-    step=100000,
-    min_value=0,
-    max_value=1000000000,
-    help="Valore minimo di Flottante"
-
-)
-
-float_max = col_float_max.number_input(
-    "Float MAX", 
-    value=5000000, 
-    step=100000,
-    min_value=0,
-    max_value=1000000000,
-    help="Valore massimo di Flottante"
-
-)
-
-min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
-
-# filtro OPEN price
-col_open_min, col_open_max = st.sidebar.columns(2)
-
-open_min = col_open_min.number_input(
-    "Open MIN", 
-    value=1.0, 
-    step=0.1,
-    min_value=0.0,
-    max_value=100.0,
-    help="Valore minimo di Open rispetto a PMH in %"
-
-)
-
-open_max = col_open_max.number_input(
-    "Open MAX", 
-    value=100.0, 
-    step=0.1,
-    min_value=0.0,
-    max_value=100.0,
-    help="Valore massimo di Open rispetto a PMH in %"
-
-)
 
 filtered = df.copy()
 if ticker_input:
@@ -406,26 +476,26 @@ if ticker_input:
 if ticker_input and ticker_input not in df["Ticker"].unique():
     st.warning(f"⚠️ Il ticker {ticker_input} non è presente nei dati intraday.")
 
-filtered = filtered[(filtered["GAP"] >= min_gap)]
-filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
+filtered = filtered[(filtered["GAP"] >= st.session_state.min_gap)]
+filtered = filtered[(filtered["%Open_PMH"] >= st.session_state.min_open_pmh)]
 
 filtered = filtered[
-    (filtered["Float"] >= float_min) &
-    (filtered["Float"] <= float_max)
+    (filtered["Float"] >= st.session_state.float_min) &
+    (filtered["Float"] <= st.session_state.float_max)
 ]
 
 filtered = filtered[
-    (filtered["OPEN"] >= open_min) &
-    (filtered["OPEN"] <= open_max)
+    (filtered["OPEN"] >= st.session_state.open_min) &
+    (filtered["OPEN"] <= st.session_state.open_max)
 ]
 
-if len(date_range) == 2:
-    start, end = date_range
+if len(st.session_state.date_range) == 2:
+    start, end = st.session_state.date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
 filtered = filtered[
-    (filtered["Market Cap"] >= marketcap_min) &
-    (filtered["Market Cap"] <= marketcap_max)
+    (filtered["Market Cap"] >= st.session_state.marketcap_min_M * 1_000_000) &
+    (filtered["Market Cap"] <= st.session_state.marketcap_max_M * 1_000_000)
 ]
 
 # ---- DATE FILTRATE (con tema scuro) ----
@@ -556,231 +626,50 @@ mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
 # endregion
 
-# region ---- STILE GLOBALE ----
-st.markdown(
-    """
-    <style>
-    /* Sfondo generale pagina */
-    .stApp {
-        background-color: #03121A !important;
-    }
+# region ---- KPI BOX  ----
 
-    /* Contenitore KPI in griglia (3 per riga) */
-    .kpi-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);  /* 3 colonne uguali */
-        gap: 15px;
-        padding-bottom: 20px;
-        margin-bottom: 40px;
-    }
+# ---- KPI BOX COMPATTO ----
+st.markdown("### 📊 KPI principali")
 
+# Primo livello: due box principali affiancati
+col1, col2 = st.columns(2)
 
-    /* Singolo box KPI */
-    .kpi-box {
-        flex: 0 0 auto;       /* larghezza fissa */
-        min-width: 180px;
-        min-height: 130px;
-        background-color: #184F5F;
-        color: white;
-        padding: 20px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+with col1:
+    st.metric("Totale titoli", total)
 
-    .kpi-label { font-size: 16px; opacity: 0.9; }
-    .kpi-value { font-size: 28px; font-weight: bold; }
-    .kpi-subvalue { font-size: 18px; font-weight: bold; opacity: 0.8; }
+with col2:
+    st.metric("GAP medio (%)", f"{gap_mean:.0f}%")
 
-    .gap-subbox {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;  /* centra verticalmente GAP e Mediana */
-        gap: 20px;
-        margin-top: 0;
-    }
+# Secondo livello: elenco verticale delle altre metriche
+st.markdown("### Altre metriche")
 
-    .gap-subbox div {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-    }
+# Lista delle metriche secondarie
+other_metrics = {
+    "Chiusura RED (%)": f"{red_close:.0f}%",
+    "Mediana GAP (%)": f"{gap_median:.0f}%",
+    "Open vs PMH medio (%)": f"{open_pmh_mean:.0f}%",
+    "Mediana Open vs PMH (%)": f"{open_pmh_median:.0f}%",
+    "Orario High medio": media_orario_high,
+    "Mediana Orario High": mediana_orario_high,
+    "%PMbreak medio": f"{pmbreak:.0f}%",
+    "Spinta media (%)": f"{spinta_mean:.0f}%",
+    "Low medio (%)": f"{low_mean:.0f}%"
+}
 
-    /* Sub-box per chiusure red/green */
-    .redgreen-subbox {
-        display: flex;
-        justify-content: center;
-        gap: 25px;
-        margin-top: 6px;
-        border-top: 1px solid rgba(255,255,255,0.2);
-        padding-top: 8px;
-    }
+# Visualizzazione a due colonne con evidenziazione selettiva
+for label, value in other_metrics.items():
+    left_col, right_col = st.columns([2,1])  # titolo più largo
+    with left_col:
+        st.write(f"**{label}**")
+    with right_col:
+        # Applichiamo colore solo ad alcune metriche
+        if label == "Chiusura RED (%)":
+            st.markdown(f'<div class="value-highlight-red">{value}</div>', unsafe_allow_html=True)
+        elif label == "Spinta media (%)":
+            st.markdown(f'<div class="value-highlight-green">{value}</div>', unsafe_allow_html=True)
+        else:
+            st.write(f"{value}")
 
-    .redgreen-subbox div {
-        text-align: center;
-    }
-
-    .redgreen-subbox .label { font-size: 10px; }
-    .redgreen-subbox .value { font-size: 18px; font-weight: bold; }
-
-
-    .redgreen-subbox .red {
-        color: #FF4C4C;
-    }
-
-    .redgreen-subbox .green {
-        color: #4CFF4C;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# endregion
-
-# region ---- KPI BOX SCROLLABILI ----
-html_kpis = f"""
-<div class="kpi-container">
-    <div class="kpi-box">
-        <div class="kpi-label">Totale titoli</div>
-        <div class="kpi-value">{total}</div>
-    </div>
-    <div class="kpi-box">
-        <div class="kpi-label">Chiusura RED</div>
-        <div class="kpi-value">{red_close:.0f}%</div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">GAP medio</div>
-                <div class="kpi-value">{gap_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{gap_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{gap_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{gap_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">openVSpmh medio</div>
-                <div class="kpi-value">{open_pmh_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{open_pmh_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{open_pmh_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{open_pmh_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">OrarioHigh medio</div>
-                <div class="kpi-value">{media_orario_high}</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{mediana_orario_high}</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red"">{mediaorario_red}</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{mediaorario_green}</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="kpi-label">%PMbreak medio</div>
-        <div class="kpi-value">{pmbreak:.0f}%</div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{pmbreak_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{pmbreak_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">Spinta media</div>
-                <div class="kpi-value">{spinta_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{spinta_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{spinta_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{spinta_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">Low medio</div>
-                <div class="kpi-value">{low_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{low_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{low_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{low_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-</div>
-"""
-st.markdown(html_kpis, unsafe_allow_html=True)
 
 # endregion
 
