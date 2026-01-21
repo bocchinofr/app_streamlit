@@ -19,9 +19,9 @@
 
 /* Sidebar compatta */
 section[data-testid="stSidebar"] {
-    width: 64px !important;
+    width: 164px !important;
 }
 
 section[data-testid="stSidebar"] > div {
-    width: 64px !important;
+    width: 164px !important;
 }
