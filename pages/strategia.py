@@ -165,8 +165,15 @@ filtered = filtered[
     (filtered["Open"] <= max_open)
 ]
 filtered = filtered[filtered["Gap%"] >= min_gap]
-filtered = filtered[filtered["Shs Float"] <= max_float]
 
+# Assicura che la colonna sia numerica
+filtered["Shs Float"] = pd.to_numeric(filtered["Shs Float"], errors="coerce")
+filtered["Shares Outstanding"] = pd.to_numeric(filtered["Shares Outstanding"], errors="coerce")
+
+# Sostituisci i valori null di Shs Float con Shares Outstanding
+filtered["Shs Float"].fillna(filtered["Shares Outstanding"], inplace=True)
+
+# Adesso puoi filtrare senza errori
 filtered = filtered[
     (filtered["Shs Float"] >= min_float) &
     (filtered["Shs Float"] <= max_float)
