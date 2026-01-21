@@ -556,144 +556,39 @@ mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
 # endregion
 
-# region ---- KPI BOX SCROLLABILI ----
-html_kpis = f"""
-<div class="kpi-container">
-    <div class="kpi-box">
-        <div class="kpi-label">Totale titoli</div>
-        <div class="kpi-value">{total}</div>
-    </div>
-    <div class="kpi-box">
-        <div class="kpi-label">Chiusura RED</div>
-        <div class="kpi-value">{red_close:.0f}%</div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">GAP medio</div>
-                <div class="kpi-value">{gap_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{gap_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{gap_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{gap_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">openVSpmh medio</div>
-                <div class="kpi-value">{open_pmh_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{open_pmh_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{open_pmh_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{open_pmh_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">OrarioHigh medio</div>
-                <div class="kpi-value">{media_orario_high}</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{mediana_orario_high}</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red"">{mediaorario_red}</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{mediaorario_green}</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="kpi-label">%PMbreak medio</div>
-        <div class="kpi-value">{pmbreak:.0f}%</div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{pmbreak_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{pmbreak_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">Spinta media</div>
-                <div class="kpi-value">{spinta_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{spinta_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{spinta_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{spinta_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-    <div class="kpi-box">
-        <div class="gap-subbox">
-            <div>
-                <div class="kpi-label">Low medio</div>
-                <div class="kpi-value">{low_mean:.0f}%</div>
-            </div>
-            <div>
-                <div class="kpi-label">Mediana</div>
-                <div class="kpi-subvalue">{low_median:.0f}%</div>
-            </div>
-        </div>
-        <div class="redgreen-subbox">
-            <div>
-                <div class="label red">chiusure red</div>
-                <div class="value red">{low_red:.0f}%</div>
-            </div>
-            <div>
-                <div class="label green">chiusure green</div>
-                <div class="value green">{low_green:.0f}%</div>
-            </div>
-        </div>
-    </div>
-</div>
-"""
-st.markdown(html_kpis, unsafe_allow_html=True)
+# region ---- KPI BOX  ----
+
+# ---- KPI BOX COMPATTO ----
+st.markdown("### 📊 KPI principali")
+
+# Primo livello: due box principali affiancati
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric("Totale titoli", total)
+
+with col2:
+    st.metric("GAP medio (%)", f"{gap_mean:.0f}%")
+
+# Secondo livello: elenco verticale delle altre metriche
+st.markdown("### Altre metriche")
+
+# Lista delle metriche secondarie
+other_metrics = {
+    "Chiusura RED (%)": f"{red_close:.0f}%",
+    "Mediana GAP (%)": f"{gap_median:.0f}%",
+    "Open vs PMH medio (%)": f"{open_pmh_mean:.0f}%",
+    "Mediana Open vs PMH (%)": f"{open_pmh_median:.0f}%",
+    "Orario High medio": media_orario_high,
+    "Mediana Orario High": mediana_orario_high,
+    "%PMbreak medio": f"{pmbreak:.0f}%",
+    "Spinta media (%)": f"{spinta_mean:.0f}%",
+    "Low medio (%)": f"{low_mean:.0f}%"
+}
+
+for label, value in other_metrics.items():
+    st.write(f"**{label}:** {value}")
+
 
 # endregion
 
