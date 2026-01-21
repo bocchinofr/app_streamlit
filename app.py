@@ -327,6 +327,29 @@ if ticker_input:
 
 # region ---- FILTRI ----
 
+# ===============================
+# DEFAULT FILTRI (sempre definiti)
+# ===============================
+
+min_gap = 0
+min_open_pmh = -100
+
+default_mc_min_M = 0
+default_mc_max_M = 2000
+
+marketcap_min = default_mc_min_M * 1_000_000
+marketcap_max = default_mc_max_M * 1_000_000
+
+float_min = 0
+float_max = 5_000_000
+
+open_min = 1.0
+open_max = 100.0
+
+date_range = []
+
+
+
 with st.sidebar:
 
     # ICONA FILTRI (sempre visibile)
@@ -418,8 +441,6 @@ with st.sidebar:
             help="Valore massimo di Open rispetto a PMH in %"
 
         )
-
-
 
 
 
