@@ -16,6 +16,16 @@ local_css("theme.css")  # o "assets/theme.css" se lo metti in una cartella
 if "show_filters" not in st.session_state:
     st.session_state.show_filters = False
 
+def open_filters():
+    st.session_state.show_filters = True
+
+st.sidebar.button(
+    "🔍",
+    help="Apri filtri",
+    on_click=open_filters
+)
+
+
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
@@ -427,8 +437,14 @@ if ticker_input:
 
 # region ---- FILTRI ----
 
-if st.sidebar.button("🔍", help="Apri filtri"):
-    st.session_state.show_filters = True
+with st.sidebar:
+    if st.session_state.show_filters:
+        st.markdown("### Filtri")
+
+        date_range = st.date_input(
+            "Intervallo date",
+            value=st.session_state.get("date_range", None)
+        )
 
 
 
