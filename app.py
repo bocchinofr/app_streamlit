@@ -575,24 +575,24 @@ st.markdown("### Altre metriche")
 
 # Lista delle metriche secondarie
 other_metrics = {
-    "Chiusura RED (%)": f"{red_close:.0f}%",
-    "Mediana GAP (%)": f"{gap_median:.0f}%",
-    "Open vs PMH medio (%)": f"{open_pmh_mean:.0f}%",
-    "Mediana Open vs PMH (%)": f"{open_pmh_median:.0f}%",
-    "Orario High medio": media_orario_high,
-    "Mediana Orario High": mediana_orario_high,
-    "%PMbreak medio": f"{pmbreak:.0f}%",
-    "Spinta media (%)": f"{spinta_mean:.0f}%",
-    "Low medio (%)": f"{low_mean:.0f}%"
+    "Chiusura RED (%)": (red_close, "#FF4C4C"),        # rosso chiaro
+    "Mediana GAP (%)": (gap_median, "#FFFFFF"),        # nessun colore
+    "Open vs PMH medio (%)": (open_pmh_mean, "#FFFFFF"),
+    "Mediana Open vs PMH (%)": (open_pmh_median, "#FFFFFF"),
+    "Orario High medio": (media_orario_high, "#FFFFFF"),
+    "Mediana Orario High": (mediana_orario_high, "#FFFFFF"),
+    "%PMbreak medio": (pmbreak, "#FFFFFF"),
+    "Spinta media (%)": (spinta_mean, "#FFFFFF"),
+    "Low medio (%)": (low_mean, "#FFFFFF")
 }
 
-# Visualizzazione a due colonne
-for label, value in other_metrics.items():
-    left_col, right_col = st.columns([2,1])  # 2:1 → titolo più largo
+# Visualizzazione a due colonne con evidenziatore
+for label, (value, bg_color) in other_metrics.items():
+    left_col, right_col = st.columns([2,1])
     with left_col:
-        st.write(f"**{label}**")
+        st.markdown(f"**{label}**")
     with right_col:
-        st.write(f"{value}")
+        st.markdown(f"<span style='background-color:{bg_color}; padding:2px 6px; border-radius:4px;'>{value}</span>", unsafe_allow_html=True)
 
 # endregion
 
