@@ -586,9 +586,13 @@ other_metrics = {
     "Low medio (%)": f"{low_mean:.0f}%"
 }
 
+# Visualizzazione a due colonne
 for label, value in other_metrics.items():
-    st.write(f"**{label}:** {value}")
-
+    left_col, right_col = st.columns([2,1])  # 2:1 → titolo più largo
+    with left_col:
+        st.write(f"**{label}**")
+    with right_col:
+        st.write(f"{value}")
 
 # endregion
 
