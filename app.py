@@ -429,11 +429,8 @@ date_range = []
 
 
 
-with st.sidebar:
-
-    # ICONA FILTRI (sempre visibile)
-    if st.button("🔍", help="Mostra / nascondi filtri"):
-        st.session_state.show_filters = not st.session_state.show_filters
+if st.sidebar.button("🔍", help="Apri filtri"):
+    st.session_state.show_filters = True
 
 
 filtered = df.copy()
