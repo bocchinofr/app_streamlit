@@ -27,3 +27,22 @@ section[data-testid="stSidebar"] > div:first-child {
     min-width: 72px !important;
     max-width: 72px !important;
 }
+
+/* Nasconde testi, label e padding inutili nella sidebar */
+section[data-testid="stSidebar"] label {
+    display: none !important;
+}
+
+section[data-testid="stSidebar"] .stMarkdown {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+section[data-testid="stSidebar"] button {
+    width: 48px !important;
+    height: 48px !important;
+    padding: 0 !important;
+    margin: 6px auto !important;
+    display: block;
+    border-radius: 8px;
+}
