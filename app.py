@@ -21,6 +21,85 @@ if "show_filters" not in st.session_state:
 st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
 st.title("📈 Dashboard Analisi Small Cap")
 
+# ============
+#   FILTRI 
+# ============
+
+if st.session_state.show_filters:
+
+    with st.container():
+
+        # Header pannello filtri
+        col_title, col_close = st.columns([10, 1])
+        with col_title:
+            st.markdown("## Filtri")
+        with col_close:
+            if st.button("❌", help="Chiudi filtri"):
+                st.session_state.show_filters = False
+
+        st.markdown("---")
+
+        # ======================
+        # RIGA 1
+        # ======================
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            date_range = st.date_input("Intervallo date", date_range)
+            min_gap = st.number_input("GAP minimo (%)", 0, 1000, min_gap)
+
+        with col2:
+            marketcap_min_M = st.number_input(
+                "MC Min ($M)",
+                0, 2000, default_mc_min_M, step=10
+            )
+            marketcap_max_M = st.number_input(
+                "MC Max ($M)",
+                0, 2000, default_mc_max_M, step=10
+            )
+
+        with col3:
+            float_min = st.number_input(
+                "Float MIN",
+                0, 1_000_000_000, float_min, step=100_000
+            )
+            float_max = st.number_input(
+                "Float MAX",
+                0, 1_000_000_000, float_max, step=100_000
+            )
+
+        marketcap_min = marketcap_min_M * 1_000_000
+        marketcap_max = marketcap_max_M * 1_000_000
+
+        st.markdown("---")
+
+        # ======================
+        # RIGA 2 – OPEN / PMH
+        # ======================
+        col4, col5, col6 = st.columns(3)
+
+        with col4:
+            min_open_pmh = st.number_input(
+                "%Open_PMH minimo",
+                -100, 100, min_open_pmh
+            )
+
+        with col5:
+            open_min = st.number_input(
+                "Open MIN (%)",
+                0.0, 100.0, open_min, step=0.1
+            )
+
+        with col6:
+            open_max = st.number_input(
+                "Open MAX (%)",
+                0.0, 100.0, open_max, step=0.1
+            )
+
+
+
+
+
 ticker_input = st.text_input(
     "Inserisci un ticker (es. MARA, TSLA, AAPL)",
     placeholder="Lascia vuoto per usare solo i dati intraday"
@@ -355,93 +434,6 @@ with st.sidebar:
     # ICONA FILTRI (sempre visibile)
     if st.button("🔍", help="Mostra / nascondi filtri"):
         st.session_state.show_filters = not st.session_state.show_filters
-
-    st.markdown("---")
-
-    # FILTRI VERI (collassabili)
-    if st.session_state.show_filters:
-        st.markdown("### Filtri")
-
-        date_range = st.date_input("Intervallo date", [])
-        min_gap = st.number_input("GAP minimo (%)", 0, 1000, 0)
-
-        # ====== MARKET CAP: DUE BOX (IN MILIONI) ======
-        # Valori fissi di default in Milioni
-        default_mc_min_M = 0
-        default_mc_max_M = 2000
-
-        col_mc_min, col_mc_max = st.columns(2)
-
-        marketcap_min_M = col_mc_min.number_input(
-            "MC Min ($M)", 
-            value=default_mc_min_M, 
-            step=10,
-            min_value=0,
-            max_value=2000,
-            help="Valore minimo di Market Cap in Milioni"
-        )
-
-        marketcap_max_M = col_mc_max.number_input(
-            "MC Max ($M)", 
-            value=default_mc_max_M, 
-            step=10,
-            min_value=0,
-            max_value=2000,
-            help="Valore massimo di Market Cap in Milioni"
-        )
-
-        # Converti in valori reali per il filtro
-        marketcap_min = marketcap_min_M * 1_000_000
-        marketcap_max = marketcap_max_M * 1_000_000
-
-        # filtro flottante
-        col_float_min, col_float_max = st.columns(2)
-
-        float_min = col_float_min.number_input(
-            "Float MIN", 
-            value=0, 
-            step=100000,
-            min_value=0,
-            max_value=1000000000,
-            help="Valore minimo di Flottante"
-
-        )
-
-        float_max = col_float_max.number_input(
-            "Float MAX", 
-            value=5000000, 
-            step=100000,
-            min_value=0,
-            max_value=1000000000,
-            help="Valore massimo di Flottante"
-
-        )
-
-        min_open_pmh = st.number_input("%Open_PMH minimo", -100, 100, -100)
-
-        # filtro OPEN price
-        col_open_min, col_open_max = st.columns(2)
-
-        open_min = col_open_min.number_input(
-            "Open MIN", 
-            value=1.0, 
-            step=0.1,
-            min_value=0.0,
-            max_value=100.0,
-            help="Valore minimo di Open rispetto a PMH in %"
-
-        )
-
-        open_max = col_open_max.number_input(
-            "Open MAX", 
-            value=100.0, 
-            step=0.1,
-            min_value=0.0,
-            max_value=100.0,
-            help="Valore massimo di Open rispetto a PMH in %"
-
-        )
-
 
 
 filtered = df.copy()
