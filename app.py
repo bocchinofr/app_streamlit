@@ -492,9 +492,9 @@ filtered = filtered[
     (filtered["OPEN"] <= st.session_state.open_max)
 ]
 
-if len(date_range) == 2:
-    st.session_state.start, st.session_state.end = date_range
-    filtered = filtered[(filtered["Date"] >= st.session_state.start) & (filtered["Date"] <= st.session_state.end)]
+if len(st.session_state.date_range) == 2:
+    start, end = st.session_state.date_range
+    filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
 filtered = filtered[
     (filtered["Market Cap"] >= st.session_state.marketcap_min) &
