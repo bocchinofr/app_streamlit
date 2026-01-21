@@ -6,6 +6,12 @@ from dateutil import parser
 import numpy as np
 import yfinance as yf
 
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Usa il file theme.css
+local_css("theme.css")  # o "assets/theme.css" se lo metti in una cartella
 
 
 # ---- CONFIGURAZIONE ----
@@ -586,13 +592,20 @@ other_metrics = {
     "Low medio (%)": f"{low_mean:.0f}%"
 }
 
-# Visualizzazione a due colonne
+# Visualizzazione a due colonne con evidenziazione selettiva
 for label, value in other_metrics.items():
-    left_col, right_col = st.columns([2,1])  # 2:1 → titolo più largo
+    left_col, right_col = st.columns([2,1])  # titolo più largo
     with left_col:
         st.write(f"**{label}**")
     with right_col:
-        st.write(f"{value}")
+        # Applichiamo colore solo ad alcune metriche
+        if label == "Chiusura RED (%)":
+            st.markdown(f'<div class="value-highlight-red">{value}</div>', unsafe_allow_html=True)
+        elif label == "Spinta media (%)":
+            st.markdown(f'<div class="value-highlight-green">{value}</div>', unsafe_allow_html=True)
+        else:
+            st.write(f"{value}")
+
 
 # endregion
 
