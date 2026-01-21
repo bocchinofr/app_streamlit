@@ -433,6 +433,7 @@ if st.sidebar.button("🔍", help="Apri filtri"):
     st.session_state.show_filters = True
 
 
+
 filtered = df.copy()
 if ticker_input:
     filtered = filtered[filtered["Ticker"] == ticker_input]
