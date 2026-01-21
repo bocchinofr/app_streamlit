@@ -479,26 +479,26 @@ if ticker_input:
 if ticker_input and ticker_input not in df["Ticker"].unique():
     st.warning(f"⚠️ Il ticker {ticker_input} non è presente nei dati intraday.")
 
-filtered = filtered[(filtered["GAP"] >= min_gap)]
-filtered = filtered[(filtered["%Open_PMH"] >= min_open_pmh)]
+filtered = filtered[(filtered["GAP"] >= st.session_state.min_gap)]
+filtered = filtered[(filtered["%Open_PMH"] >= st.session_state.min_open_pmh)]
 
 filtered = filtered[
-    (filtered["Float"] >= float_min) &
-    (filtered["Float"] <= float_max)
+    (filtered["Float"] >= st.session_state.float_min) &
+    (filtered["Float"] <= st.session_state.float_max)
 ]
 
 filtered = filtered[
-    (filtered["OPEN"] >= open_min) &
-    (filtered["OPEN"] <= open_max)
+    (filtered["OPEN"] >= st.session_state.open_min) &
+    (filtered["OPEN"] <= st.session_state.open_max)
 ]
 
 if len(date_range) == 2:
     start, end = date_range
-    filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
+    filtered = filtered[(filtered["Date"] >= st.session_state.start) & (filtered["Date"] <= st.session_state.end)]
 
 filtered = filtered[
-    (filtered["Market Cap"] >= marketcap_min) &
-    (filtered["Market Cap"] <= marketcap_max)
+    (filtered["Market Cap"] >= st.session_state.marketcap_min) &
+    (filtered["Market Cap"] <= st.session_state.marketcap_max)
 ]
 
 # ---- DATE FILTRATE (con tema scuro) ----
