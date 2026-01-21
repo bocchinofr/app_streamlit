@@ -64,10 +64,14 @@ if st.session_state.show_filters:
         with col_title:
             st.markdown("## Filtri")
         with col_close:
-            if st.button("❌", help="Chiudi filtri"):
+            # Usa on_click per chiudere subito
+            def close_filters():
                 st.session_state.show_filters = False
 
+            st.button("❌", help="Chiudi filtri", on_click=close_filters)
+
         st.markdown("---")
+
 
         # ======================
         # RIGA 1
