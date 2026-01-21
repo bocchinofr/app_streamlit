@@ -497,8 +497,8 @@ if len(st.session_state.date_range) == 2:
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
 filtered = filtered[
-    (filtered["Market Cap"] >= st.session_state.marketcap_min) &
-    (filtered["Market Cap"] <= st.session_state.marketcap_max)
+    (filtered["Market Cap"] >= st.session_state.marketcap_min_M * 1_000_000) &
+    (filtered["Market Cap"] <= st.session_state.marketcap_max_M * 1_000_000)
 ]
 
 # ---- DATE FILTRATE (con tema scuro) ----
