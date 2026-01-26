@@ -43,9 +43,9 @@
 }
 
 .kpi-green {
-    background-color: var(--success-bg);
+    background-color: var(--highlight-green);
 }
 
 .kpi-red {
-    background-color: var(--danger-bg);
+    background-color: var(--highlight-red);
 }
