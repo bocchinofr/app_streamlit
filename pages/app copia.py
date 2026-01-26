@@ -139,8 +139,6 @@ if total > 0:
 else:
     kpi_data = {}
 
-st.subheader("📌 Altri indicatori")
-
 if kpi_data:
     kpi_df = pd.DataFrame(
         list(kpi_data.items()),
