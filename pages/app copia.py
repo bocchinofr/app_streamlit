@@ -15,8 +15,12 @@ st.set_page_config(
 
 st.title("📈 Dashboard Analisi Small Cap")
 
-# Usa il file theme.css 
-local_css("theme.css") # o "assets/theme.css" se lo metti in una cartella
+# Carica il CSS
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("theme.css")  # <-- qui
 
 # -------------------------------------------------
 # INPUT TICKER
