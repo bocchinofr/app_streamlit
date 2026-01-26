@@ -121,6 +121,41 @@ c1.metric("Totale record", total)
 c2.metric("Chiusure RED", f"{red_close:.0f}%")
 c3.metric("GAP medio", f"{gap_mean:.0f}%", f"Mediana {gap_median:.0f}%")
 
+if total > 0:
+    kpi_data = {
+        "GAP massimo (%)": f"{filtered['GAP'].max():.0f}",
+        "GAP minimo (%)": f"{filtered['GAP'].min():.0f}",
+        "GAP mediana (%)": f"{gap_median:.0f}",
+        "% Open / PMH medio": f"{filtered['%Open_PMH'].mean():.0f}",
+        "% Open / PMH mediana": f"{filtered['%Open_PMH'].median():.0f}",
+        "% chiusure GREEN": f"{(filtered['Chiusura'] == 'GREEN').mean() * 100:.0f}%",
+        "% chiusure RED": f"{red_close:.0f}%",
+        "Open medio (%)": f"{filtered['OPEN'].mean():.1f}",
+        "Float medio": f"{filtered['Float'].mean():,.0f}",
+        "Market Cap medio ($M)": f"{filtered['Market Cap'].mean() / 1_000_000:.0f}",
+        "Break medio": f"{filtered['break'].mean():.1f}",
+        "Giorni analizzati": total,
+    }
+else:
+    kpi_data = {}
+
+st.subheader("📌 Altri indicatori")
+
+if kpi_data:
+    kpi_df = pd.DataFrame(
+        list(kpi_data.items()),
+        columns=["Indicatore", "Valore"]
+    )
+
+    st.dataframe(
+        kpi_df,
+        use_container_width=True,
+        hide_index=True
+    )
+else:
+    st.info("Nessun dato disponibile per i KPI selezionati.")
+
+
 # -------------------------------------------------
 # TABELLA
 # -------------------------------------------------
