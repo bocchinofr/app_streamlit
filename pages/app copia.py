@@ -140,33 +140,34 @@ kpi_rows = [
     ("Giorni analizzati", total),
 ]
 
-kpi_df = pd.DataFrame(kpi_rows, columns=["KPI", "Valore"])
+st.subheader("📌 Altri KPI")
 
-def kpi_style(row):
-    if "GAP massimo" in row["KPI"]:
-        return [
-            "background-color: var(--highlight-green);",
-            "background-color: var(--highlight-green); font-weight:600;"
-        ]
-    return ["", ""]
+rows_html = ""
 
-styled_kpi = (
-    kpi_df
-    .style
-    .apply(kpi_style, axis=1)
-    .set_properties(**{
-        "border": "none",
-        "padding": "6px 8px",
-        "font-size": "14px"
-    })
-    .hide(axis="index")
-    .hide(axis="columns")
-)
+for label, value in kpi_rows:
+    row_class = ""
 
-st.dataframe(
-    styled_kpi,
-    use_container_width=True,
-    height=min(36 * len(kpi_df) + 10, 600)
+    if label == "GAP massimo (%)":
+        row_class = "kpi-row kpi-green"
+    elif label == "% chiusure RED":
+        row_class = "kpi-row kpi-red"
+    else:
+        row_class = "kpi-row"
+
+    rows_html += f"""
+        <div class="{row_class}">
+            <div class="kpi-label">{label}</div>
+            <div class="kpi-value">{value}</div>
+        </div>
+    """
+
+st.markdown(
+    f"""
+    <div class="kpi-table">
+        {rows_html}
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
 
