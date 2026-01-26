@@ -137,12 +137,12 @@ kpi_rows = [
     ("Giorni analizzati", total, None),
 ]
 
-# Stampa semplice in Streamlit con colorazioni
+# Stampa semplice in Streamlit con classi del tema
 for label, value, color in kpi_rows:
     if color == "green":
-        st.markdown(f"- {label}: <span style='background-color: #22c55e33; padding:2px 6px; border-radius:3px'>{value}</span>", unsafe_allow_html=True)
+        st.markdown(f"- {label}: <span class='value-highlight-green'>{value}</span>", unsafe_allow_html=True)
     elif color == "red":
-        st.markdown(f"- {label}: <span style='background-color: #ef444433; padding:2px 6px; border-radius:3px'>{value}</span>", unsafe_allow_html=True)
+        st.markdown(f"- {label}: <span class='value-highlight-red'>{value}</span>", unsafe_allow_html=True)
     else:
         st.markdown(f"- {label}: {value}")
 
