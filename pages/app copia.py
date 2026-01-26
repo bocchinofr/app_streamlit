@@ -15,6 +15,9 @@ st.set_page_config(
 
 st.title("📈 Dashboard Analisi Small Cap")
 
+# Usa il file theme.css 
+local_css("theme.css") # o "assets/theme.css" se lo metti in una cartella
+
 # -------------------------------------------------
 # INPUT TICKER
 # -------------------------------------------------
@@ -145,8 +148,6 @@ for label, value, color in kpi_rows:
         st.markdown(f"- {label}: <span class='value-highlight-red'>{value}</span>", unsafe_allow_html=True)
     else:
         st.markdown(f"- {label}: {value}")
-
-
 
 
 # -------------------------------------------------
