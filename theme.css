@@ -17,11 +17,3 @@
     border-radius: 4px;
 }
 
-
-.kpi-green {
-    background-color: var(--highlight-green);
-}
-
-.kpi-red {
-    background-color: var(--highlight-red);
-}
