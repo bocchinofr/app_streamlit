@@ -19,27 +19,25 @@
 
 .kpi-table {
     width: 100%;
-    border-collapse: collapse;
 }
 
 .kpi-row {
     display: grid;
     grid-template-columns: 2fr 1fr;
+    align-items: center;      /* allinea verticalmente */
     padding: 6px 10px;
     font-size: 14px;
 }
 
-.kpi-row:not(:last-child) {
-    border-bottom: 1px solid var(--border-color);
-}
-
 .kpi-label {
-    opacity: 0.9;
+    text-align: left;
+    white-space: nowrap;      /* evita che vada a capo */
 }
 
 .kpi-value {
     text-align: right;
     font-weight: 600;
+    white-space: nowrap;      /* evita che vada a capo */
 }
 
 .kpi-green {
