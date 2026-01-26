@@ -154,12 +154,13 @@ for label, value in kpi_rows:
     else:
         row_class = "kpi-row"
 
-    rows_html += f"""
-        <div class="{row_class}">
-            <div class="kpi-label">{label}</div>
-            <div class="kpi-value">{value}</div>
-        </div>
-    """
+    rows_html += (
+        f'<div class="{row_class}">'
+        f'<div class="kpi-label">{label}</div>'
+        f'<div class="kpi-value">{value}</div>'
+        f'</div>'
+    )
+
 
 html = f"""
 <div class="kpi-table">
