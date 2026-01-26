@@ -5,21 +5,29 @@ import numpy as np
 from dateutil import parser
 import yfinance as yf
 
-# ---------------------
-# Funzione per caricare CSS
-# ---------------------
+
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Usa il file theme.css
-local_css("theme.css")  # o "assets/theme.css" se lo metti in una cartella
+local_css("theme.css")
 
-# ---------------------
-# Session state default
-# ---------------------
+st.set_page_config(
+    page_title="Dashboard Analisi",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+with st.sidebar:
+    st.markdown("## 📂 Pagine")
+
+    page = st.radio(
+        "",
+        ["📊 Dashboard", "📈 Storico", "⚙️ Impostazioni"],
+        label_visibility="collapsed"
+    )
+
 defaults = {
-    "show_filters": False,
     "date_range": [],
     "min_gap": 0,
     "marketcap_min_M": 0,
@@ -32,126 +40,65 @@ defaults = {
 }
 
 for k, v in defaults.items():
-    if k not in st.session_state:
-        st.session_state[k] = v
+    st.session_state.setdefault(k, v)
 
-# ---------------------
-# Configurazione pagina
-# ---------------------
-st.set_page_config(page_title="Dashboard Analisi", layout="wide", initial_sidebar_state="expanded")
 st.title("📈 Dashboard Analisi Small Cap")
 
-# ---------------------
-# Pulsante sidebar
-# ---------------------
-def open_filters():
-    st.session_state.show_filters = True
+with st.expander("🔍 Filtri di analisi", expanded=False):
 
-st.sidebar.button(
-    "🔍",
-    help="Apri filtri",
-    on_click=open_filters
-)
+    col1, col2, col3 = st.columns(3)
 
-# ---------------------
-# Pannello filtri
-# ---------------------
-if st.session_state.show_filters:
-    with st.container():
+    with col1:
+        st.session_state.date_range = st.date_input(
+            "Intervallo date",
+            value=st.session_state.date_range
+        )
+        st.session_state.min_gap = st.number_input(
+            "GAP minimo (%)",
+            0, 1000, st.session_state.min_gap
+        )
 
-        # Header pannello filtri
-        col_title, col_close = st.columns([10, 1])
-        with col_title:
-            st.markdown("## Filtri")
-        with col_close:
-            # Usa on_click per chiudere subito
-            def close_filters():
-                st.session_state.show_filters = False
+    with col2:
+        st.session_state.marketcap_min_M = st.number_input(
+            "MC Min ($M)",
+            0, 2000, st.session_state.marketcap_min_M, step=10
+        )
+        st.session_state.marketcap_max_M = st.number_input(
+            "MC Max ($M)",
+            0, 2000, st.session_state.marketcap_max_M, step=10
+        )
 
-            st.button("❌", help="Chiudi filtri", on_click=close_filters)
+    with col3:
+        st.session_state.float_min = st.number_input(
+            "Float MIN",
+            0, 1_000_000_000, st.session_state.float_min, step=100_000
+        )
+        st.session_state.float_max = st.number_input(
+            "Float MAX",
+            0, 1_000_000_000, st.session_state.float_max, step=100_000
+        )
 
-        st.markdown("---")
+    st.markdown("---")
 
+    col4, col5, col6 = st.columns(3)
 
-        # ======================
-        # RIGA 1
-        # ======================
-        col1, col2, col3, col4, col5, col6 = st.columns(6)
+    with col4:
+        st.session_state.min_open_pmh = st.number_input(
+            "%Open_PMH minimo",
+            -100, 100, st.session_state.min_open_pmh
+        )
 
-        with col1:
-            st.session_state.date_range = st.date_input(
-                "Intervallo date",
-                value=st.session_state.date_range
-            )
-            st.session_state.min_gap = st.number_input(
-                "GAP minimo (%)",
-                min_value=0,
-                max_value=1000,
-                value=st.session_state.min_gap
-            )
+    with col5:
+        st.session_state.open_min = st.number_input(
+            "Open MIN (%)",
+            0.0, 100.0, st.session_state.open_min, step=0.1
+        )
 
-        with col2:
-            st.session_state.marketcap_min_M = st.number_input(
-                "MC Min ($M)",
-                min_value=0,
-                max_value=2000,
-                value=st.session_state.marketcap_min_M,
-                step=10
-            )
-            st.session_state.marketcap_max_M = st.number_input(
-                "MC Max ($M)",
-                min_value=0,
-                max_value=2000,
-                value=st.session_state.marketcap_max_M,
-                step=10
-            )
-
-        with col3:
-            st.session_state.float_min = st.number_input(
-                "Float MIN",
-                min_value=0,
-                max_value=1_000_000_000,
-                value=st.session_state.float_min,
-                step=100_000
-            )
-            st.session_state.float_max = st.number_input(
-                "Float MAX",
-                min_value=0,
-                max_value=1_000_000_000,
-                value=st.session_state.float_max,
-                step=100_000
-            )
-
-        # Converti MC in valori reali
-        marketcap_min = st.session_state.marketcap_min_M * 1_000_000
-        marketcap_max = st.session_state.marketcap_max_M * 1_000_000
-
-        with col4:
-            st.session_state.min_open_pmh = st.number_input(
-                "%Open_PMH minimo",
-                min_value=-100,
-                max_value=100,
-                value=st.session_state.min_open_pmh
-            )
-
-        with col5:
-            st.session_state.open_min = st.number_input(
-                "Open MIN (%)",
-                min_value=0.0,
-                max_value=100.0,
-                value=st.session_state.open_min,
-                step=0.1
-            )
-
-        with col6:
-            st.session_state.open_max = st.number_input(
-                "Open MAX (%)",
-                min_value=0.0,
-                max_value=100.0,
-                value=st.session_state.open_max,
-                step=0.1
-            )
-
+    with col6:
+        st.session_state.open_max = st.number_input(
+            "Open MAX (%)",
+            0.0, 100.0, st.session_state.open_max, step=0.1
+        )
 
 ticker_input = st.text_input(
     "Inserisci un ticker (es. MARA, TSLA, AAPL)",
