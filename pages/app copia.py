@@ -145,8 +145,8 @@ kpi_df = pd.DataFrame(kpi_rows, columns=["KPI", "Valore"])
 def kpi_style(row):
     if "GAP massimo" in row["KPI"]:
         return [
-            "background-color: var(--success-color);",
-            "background-color: var(--success-color); font-weight:600;"
+            "background-color: var(--highlight-green);",
+            "background-color: var(--highlight-green); font-weight:600;"
         ]
     return ["", ""]
 
@@ -162,8 +162,6 @@ styled_kpi = (
     .hide(axis="index")
     .hide(axis="columns")
 )
-
-st.subheader("📌 Altri KPI")
 
 st.dataframe(
     styled_kpi,
