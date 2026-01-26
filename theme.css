@@ -17,28 +17,6 @@
     border-radius: 4px;
 }
 
-.kpi-table {
-    width: 100%;
-}
-
-.kpi-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    align-items: center;      /* allinea verticalmente */
-    padding: 6px 10px;
-    font-size: 14px;
-}
-
-.kpi-label {
-    text-align: left;
-    white-space: nowrap;      /* evita che vada a capo */
-}
-
-.kpi-value {
-    text-align: right;
-    font-weight: 600;
-    white-space: nowrap;      /* evita che vada a capo */
-}
 
 .kpi-green {
     background-color: var(--highlight-green);

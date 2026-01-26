@@ -121,82 +121,33 @@ c1.metric("Totale record", total)
 c2.metric("Chiusure RED", f"{red_close:.0f}%")
 c3.metric("GAP medio", f"{gap_mean:.0f}%", f"Mediana {gap_median:.0f}%")
 
-kpi_rows = [
-    ("GAP massimo (%)", f"{filtered['GAP'].max():.0f}"),
-    ("GAP minimo (%)", f"{filtered['GAP'].min():.0f}"),
-    ("GAP mediana (%)", f"{gap_median:.0f}"),
-
-    ("% Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}"),
-    ("% Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}"),
-
-    ("% chiusure GREEN", f"{(filtered['Chiusura'] == 'GREEN').mean() * 100:.0f}%"),
-    ("% chiusure RED", f"{red_close:.0f}%"),
-
-    ("Open medio (%)", f"{filtered['OPEN'].mean():.1f}"),
-    ("Float medio", f"{filtered['Float'].mean():,.0f}"),
-    ("Market Cap medio ($M)", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}"),
-
-    ("Break medio (%)", f"{filtered['break'].mean() * 100:.1f}"),
-    ("Giorni analizzati", total),
-]
-
 st.subheader("📌 Altri KPI")
 
-rows_html = ""
-for label, value in kpi_rows:
-    # evidenziazioni condizionali
-    highlight_class = ""
-    if label == "GAP massimo (%)":
-        highlight_class = "value-highlight-green"
-    elif label == "% chiusure RED":
-        highlight_class = "value-highlight-red"
+# Lista dei KPI (label, value, optional color)
+kpi_rows = [
+    ("GAP massimo (%)", f"{filtered['GAP'].max():.0f}", "green"),
+    ("GAP minimo (%)", f"{filtered['GAP'].min():.0f}", None),
+    ("GAP mediana (%)", f"{gap_median:.0f}", None),
+    ("% Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}", None),
+    ("% Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}", None),
+    ("% chiusure GREEN", f"{(filtered['Chiusura'] == 'GREEN').mean() * 100:.0f}%", None),
+    ("% chiusure RED", f"{red_close:.0f}%", "red"),
+    ("Open medio (%)", f"{filtered['OPEN'].mean():.1f}", None),
+    ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
+    ("Market Cap medio ($M)", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}", None),
+    ("Break medio (%)", f"{filtered['break'].mean() * 100:.1f}", None),
+    ("Giorni analizzati", total, None),
+]
 
-    rows_html += f"""
-    <div class="kpi-row">
-        <div class="kpi-label">{label}</div>
-        <div class="kpi-value {highlight_class}">{value}</div>
-    </div>
-    """
+# Stampa semplice in Streamlit con colorazioni
+for label, value, color in kpi_rows:
+    if color == "green":
+        st.markdown(f"- {label}: <span style='background-color: #22c55e33; padding:2px 6px; border-radius:3px'>{value}</span>", unsafe_allow_html=True)
+    elif color == "red":
+        st.markdown(f"- {label}: <span style='background-color: #ef444433; padding:2px 6px; border-radius:3px'>{value}</span>", unsafe_allow_html=True)
+    else:
+        st.markdown(f"- {label}: {value}")
 
-st.markdown(f"""
-<style>
-.kpi-row {{
-    display: flex;
-    justify-content: space-between;
-    padding: 4px 0;
-    font-size: 14px;
-}}
-
-.kpi-label {{
-    flex: 2;
-    text-align: left;
-    white-space: nowrap;
-}}
-
-.kpi-value {{
-    flex: 1;
-    text-align: right;
-    font-weight: 600;
-    white-space: nowrap;
-}}
-
-.value-highlight-red {{
-    background-color: rgba(239,68,68,0.2);
-    padding: 2px 6px;
-    border-radius: 4px;
-}}
-
-.value-highlight-green {{
-    background-color: rgba(34,197,94,0.2);
-    padding: 2px 6px;
-    border-radius: 4px;
-}}
-</style>
-
-<div class="kpi-table">
-    {rows_html}
-</div>
-""", unsafe_allow_html=True)
 
 
 
