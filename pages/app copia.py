@@ -161,14 +161,14 @@ for label, value in kpi_rows:
         </div>
     """
 
-st.markdown(
-f"""
+html = f"""
 <div class="kpi-table">
 {rows_html}
 </div>
-""",
-unsafe_allow_html=True
-)
+"""
+
+st.markdown(html, unsafe_allow_html=True)
+
 
 
 
