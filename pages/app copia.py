@@ -121,8 +121,6 @@ c1.metric("Totale record", total)
 c2.metric("Chiusure RED", f"{red_close:.0f}%")
 c3.metric("GAP medio", f"{gap_mean:.0f}%", f"Mediana {gap_median:.0f}%")
 
-st.subheader("📌 Altri KPI")
-
 # Lista dei KPI (label, value, optional color)
 kpi_rows = [
     ("GAP massimo (%)", f"{filtered['GAP'].max():.0f}", "green"),
