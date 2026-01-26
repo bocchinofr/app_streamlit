@@ -162,13 +162,14 @@ for label, value in kpi_rows:
     """
 
 st.markdown(
-    f"""
-    <div class="kpi-table">
-        {rows_html}
-    </div>
-    """,
-    unsafe_allow_html=True
+f"""
+<div class="kpi-table">
+{rows_html}
+</div>
+""",
+unsafe_allow_html=True
 )
+
 
 
 # -------------------------------------------------
