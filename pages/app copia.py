@@ -143,32 +143,60 @@ kpi_rows = [
 st.subheader("📌 Altri KPI")
 
 rows_html = ""
-
 for label, value in kpi_rows:
+    # evidenziazioni condizionali
+    highlight_class = ""
     if label == "GAP massimo (%)":
-        row_class = "kpi-row kpi-green"
+        highlight_class = "value-highlight-green"
     elif label == "% chiusure RED":
-        row_class = "kpi-row kpi-red"
-    else:
-        row_class = "kpi-row"
+        highlight_class = "value-highlight-red"
 
-    rows_html += (
-        f'<div class="{row_class}">'
-        f'<div class="kpi-label">{label}</div>'
-        f'<div class="kpi-value">{value}</div>'
-        f'</div>'
-    )
+    rows_html += f"""
+    <div class="kpi-row">
+        <div class="kpi-label">{label}</div>
+        <div class="kpi-value {highlight_class}">{value}</div>
+    </div>
+    """
 
-st.markdown(
-f"""
+st.markdown(f"""
+<style>
+.kpi-row {{
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+}}
+
+.kpi-label {{
+    flex: 2;
+    text-align: left;
+    white-space: nowrap;
+}}
+
+.kpi-value {{
+    flex: 1;
+    text-align: right;
+    font-weight: 600;
+    white-space: nowrap;
+}}
+
+.value-highlight-red {{
+    background-color: rgba(239,68,68,0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+}}
+
+.value-highlight-green {{
+    background-color: rgba(34,197,94,0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+}}
+</style>
+
 <div class="kpi-table">
-{rows_html}
+    {rows_html}
 </div>
-""",
-unsafe_allow_html=True
-)
-
-
+""", unsafe_allow_html=True)
 
 
 
