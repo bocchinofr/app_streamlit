@@ -145,8 +145,6 @@ st.subheader("📌 Altri KPI")
 rows_html = ""
 
 for label, value in kpi_rows:
-    row_class = ""
-
     if label == "GAP massimo (%)":
         row_class = "kpi-row kpi-green"
     elif label == "% chiusure RED":
@@ -161,14 +159,15 @@ for label, value in kpi_rows:
         f'</div>'
     )
 
-
-html = f"""
+st.markdown(
+f"""
 <div class="kpi-table">
 {rows_html}
 </div>
-"""
+""",
+unsafe_allow_html=True
+)
 
-st.markdown(html, unsafe_allow_html=True)
 
 
 
