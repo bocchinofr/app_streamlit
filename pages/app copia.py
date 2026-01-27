@@ -146,18 +146,17 @@ st.markdown(top_html, unsafe_allow_html=True)
 
 # Lista dei KPI (label, value, optional color)
 kpi_rows = [
-    ("GAP massimo (%)", f"{filtered['GAP'].max():.0f}", "green"),
-    ("GAP minimo (%)", f"{filtered['GAP'].min():.0f}", None),
-    ("GAP mediana (%)", f"{gap_median:.0f}", None),
-    ("% Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}", None),
-    ("% Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}", None),
-    ("% chiusure GREEN", f"{(filtered['Chiusura'] == 'GREEN').mean() * 100:.0f}%", None),
-    ("% chiusure RED", f"{red_close:.0f}%", "red"),
+    ("GAP massimo", f"{filtered['GAP'].max():.0f}%", "green"),
+    ("GAP minimo", f"{filtered['GAP'].min():.0f}%", None),
+    ("GAP mediana", f"{gap_median:.0f}%", None),
+    ("Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}%", None),
+    ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
+    ("chiusure GREEN", f"{(filtered['Chiusura'] == 'GREEN').mean() * 100:.0f}%", None),
+    ("chiusure RED", f"{red_close:.0f}%", "red"),
     ("Open medio (%)", f"{filtered['OPEN'].mean():.1f}", None),
     ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
     ("Market Cap medio ($M)", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}", None),
     ("Break medio (%)", f"{filtered['break'].mean() * 100:.1f}", None),
-    ("Giorni analizzati", total, None),
 ]
 
 # Divido i KPI in due colonne/box
