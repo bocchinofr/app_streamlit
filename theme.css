@@ -1,4 +1,30 @@
-/* Theme / global styles (aggiungi o unisci con il tuo theme.css esistente) */
+/* KPI container: due box affiancati */
+.kpi-container {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+/* Singolo box KPI */
+.kpi-box {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  /* background di default (leggermente trasparente). Modifica come preferisci. */
+  background: rgba(255,255,255,0.02);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+
+/* Se vuoi due colori diversi per i box, personalizza queste classi */
+.kpi-box.left {
+  /* esempio: sfondo leggermente bluato */
+  background: rgba(59,130,246,0.04);
+}
+.kpi-box.right {
+  /* esempio: sfondo neutro */
+  background: rgba(99,102,241,0.02);
+}
 
 /* Righe KPI: label a sinistra, valore a destra */
 .kpi-row {
@@ -6,11 +32,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
   gap: 12px;
 }
 .kpi-label {
   flex: 1;
+  /* uso il colore ereditato per evitare testo troppo chiaro; cambia se vuoi un colore preciso */
+  color: inherit;
   font-size: 14px;
 }
 .kpi-value {
@@ -20,10 +48,10 @@
   font-size: 14px;
 }
 
-/* Evidenziazione valore (sfondo) - mantengo lo stile "pill" come prima */
+/* Evidenziazione valore (sfondo "pill") */
 .value-highlight-green {
-  background: rgba(16, 185, 129, 0.12); /* verde tenue */
-  color: #059669; /* verde testo */
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
   padding: 6px 10px;
   border-radius: 8px;
   display: inline-block;
@@ -31,16 +59,14 @@
   text-align: right;
 }
 .value-highlight-red {
-  background: rgba(239, 68, 68, 0.12); /* rosso tenue */
-  color: #dc2626; /* rosso testo */
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
   padding: 6px 10px;
   border-radius: 8px;
   display: inline-block;
   min-width: 60px;
   text-align: right;
 }
-
-/* Se hai anche classi precedenti, mantieni la compatibilità */
 .value-highlight {
   background: rgba(255,255,255,0.04);
   padding: 6px 10px;

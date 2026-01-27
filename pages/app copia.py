@@ -20,7 +20,7 @@ def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-local_css("theme.css")  # <-- qui
+local_css("theme.css")
 
 # -------------------------------------------------
 # INPUT TICKER
@@ -144,18 +144,38 @@ kpi_rows = [
     ("Giorni analizzati", total, None),
 ]
 
-# Stampa ogni riga come una div con label a sinistra e valore a destra.
-# Il valore viene avvolto in uno span con la classe 'value-highlight-*' per avere lo sfondo colorato.
-for label, value, color in kpi_rows:
-    highlight_cls = "value-highlight-green" if color == "green" else ("value-highlight-red" if color == "red" else "")
-    if highlight_cls:
-        value_html = f"<span class='{highlight_cls}'>{value}</span>"
-    else:
-        value_html = f"{value}"
-    st.markdown(
-        f"<div class='kpi-row'><div class='kpi-label'>{label}</div><div class='kpi-value'>{value_html}</div></div>",
-        unsafe_allow_html=True
-    )
+# Divido i KPI in due colonne/box
+n = len(kpi_rows)
+mid = (n + 1) // 2
+left_rows = kpi_rows[:mid]
+right_rows = kpi_rows[mid:]
+
+def render_rows_html(rows):
+    html = ""
+    for label, value, color in rows:
+        highlight_cls = "value-highlight-green" if color == "green" else ("value-highlight-red" if color == "red" else "")
+        if highlight_cls:
+            value_html = f"<span class='{highlight_cls}'>{value}</span>"
+        else:
+            value_html = f"{value}"
+        html += f"<div class='kpi-row'><div class='kpi-label'>{label}</div><div class='kpi-value'>{value_html}</div></div>"
+    return html
+
+left_html = render_rows_html(left_rows)
+right_html = render_rows_html(right_rows)
+
+container_html = f"""
+<div class='kpi-container'>
+  <div class='kpi-box left'>
+    {left_html}
+  </div>
+  <div class='kpi-box right'>
+    {right_html}
+  </div>
+</div>
+"""
+
+st.markdown(container_html, unsafe_allow_html=True)
 
 # -------------------------------------------------
 # TABELLA
