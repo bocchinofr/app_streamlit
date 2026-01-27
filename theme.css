@@ -1,21 +1,30 @@
-/* KPI top box: i 3 KPI principali centrati */
+/* Contenitore esterno del top box (sfondo/padding per tutto il box) */
+.kpi-top-box {
+  width: 100%;
+  padding: 12px 20px;        /* padding interno del box (modifica per più/meno spazio) */
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+}
+
+/* Riga interna che contiene i 3 elementi e li giustifica da bordo a bordo */
 .kpi-top {
   display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 16px;
+  justify-content: space-between; /* distribuisce i 3 elementi su tutta la larghezza */
+  gap: 16px;                       /* spazio minimo tra gli elementi */
   align-items: center;
 }
 
-/* Singolo elemento del top box */
+/* Singolo elemento del top box: ogni elemento prende uno spazio flessibile uguale */
 .top-kpi {
+  flex: 1;                         /* fa sì che tutti e 3 i box si espandano in modo uguale */
   text-align: center;
-  padding: 12px 18px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.02);
-  min-width: 140px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  padding: 8px 12px;
+  border-radius: 8px;
 }
+
+/* Valore e label del top-kpi */
 .top-kpi-value {
   font-size: 20px;
   font-weight: 700;
@@ -25,6 +34,7 @@
   margin-top: 6px;
   color: inherit;
 }
+
 
 /* KPI container: due box affiancati */
 .kpi-container {

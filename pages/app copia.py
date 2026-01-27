@@ -123,16 +123,24 @@ gap_mean = filtered["GAP"].mean() if total else 0
 gap_median = filtered["GAP"].median() if total else 0
 red_close = (filtered["Chiusura"] == "RED").mean() * 100 if total else 0
 
-# --- Top box: I 3 KPI principali centrati ---
+# --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
-<div class='kpi-top'>
-  <div class='top-kpi'>
-    <div class='top-kpi-value'>{total}</div>
-    <div class='top-kpi-label'>Totale record<div>
-    <div class='top-kpi-value'>{red_close:.0f}%</div>
-    <div class='top-kpi-label'>Chiusure RED</div>
-    <div class='top-kpi-value'>{gap_mean:.0f}%</div>
-    <div class='top-kpi-label'>GAP medio</div>
+<div class='kpi-top-box'>
+  <div class='kpi-top'>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{total}</div>
+      <div class='top-kpi-label'>Totale record</div>
+    </div>
+
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{red_close:.0f}%</div>
+      <div class='top-kpi-label'>Chiusure RED</div>
+    </div>
+
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
+      <div class='top-kpi-label'>GAP medio</div>
+    </div>
   </div>
 </div>
 """
