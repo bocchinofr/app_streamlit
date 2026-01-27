@@ -1,7 +1,7 @@
 /* Contenitore esterno del top box (sfondo/padding per tutto il box) */
 .kpi-top-box {
   width: 100%;
-  padding: 12px 20px;        /* padding interno del box (modifica per più/meno spazio) */
+  padding: 12px 10px;        /* padding interno del box (modifica per più/meno spazio) */
   border-radius: 10px;
   background: rgba(255,255,255,0.02);
   box-shadow: 0 1px 2px rgba(0,0,0,0.06);
@@ -12,7 +12,7 @@
 .kpi-top {
   display: flex;
   justify-content: space-between; /* distribuisce i 3 elementi su tutta la larghezza */
-  gap: 16px;                       /* spazio minimo tra gli elementi */
+  gap: 12px;                       /* spazio minimo tra gli elementi */
   align-items: center;
 }
 
