@@ -123,6 +123,18 @@ gap_mean = filtered["GAP"].mean() if total else 0
 gap_median = filtered["GAP"].median() if total else 0
 red_close = (filtered["Chiusura"] == "RED").mean() * 100 if total else 0
 
+# --- Medie per red e green per GAP (aggiunte) ---
+gap_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "GAP"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+gap_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "GAP"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
+
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
 <div class='kpi-top-box'>
@@ -149,6 +161,8 @@ kpi_rows = [
     ("GAP massimo", f"{filtered['GAP'].max():.0f}%", "green"),
     ("GAP minimo", f"{filtered['GAP'].min():.0f}%", None),
     ("GAP mediana", f"{gap_median:.0f}%", None),
+    ("GAP medio RED (%)", f"{gap_red:.1f}", "red"),
+    ("GAP medio GREEN (%)", f"{gap_green:.1f}", "green"),
     ("Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}%", None),
     ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
     ("chiusure GREEN", f"{(filtered['Chiusura'] == 'GREEN').mean() * 100:.0f}%", None),
