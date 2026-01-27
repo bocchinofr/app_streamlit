@@ -144,15 +144,27 @@ kpi_rows = [
     ("Giorni analizzati", total, None),
 ]
 
-# Stampa semplice in Streamlit con classi del tema
-for label, value, color in kpi_rows:
-    if color == "green":
-        st.markdown(f"- {label}: <span class='value-highlight-green'>{value}</span>", unsafe_allow_html=True)
-    elif color == "red":
-        st.markdown(f"- {label}: <span class='value-highlight-red'>{value}</span>", unsafe_allow_html=True)
-    else:
-        st.markdown(f"- {label}: {value}")
+# Aggiungo un piccolo CSS inline per allineare i valori a destra
+st.markdown(
+    """
+    <style>
+    .kpi-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .kpi-label { flex:1; color:var(--text-color); }
+    .kpi-value { text-align:right; min-width:120px; font-weight:600; }
+    .kpi-value.green { color:#16a34a; }
+    .kpi-value.red { color:#ef4444; }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
+# Stampa ogni riga come una div con label a sinistra e valore a destra
+for label, value, color in kpi_rows:
+    cls = "green" if color == "green" else ("red" if color == "red" else "")
+    st.markdown(
+        f"<div class='kpi-row'><div class='kpi-label'>{label}</div><div class='kpi-value {cls}'>{value}</div></div>",
+        unsafe_allow_html=True
+    )
 
 # -------------------------------------------------
 # TABELLA
