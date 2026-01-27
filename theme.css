@@ -37,7 +37,7 @@
 /* Singolo box KPI: aggiunto padding laterale maggiore */
 .kpi-box {
   flex: 1;
-  padding: 16px 24px; /* <- più margine interno a destra e a sinistra */
+  padding: 16px 30px; /* <- più margine interno a destra e a sinistra */
   border-radius: 10px;
   background: rgba(255,255,255,0.02);
   box-shadow: 0 1px 2px rgba(0,0,0,0.12);
