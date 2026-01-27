@@ -79,7 +79,7 @@
   padding: 6px 10px;
   border-radius: 8px;
   display: inline-block;
-  min-width: 60px;
+  min-width: 0px;
   text-align: right;
 }
 .value-highlight-red {
