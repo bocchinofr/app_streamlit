@@ -144,25 +144,16 @@ kpi_rows = [
     ("Giorni analizzati", total, None),
 ]
 
-# Aggiungo un piccolo CSS inline per allineare i valori a destra
-st.markdown(
-    """
-    <style>
-    .kpi-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
-    .kpi-label { flex:1; color:var(--text-color); }
-    .kpi-value { text-align:right; min-width:120px; font-weight:600; }
-    .kpi-value.green { color:#16a34a; }
-    .kpi-value.red { color:#ef4444; }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Stampa ogni riga come una div con label a sinistra e valore a destra
+# Stampa ogni riga come una div con label a sinistra e valore a destra.
+# Il valore viene avvolto in uno span con la classe 'value-highlight-*' per avere lo sfondo colorato.
 for label, value, color in kpi_rows:
-    cls = "green" if color == "green" else ("red" if color == "red" else "")
+    highlight_cls = "value-highlight-green" if color == "green" else ("value-highlight-red" if color == "red" else "")
+    if highlight_cls:
+        value_html = f"<span class='{highlight_cls}'>{value}</span>"
+    else:
+        value_html = f"{value}"
     st.markdown(
-        f"<div class='kpi-row'><div class='kpi-label'>{label}</div><div class='kpi-value {cls}'>{value}</div></div>",
+        f"<div class='kpi-row'><div class='kpi-label'>{label}</div><div class='kpi-value'>{value_html}</div></div>",
         unsafe_allow_html=True
     )
 

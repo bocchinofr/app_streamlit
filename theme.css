@@ -1,19 +1,50 @@
-:root {
-    /* COLORI RIUTILIZZABILI */
-    --highlight-red: rgba(239,68,68,0.2);   /* rosso chiaro sfumato */
-    --highlight-green: rgba(34,197,94,0.2); /* verde chiaro sfumato */
+/* Theme / global styles (aggiungi o unisci con il tuo theme.css esistente) */
+
+/* Righe KPI: label a sinistra, valore a destra */
+.kpi-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  gap: 12px;
+}
+.kpi-label {
+  flex: 1;
+  color: var(--text-color, #cbd5e1);
+  font-size: 14px;
+}
+.kpi-value {
+  text-align: right;
+  min-width: 120px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-/* Stile generico per evidenziare valore */
-.value-highlight-red {
-    background-color: var(--highlight-red);
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
+/* Evidenziazione valore (sfondo) - mantengo lo stile "pill" come prima */
 .value-highlight-green {
-    background-color: var(--highlight-green);
-    padding: 2px 6px;
-    border-radius: 4px;
+  background: rgba(16, 185, 129, 0.12); /* verde tenue */
+  color: #059669; /* verde testo */
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  min-width: 60px;
+  text-align: right;
+}
+.value-highlight-red {
+  background: rgba(239, 68, 68, 0.12); /* rosso tenue */
+  color: #dc2626; /* rosso testo */
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  min-width: 60px;
+  text-align: right;
 }
 
+/* Se hai anche classi precedenti, mantieni la compatibilità */
+.value-highlight {
+  background: rgba(255,255,255,0.04);
+  padding: 6px 10px;
+  border-radius: 8px;
+  display:inline-block;
+}
