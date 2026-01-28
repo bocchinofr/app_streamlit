@@ -241,7 +241,7 @@ if ticker_input:
             "% High", "% Low", "% Close", "EoD", "Volume"
         ]
 
-        left_col, center_col, right_col = st.columns([1, 4, 5])
+        left_col, center_col, right_col = st.columns([1, 4, 4])
 
         with left_col:
             st.text("🔁 Reverse split")
