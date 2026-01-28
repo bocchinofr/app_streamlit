@@ -237,7 +237,7 @@ if ticker_input:
 
         left_col, center_col, right_col = st.columns([1, 4, 3])
         with left_col:
-            st.markdown("### 🔁 Reverse split")
+            st.text("### 🔁 Reverse split")
             split_info = []
             for date, ratio in splits.items():
                 if ratio < 1:  # reverse split
