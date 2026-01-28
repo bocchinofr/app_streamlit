@@ -113,7 +113,7 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 # endregion
 
 # ------------------------------------------------------------
-# region SLIDER SEZIONE STORICA (solo se ticker valorizzato)
+# region SEZIONE STORICA (solo se ticker valorizzato)
 # ------------------------------------------------------------
 
 

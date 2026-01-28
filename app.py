@@ -237,75 +237,75 @@ if ticker_input:
 
             
 
-        # HEAT MAP  
-        st.markdown("### 🔥 Heatmap gap per anno / mese")
+            # HEAT MAP  
+            st.markdown("### 🔥 Heatmap gap per anno / mese")
 
-        metric_choice = st.selectbox(
-            "Metrica heatmap",
-            ["Conteggio gap", "Gap medio (%)"]
-        )
-        # ===== PREPARAZIONE DATI HEATMAP =====
-        df_heat = df_yf.copy()
-
-        df_heat["Year"] = df_heat["Date"].dt.year
-        df_heat["Month"] = df_heat["Date"].dt.month
-
-        if metric_choice == "Conteggio gap":
-            heatmap_data = (
-                df_heat[df_heat["Gap%"] >= gap_min]
-                .groupby(["Year", "Month"])
-                .size()
-                .unstack(fill_value=0)
+            metric_choice = st.selectbox(
+                "Metrica heatmap",
+                ["Conteggio gap", "Gap medio (%)"]
             )
+            # ===== PREPARAZIONE DATI HEATMAP =====
+            df_heat = df_yf.copy()
 
-        else:  # Gap medio
-            heatmap_data = (
-                df_heat[df_heat["Gap%"] >= gap_min]
-                .groupby(["Year", "Month"])["Gap%"]
-                .mean()
-                .unstack()
-                .round(0)
-            )
+            df_heat["Year"] = df_heat["Date"].dt.year
+            df_heat["Month"] = df_heat["Date"].dt.month
 
-        # Ordino mesi da Gen a Dic
-        heatmap_data = heatmap_data.reindex(columns=range(1, 13))
-
-        month_names = {
-            1: "Gen", 2: "Feb", 3: "Mar", 4: "Apr",
-            5: "Mag", 6: "Giu", 7: "Lug", 8: "Ago",
-            9: "Set", 10: "Ott", 11: "Nov", 12: "Dic"
-        }
-
-        heatmap_data.rename(columns=month_names, inplace=True)
-
-        heatmap_display = heatmap_data.copy()
-        heatmap_display = heatmap_display.astype("Int64")
-
-        # Valori validi (>0)
-        valid_values = heatmap_display[heatmap_display > 0]
-
-        vmin = valid_values.min().min()
-        vmax = valid_values.max().max()
-
-        # 🔑 CASO LIMITE: se tutti i valori sono uguali (es. solo 1)
-        if pd.isna(vmin) or vmin == vmax:
-            vmax = vmin + 1
-
-        st.dataframe(
-            heatmap_display.style
-                # maschero None e 0 → restano bianchi
-                .background_gradient(
-                    cmap="Greens",
-                    axis=None,
-                    vmin=vmin,
-                    vmax=vmax
+            if metric_choice == "Conteggio gap":
+                heatmap_data = (
+                    df_heat[df_heat["Gap%"] >= gap_min]
+                    .groupby(["Year", "Month"])
+                    .size()
+                    .unstack(fill_value=0)
                 )
-                .apply(
-                    lambda x: ["background-color: transparent" if (pd.isna(v) or v == 0) else "" for v in x],
-                    axis=1
-                ),
-            width="stretch"
-        )
+
+            else:  # Gap medio
+                heatmap_data = (
+                    df_heat[df_heat["Gap%"] >= gap_min]
+                    .groupby(["Year", "Month"])["Gap%"]
+                    .mean()
+                    .unstack()
+                    .round(0)
+                )
+
+            # Ordino mesi da Gen a Dic
+            heatmap_data = heatmap_data.reindex(columns=range(1, 13))
+
+            month_names = {
+                1: "Gen", 2: "Feb", 3: "Mar", 4: "Apr",
+                5: "Mag", 6: "Giu", 7: "Lug", 8: "Ago",
+                9: "Set", 10: "Ott", 11: "Nov", 12: "Dic"
+            }
+
+            heatmap_data.rename(columns=month_names, inplace=True)
+
+            heatmap_display = heatmap_data.copy()
+            heatmap_display = heatmap_display.astype("Int64")
+
+            # Valori validi (>0)
+            valid_values = heatmap_display[heatmap_display > 0]
+
+            vmin = valid_values.min().min()
+            vmax = valid_values.max().max()
+
+            # 🔑 CASO LIMITE: se tutti i valori sono uguali (es. solo 1)
+            if pd.isna(vmin) or vmin == vmax:
+                vmax = vmin + 1
+
+            st.dataframe(
+                heatmap_display.style
+                    # maschero None e 0 → restano bianchi
+                    .background_gradient(
+                        cmap="Greens",
+                        axis=None,
+                        vmin=vmin,
+                        vmax=vmax
+                    )
+                    .apply(
+                        lambda x: ["background-color: transparent" if (pd.isna(v) or v == 0) else "" for v in x],
+                        axis=1
+                    ),
+                width="stretch"
+            )
     except Exception as e:
         st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
 
