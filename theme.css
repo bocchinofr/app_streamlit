@@ -73,13 +73,13 @@
 .kpi-label {
   flex: 1;
   color: inherit;
-  font-size: 14px;
+  font-size: 20px;
 }
 .kpi-value {
   text-align: right;
   min-width: 120px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 24px;
 }
 
 /* Evidenziazione valore (sfondo "pill") */
