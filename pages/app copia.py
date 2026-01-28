@@ -162,9 +162,6 @@ kpi_rows = [
     ("GAP - massimo", f"{filtered['GAP'].max():.0f}%", "green"),
     ("GAP - mediana", f"{gap_median:.0f}%", None),
     ("GAP medio", (f"{gap_red:.1f}%", f"{gap_green:.1f}%", f"{gap_mean:.1f}%"), "multi"),
-
-    ("GAP medio RED", f"{gap_red:.1f}%", "red"),
-    ("GAP medio GREEN", f"{gap_green:.1f}%","green"),
     ("Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}%", None),
     ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
     ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
@@ -186,6 +183,10 @@ def render_rows_html(rows):
         if isinstance(value, (list, tuple)):
             # ordina: (red, green, totale)
             red_val, green_val, total_val = value
+            # testi dei tooltip (personalizzali a piacere)
+            red_title = "GAP medio sui record con chiusura RED"
+            green_title = "GAP medio sui record con chiusura GREEN"
+            total_title = "GAP medio su tutti i record filtrati"
             value_html = (
                 "<div class='kpi-multi'>"
                 f"<span class='value-highlight-red' title='RED'>{red_val}</span>"
