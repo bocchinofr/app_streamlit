@@ -380,8 +380,10 @@ filtered = filtered[
     (filtered["Market Cap"] <= mc_max * 1_000_000)
 ]
 
+# endregion
+
 # -------------------------------------------------
-# KPI
+# region KPI
 # -------------------------------------------------
 st.subheader("📊 KPI principali")
 
@@ -570,6 +572,8 @@ container_html = f"""
 """
 
 st.markdown(container_html, unsafe_allow_html=True)
+
+# endregion
 
 # -------------------------------------------------
 # TABELLA
