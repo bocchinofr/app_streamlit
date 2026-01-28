@@ -36,74 +36,45 @@
 }
 
 
-/* KPI container: due box affiancati */
-.kpi-container {
+/* --- Aggiunte per KPI trio (mini-bar inline) --- */
+.kpi-trio {
   display: flex;
-  gap: 20px;
-  align-items: stretch;
-  margin-bottom: 12px;
-}
-
-/* Singolo box KPI: aggiunto padding laterale maggiore */
-.kpi-box {
-  flex: 1;
-  padding: 16px 50px; /* <- più margine interno a destra e a sinistra */
-  border-radius: 10px;
-  background: rgba(255,255,255,0.02);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
-}
-
-/* Se vuoi due colori diversi per i box, personalizza queste classi */
-.kpi-box.left {
-  background: rgba(59,130,246,0.04);
-}
-.kpi-box.right {
-  background: rgba(99,102,241,0.02);
-}
-
-/* Righe KPI: label a sinistra, valore a destra */
-.kpi-row {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: none;
   gap: 12px;
+  margin-bottom: 8px;
 }
-.kpi-label {
+.kpi-trio .trio-label {
+  width: 140px;
+  font-size: 14px;
+}
+.kpi-trio .trio-items {
+  display: flex;
+  gap: 12px;
+  align-items: center;
   flex: 1;
-  color: inherit;
-  font-size: 16px;
 }
-.kpi-value {
+.kpi-trio .trio-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 90px;
+}
+.kpi-trio .trio-bar-container {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+}
+.kpi-trio .trio-bar {
+  height: 100%;
+  border-radius: 6px;
+}
+.kpi-trio .trio-val {
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 13px;
   text-align: right;
-  min-width: 120px;
-  font-weight: 600;
-  font-size: 20px;
-}
-
-/* Evidenziazione valore (sfondo "pill") */
-.value-highlight-green {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
-  padding: 4px 6px;
-  border-radius: 8px;
-  display: inline-block;
-  text-align: right;
-}
-.value-highlight-red {
-  background: rgba(239, 68, 68, 0.12);
-  color: #dc2626;
-  padding: 4px 6px;
-  border-radius: 8px;
-  display: inline-block;
-  text-align: right;
-}
-.value-highlight {
-  background: rgba(255,255,255,0.04);
-  padding: 6px 10px;
-  border-radius: 8px;
-  display:inline-block;
 }
 
 /* Responsive: su schermi stretti impila i box */
@@ -118,44 +89,12 @@
   .top-kpi {
     width: 100%;
   }
-}
-
-
-/* --- Aggiunte per KPI trio (mini-bar inline) --- */
-.kpi-trio {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.kpi-trio .trio-label {
-  width: 160px;        /* regola la larghezza dell'etichetta */
-  font-size: 14px;
-}
-.kpi-trio .trio-items {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex: 1;
-}
-.kpi-trio .trio-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 70px;
-}
-.kpi-trio .trio-bar-container {
-  width: 100%;
-  background: rgba(255,255,255,0.04);
-  border-radius: 6px;
-  height: 10px;
-  overflow: hidden;
-}
-.kpi-trio .trio-bar {
-  height: 100%;
-  border-radius: 6px;
-}
-.kpi-trio .trio-val {
-  margin-top: 6px;
-  font-weight: 700;
-  font-size: 13px;
+  .kpi-trio {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .kpi-trio .trio-label {
+    width: 100%;
+    margin-bottom: 6px;
+  }
 }
