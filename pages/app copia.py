@@ -155,8 +155,6 @@ if ticker_input:
         (historical_filtered["OPEN"] <= open_max)
     ]
 
-    st.write(f"Record filtrati: {len(historical_filtered)}")
-
     try:
         ticker_yf = yf.Ticker(ticker_input)
         df_yf = ticker_yf.history(period="4y", auto_adjust=False)
@@ -231,13 +229,14 @@ if ticker_input:
             df_filtered["Ticker"] = ticker_input
 
         display_cols = [
-            "Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $",
+            "Ticker", "Date", "Gap%", "Open $","Close $",
             "% High", "% Low", "% Close", "Chiusura", "Volume"
         ]
 
         left_col, center_col, right_col = st.columns([1, 4, 3])
+
         with left_col:
-            st.text("### 🔁 Reverse split")
+            st.text("🔁 Reverse split")
             split_info = []
             for date, ratio in splits.items():
                 if ratio < 1:  # reverse split
