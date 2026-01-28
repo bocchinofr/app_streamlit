@@ -135,6 +135,43 @@ gap_green = (
     else 0
 )
 
+# snippet da inserire nel punto in cui calcoli gap_mean, gap_red, gap_green
+def render_gap_trio(gap_mean, gap_red, gap_green):
+    vals = [gap_mean or 0, gap_red or 0, gap_green or 0]
+    labels = ["Totale", "RED", "GREEN"]
+    colors = ["#6B7280", "#EF4444", "#10B981"]  # grigio, rosso, verde
+
+    maxv = max(abs(v) for v in vals) or 1
+    # Calcola larghezze percentuali (relativo al massimo tra i tre)
+    widths = [int((abs(v) / maxv) * 100) for v in vals]
+
+    items_html = ""
+    for lb, v, w, c in zip(labels, vals, widths, colors):
+        items_html += f"""
+        <div class='trio-item'>
+          <div style="font-size:12px;color:inherit">{lb}</div>
+          <div class='trio-bar-container' title="{v:.2f}%">
+            <div class='trio-bar' style="width:{w}%; background:{c};"></div>
+          </div>
+          <div class='trio-val'>{v:.1f}%</div>
+        </div>
+        """
+
+    html = f"""
+    <div class='kpi-trio'>
+      <div class='trio-label'>GAP medio</div>
+      <div class='trio-items'>
+        {items_html}
+      </div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
+# Esempio di chiamata (usa i valori calcolati nel tuo flusso)
+render_gap_trio(gap_mean, gap_red, gap_green)
+
+
+
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
 <div class='kpi-top-box'>
@@ -155,8 +192,6 @@ top_html = f"""
 </div>
 """
 st.markdown(top_html, unsafe_allow_html=True)
-
-
 
 # Lista dei KPI (label, value, optional color)
 kpi_rows = [
