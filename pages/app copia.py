@@ -193,8 +193,8 @@ def render_gap_trio(gap_mean, gap_red, gap_green):
     # assicuriamoci di non avere newline/indent iniziale che Markdown interpreta come codice
     html = textwrap.dedent(html).lstrip()
 
-    st.markdown(html, unsafe_allow_html=True)
-
+import streamlit.components.v1 as components
+components.html(html, height=80)  # regola height in base a quanti contenuti hai
 
 # Lista dei KPI (label, value, optional color)
 kpi_rows = [
