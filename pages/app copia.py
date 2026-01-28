@@ -162,7 +162,7 @@ kpi_rows = [
     ("GAP - massimo", f"{filtered['GAP'].max():.0f}%", "green"),
     ("GAP - mediana", f"{gap_median:.0f}%", None),
     ("GAP medio RED", f"{gap_red:.1f}%", "red"),
-    ("GAP medio GREEN", f"{gap_green:.1f}%", "green"),
+    ("GAP medio GREEN", f"{gap_green:.1f}%",delta=f"{gap_red-gap_mean:.1f}%", "green"),
     ("Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}%", None),
     ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
     ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
