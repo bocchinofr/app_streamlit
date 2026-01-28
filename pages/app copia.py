@@ -246,7 +246,7 @@ kpi_rows = [
     ("GAP medio", (f"{gap_red:.0f}%", f"{gap_green:.0f}%", f"{gap_mean:.0f}%"), "multi"),
     ("Open / PMH medio", (f"{filtered['%Open_PMH'].mean():.0f}%", f"{open_pmh_green:.0f}%", f"{open_pmh_red:.0f}%"), "multi"),
     ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
-    ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
+    ("Float medio", f"{filtered['Float'].mean():.0f}", None),
     ("Market Cap medio", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}M", None),
     ("Spinta media",(f"{filtered['%OH'].mean():.0f}%", f"{spinta_green:.0f}%", f"{spinta_red:.0f}%"), "multi"),
     ("Minimo medio",(f"{filtered['%OL'].mean():.0f}%", f"{low_green:.0f}%", f"{low_red:.0f}%"), "multi"),
