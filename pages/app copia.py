@@ -158,6 +158,18 @@ pmbreak_green = (
     else 0
 )
 
+# Medie per red e green per Spinta
+spinta_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "%OH"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+spinta_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "%OH"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
+
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
 <div class='kpi-top-box'>
@@ -188,6 +200,7 @@ kpi_rows = [
     ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
     ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
     ("Market Cap medio ($M)", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}", None),
+    ("Spinta media",(f"{filtered['%OH'].mean():.0f}%", f"{spinta_green:.0f}%", f"{spinta_red:.0f}%"), "multi"),
     ("Break medio", (f"{filtered['break'].mean() * 100:.0f}%",f"{pmbreak_green:.0f}%", f"{pmbreak_red:.0f}%"), "multi"),
 ]
 
