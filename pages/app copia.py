@@ -221,7 +221,8 @@ if ticker_input:
             "High_adj": "High $",
             "Low_adj": "Low $",
             "Close_adj": "Close $",
-            "Volume_adj": "Volume"
+            "Volume_adj": "Volume",
+            "Chiusura": "EoD"
         }
 
         for old_col, new_col in rename_map.items():
