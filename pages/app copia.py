@@ -120,7 +120,7 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 if ticker_input:
     st.markdown(f"### 📊 Gap giornaliero per - {ticker_input}")
 
-    col1, spacer, col2 = st.columns([4, 1, 4])  # proporzioni: slider1=4, spazio=1, slider2=4
+    col1, spacer, col2, spacer, col3 = st.columns([4, 1, 4, 1, 3])  # proporzioni: slider1=4, spazio=1, slider2=4
 
     with col1:
         # Slider GAP %
@@ -138,6 +138,11 @@ if ticker_input:
             min_value=0,
             max_value=100,
             value=(2, 100)
+        )
+    with col3:
+        metric_choice = st.selectbox(
+            "Metrica heatmap",
+            ["Conteggio gap", "Gap medio (%)"]
         )
 
     # Applico i filtri al dataframe storica
@@ -256,10 +261,6 @@ if ticker_input:
 
         with right_col:
             # HEAT MAP  
-            metric_choice = st.selectbox(
-                "Metrica heatmap",
-                ["Conteggio gap", "Gap medio (%)"]
-            )
             # ===== PREPARAZIONE DATI HEATMAP =====
             df_heat = df_yf.copy()
 
