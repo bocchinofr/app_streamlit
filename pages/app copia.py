@@ -236,11 +236,11 @@ if ticker_input:
             df_filtered["Ticker"] = ticker_input
 
         display_cols = [
-            "Ticker", "Date", "Gap%", "Open $","Close $",
+            "Ticker", "Date", "Gap%", "Open $",
             "% High", "% Low", "% Close", "Chiusura", "Volume"
         ]
 
-        left_col, center_col, right_col = st.columns([1, 3, 4])
+        left_col, center_col, right_col = st.columns([1, 4, 5])
 
         with left_col:
             st.text("🔁 Reverse split")
