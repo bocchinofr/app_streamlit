@@ -156,7 +156,9 @@ top_html = f"""
 """
 st.markdown(top_html, unsafe_allow_html=True)
 
-# --- render GAP trio (mini-bar inline) ---
+# --- render GAP trio (mini-bar inline) — FIX: rimuove indentazione per evitare blocco codice Markdown ---
+import textwrap
+
 def render_gap_trio(gap_mean, gap_red, gap_green):
     vals = [gap_mean or 0, gap_red or 0, gap_green or 0]
     labels = ["Totale", "RED", "GREEN"]
@@ -165,30 +167,33 @@ def render_gap_trio(gap_mean, gap_red, gap_green):
     maxv = max(abs(v) for v in vals) or 1
     widths = [int((abs(v) / maxv) * 100) for v in vals]
 
-    items_html = ""
+    items = []
     for lb, v, w, c in zip(labels, vals, widths, colors):
-        items_html += f"""
-        <div class='trio-item'>
-          <div style="font-size:12px;color:inherit">{lb}</div>
-          <div class='trio-bar-container' title="{v:.2f}%">
-            <div class='trio-bar' style="width:{w}%; background:{c};"></div>
-          </div>
-          <div class='trio-val'>{v:.1f}%</div>
-        </div>
-        """
+        # costruisco ogni blocco senza newline/indentazione iniziale
+        item = (
+            "<div class='trio-item'>"
+            f"<div style='font-size:12px;color:inherit'>{lb}</div>"
+            f"<div class='trio-bar-container' title='{v:.2f}%'>"
+            f"<div class='trio-bar' style='width:{w}%; background:{c};'></div>"
+            "</div>"
+            f"<div class='trio-val'>{v:.1f}%</div>"
+            "</div>"
+        )
+        items.append(item)
 
-    html = f"""
-    <div class='kpi-trio'>
-      <div class='trio-label'>GAP medio</div>
-      <div class='trio-items'>
-        {items_html}
-      </div>
-    </div>
-    """
+    html = (
+        "<div class='kpi-trio'>"
+        "<div class='trio-label'>GAP medio</div>"
+        "<div class='trio-items'>"
+        + "".join(items) +
+        "</div>"
+        "</div>"
+    )
+
+    # assicuriamoci di non avere newline/indent iniziale che Markdown interpreta come codice
+    html = textwrap.dedent(html).lstrip()
+
     st.markdown(html, unsafe_allow_html=True)
-
-# Chiama la funzione per renderizzare il trio
-render_gap_trio(gap_mean, gap_red, gap_green)
 
 
 # Lista dei KPI (label, value, optional color)
