@@ -123,6 +123,17 @@ gap_mean = filtered["GAP"].mean() if total else 0
 gap_median = filtered["GAP"].median() if total else 0
 red_close = (filtered["Chiusura"] == "RED").mean() * 100 if total else 0
 
+# --- Medie per red e green per GAP (aggiunte) ---
+gap_red = (
+    filtered.loc[filtered["Chiusura"] == "RED", "GAP"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
+    else 0
+)
+gap_green = (
+    filtered.loc[filtered["Chiusura"] == "GREEN", "GAP"].mean()
+    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
+    else 0
+)
 # Medie per red e green per OPENvsPMH
 open_pmh_red = (
     filtered.loc[filtered["Chiusura"] == "RED", "%Open_PMH"].mean()
@@ -134,52 +145,6 @@ open_pmh_green = (
     if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
     else 0
 )
-# Medie per red e green per PMbreak
-pmbreak_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "break"].mean()*100
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-pmbreak_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "break"].mean()*100
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-# Medie per red e green per Spinta
-spinta_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "%OH"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-spinta_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "%OH"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-
-# Medie per red e green per GAP
-gap_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "GAP"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-gap_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "GAP"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-low_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "%OL"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-low_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "%OL"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-
-
 
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
@@ -207,7 +172,7 @@ kpi_rows = [
     ("GAP - massimo", f"{filtered['GAP'].max():.0f}%", "green"),
     ("GAP - mediana", f"{gap_median:.0f}%", None),
     ("GAP medio", (f"{gap_red:.0f}%", f"{gap_green:.0f}%", f"{gap_mean:.0f}%"), "multi"),
-    ("Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}%", f"{open_pmh_green:.0f}%", f"{open_pmh_red:.0f}%"), "multi"),
+    ("Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}%", None),
     ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
     ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
     ("Market Cap medio ($M)", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}", None),
