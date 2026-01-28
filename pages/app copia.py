@@ -135,6 +135,26 @@ gap_green = (
     else 0
 )
 
+import altair as alt
+import pandas as pd
+
+def show_gap_bar(gap_mean, gap_red, gap_green):
+    df_k = pd.DataFrame({
+        "Tipo": ["Totale","RED","GREEN"],
+        "Valore": [gap_mean or 0, gap_red or 0, gap_green or 0]
+    })
+    colors = alt.Scale(domain=["Totale","RED","GREEN"], range=["#6B7280","#EF4444","#10B981"])
+    chart = alt.Chart(df_k).mark_bar(size=20).encode(
+        x=alt.X("Valore:Q", title="%"),
+        y=alt.Y("Tipo:N", sort=["Totale","GREEN","RED"]),
+        color=alt.Color("Tipo:N", scale=colors),
+        tooltip=["Tipo","Valore"]
+    ).properties(height=120)
+    st.altair_chart(chart, use_container_width=True)
+
+# Esempio
+show_gap_bar(gap_mean, gap_red, gap_green)
+
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
 <div class='kpi-top-box'>
