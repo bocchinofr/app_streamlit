@@ -120,7 +120,7 @@
   min-width: 64px;        /* larghezza minima per mantenere leggibilità */
   text-align: center;
   padding: 4px 10px;
-  border-radius: 2px;
+  border-radius: 4px;
   font-weight: 600;
   font-size: 18px;
   cursor: help; /* mostra il cursore "help" quando si passa sopra */
