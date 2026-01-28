@@ -123,6 +123,7 @@
   border-radius: 5px;
   font-weight: 600;
   font-size: 20px;
+  cursor: help; /* mostra il cursore "help" quando si passa sopra */
 }
 
 /* Responsive: su schermi stretti impila i box */
