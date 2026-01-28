@@ -189,9 +189,9 @@ def render_rows_html(rows):
             total_title = "GAP medio su tutti i record filtrati"
             value_html = (
                 "<div class='kpi-multi'>"
-                f"<span class='value-highlight-red' title='RED'>{red_val}</span>"
-                f"<span class='value-highlight-green' title='GREEN'>{green_val}</span>"
-                f"<span class='value-highlight' title='Totale'>{total_val}</span>"
+                f"<span class='value-highlight-red' title='{red_title}'>{red_val}</span>"
+                f"<span class='value-highlight-green' title='{green_title}'>{green_val}</span>"
+                f"<span class='value-highlight' title='{total_title}'>{total_val}</span>"
                 "</div>"
             )
         else:
