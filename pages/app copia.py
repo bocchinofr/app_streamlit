@@ -161,6 +161,8 @@ st.markdown(top_html, unsafe_allow_html=True)
 kpi_rows = [
     ("GAP - massimo", f"{filtered['GAP'].max():.0f}%", "green"),
     ("GAP - mediana", f"{gap_median:.0f}%", None),
+    ("GAP medio", (f"{gap_red:.1f}%", f"{gap_green:.1f}%", f"{gap_mean:.1f}%"), "multi"),
+
     ("GAP medio RED", f"{gap_red:.1f}%", "red"),
     ("GAP medio GREEN", f"{gap_green:.1f}%","green"),
     ("Open / PMH medio", f"{filtered['%Open_PMH'].mean():.0f}%", None),
@@ -177,14 +179,26 @@ mid = (n + 1) // 2
 left_rows = kpi_rows[:mid]
 right_rows = kpi_rows[mid:]
 
+# Funzione render che supporta anche valori multipli (tuple/list) e riusa le classi value-highlight-*
 def render_rows_html(rows):
     html = ""
     for label, value, color in rows:
-        highlight_cls = "value-highlight-green" if color == "green" else ("value-highlight-red" if color == "red" else "")
-        if highlight_cls:
-            value_html = f"<span class='{highlight_cls}'>{value}</span>"
+        if isinstance(value, (list, tuple)):
+            # ordina: (red, green, totale)
+            red_val, green_val, total_val = value
+            value_html = (
+                "<div class='kpi-multi'>"
+                f"<span class='value-highlight-red' title='RED'>{red_val}</span>"
+                f"<span class='value-highlight-green' title='GREEN'>{green_val}</span>"
+                f"<span class='value-highlight' title='Totale'>{total_val}</span>"
+                "</div>"
+            )
         else:
-            value_html = f"{value}"
+            highlight_cls = "value-highlight-green" if color == "green" else ("value-highlight-red" if color == "red" else "")
+            if highlight_cls:
+                value_html = f"<span class='{highlight_cls}'>{value}</span>"
+            else:
+                value_html = f"{value}"
         html += f"<div class='kpi-row'><div class='kpi-label'>{label}</div><div class='kpi-value'>{value_html}</div></div>"
     return html
 
