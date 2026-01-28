@@ -251,7 +251,7 @@ kpi_rows = [
     ("Spinta media",(f"{filtered['%OH'].mean():.0f}%", f"{spinta_green:.0f}%", f"{spinta_red:.0f}%"), "multi"),
     ("Minimo medio",(f"{filtered['%OL'].mean():.0f}%", f"{low_green:.0f}%", f"{low_red:.0f}%"), "multi"),
     ("Break medio", (f"{filtered['break'].mean() * 100:.0f}%",f"{pmbreak_green:.0f}%", f"{pmbreak_red:.0f}%"), "multi"),
-    ("Orario High medio",(f"{media_orario_high:.0f}", f"{mediaorario_green:.0f}", f"{mediaorario_red:.0f}"), "multi"),
+    ("Orario High medio",(f"{media_orario_high}", f"{mediaorario_green}", f"{mediaorario_red}"), "multi"),
 ]
 
 
