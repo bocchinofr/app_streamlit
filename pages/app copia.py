@@ -85,7 +85,6 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         df[col] = df[col].fillna(0)
 
-#endregion
 
 # -----------------------------------------------
 # CONTROLLO DATI 
@@ -111,6 +110,7 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
             st.warning(f"⚠️ Attenzione: {len(invalid_nums)} righe con valori non numerici in '{col}'")
             st.dataframe(invalid_nums[["Ticker", col]])
 
+# endregion
 
 # ------------------------------------------------------------
 # region SLIDER SEZIONE STORICA (solo se ticker valorizzato)
