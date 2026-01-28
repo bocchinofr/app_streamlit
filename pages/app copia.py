@@ -135,25 +135,6 @@ gap_green = (
     else 0
 )
 
-import altair as alt
-import pandas as pd
-
-def show_gap_bar(gap_mean, gap_red, gap_green):
-    df_k = pd.DataFrame({
-        "Tipo": ["Totale","RED","GREEN"],
-        "Valore": [gap_mean or 0, gap_red or 0, gap_green or 0]
-    })
-    colors = alt.Scale(domain=["Totale","RED","GREEN"], range=["#6B7280","#EF4444","#10B981"])
-    chart = alt.Chart(df_k).mark_bar(size=20).encode(
-        x=alt.X("Valore:Q", title="%"),
-        y=alt.Y("Tipo:N", sort=["Totale","GREEN","RED"]),
-        color=alt.Color("Tipo:N", scale=colors),
-        tooltip=["Tipo","Valore"]
-    ).properties(height=120)
-    st.altair_chart(chart, use_container_width=True)
-
-# Esempio
-show_gap_bar(gap_mean, gap_red, gap_green)
 
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
@@ -188,6 +169,11 @@ kpi_rows = [
     ("Market Cap medio ($M)", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}", None),
     ("Break medio (%)", f"{filtered['break'].mean() * 100:.1f}", None),
 ]
+
+col1, col2, col3 = st.columns([1,1,1])
+col1.metric("GAP medio", f"{gap_mean:.1f}%")
+col2.metric("GAP medio RED", f"{gap_red:.1f}%", delta=f"{gap_red-gap_mean:.1f}%")
+col3.metric("GAP medio GREEN", f"{gap_green:.1f}%", delta=f"{gap_green-gap_mean:.1f}%")
 
 # Divido i KPI in due colonne/box
 n = len(kpi_rows)
