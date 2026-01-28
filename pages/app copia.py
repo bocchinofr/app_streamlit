@@ -168,13 +168,12 @@ kpi_rows = [
     ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
     ("Market Cap medio ($M)", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}", None),
     ("Break medio (%)", f"{filtered['break'].mean() * 100:.1f}", None),
-    col1, col2, col3 = st.columns([1,1,1])
-    col1.metric("GAP medio", f"{gap_mean:.1f}%")
-    col2.metric("GAP medio RED", f"{gap_red:.1f}%", delta=f"{gap_red-gap_mean:.1f}%")
-    col3.metric("GAP medio GREEN", f"{gap_green:.1f}%", delta=f"{gap_green-gap_mean:.1f}%")
 ]
 
-
+col1, col2, col3 = st.columns([1,1,1])
+col1.metric("GAP medio", f"{gap_mean:.1f}%")
+col2.metric("GAP medio RED", f"{gap_red:.1f}%", delta=f"{gap_red-gap_mean:.1f}%")
+col3.metric("GAP medio GREEN", f"{gap_green:.1f}%", delta=f"{gap_green-gap_mean:.1f}%")
 
 # Divido i KPI in due colonne/box
 n = len(kpi_rows)
