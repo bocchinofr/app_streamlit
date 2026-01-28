@@ -31,7 +31,7 @@ ticker_input = st.text_input(
 ).upper().strip()
 
 # -------------------------------------------------
-# LOAD DATA
+# region LOAD DATA
 # -------------------------------------------------
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
 df = pd.read_csv(SHEET_URL)
@@ -84,7 +84,8 @@ for col in num_cols:
 for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         df[col] = df[col].fillna(0)
- 
+
+#endregion
 
 # -----------------------------------------------
 # CONTROLLO DATI 
@@ -111,8 +112,228 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
             st.dataframe(invalid_nums[["Ticker", col]])
 
 
+# ------------------------------------------------------------
+# region SLIDER SEZIONE STORICA (solo se ticker valorizzato)
+# ------------------------------------------------------------
+
+
+if ticker_input:
+    st.markdown(f"### 📊 Gap giornaliero per - {ticker_input}")
+
+    col1, spacer, col2 = st.columns([4, 1, 4])  # proporzioni: slider1=4, spazio=1, slider2=4
+
+    with col1:
+        # Slider GAP %
+        gap_min, gap_max = st.slider(
+            "GAP (%)",
+            min_value=0,
+            max_value=1000,
+            value=(30, 1000)
+        )
+
+    with col2:
+        # Slider Open $
+        open_min, open_max = st.slider(
+            "Open ($)",
+            min_value=0,
+            max_value=100,
+            value=(2, 100)
+        )
+
+    # Applico i filtri al dataframe storica
+    # Copia df per lavoro storico
+    historical_filtered = df.copy()
+
+    if ticker_input:  # solo se l'utente ha inserito un ticker
+        historical_filtered = historical_filtered[historical_filtered["Ticker"] == ticker_input].copy()
+
+
+    historical_filtered = historical_filtered[
+        (historical_filtered["GAP"] >= gap_min) &
+        (historical_filtered["GAP"] <= gap_max) &
+        (historical_filtered["OPEN"] >= open_min) &
+        (historical_filtered["OPEN"] <= open_max)
+    ]
+
+    st.write(f"Record filtrati: {len(historical_filtered)}")
+
+    try:
+        ticker_yf = yf.Ticker(ticker_input)
+        df_yf = ticker_yf.history(period="4y", auto_adjust=False)
+        df_yf.reset_index(inplace=True)
+        df_yf = df_yf.sort_values("Date").reset_index(drop=True)
+
+        # ===== SPLIT =====
+        splits = ticker_yf.splits
+        df_yf["factor"] = 1.0
+        for date, ratio in splits.items():
+            split_date = pd.to_datetime(date)
+            df_yf.loc[df_yf["Date"] < split_date, "factor"] *= ratio
+
+        # ===== PREZZI AGGIUSTATI =====
+        for col in ["Open", "High", "Low", "Close"]:
+            df_yf[f"{col}_adj"] = df_yf[col] * df_yf["factor"]
+
+        # ===== VOLUME =====
+        df_yf["Volume_adj"] = df_yf["Volume"]  # volume giornaliero reale
+
+        # ===== GAP CORRETTO =====
+        df_yf["Prev_Close"] = df_yf["Close"].shift(1) * df_yf["factor"]
+        df_yf["Gap%"] = ((df_yf["Open_adj"] - df_yf["Prev_Close"]) / df_yf["Prev_Close"]) * 100
+        df_yf["Gap%"] = df_yf["Gap%"].round(2)
+
+        # ===== FILTRI SLIDER =====
+        df_filtered = df_yf[
+            (df_yf["Gap%"] >= gap_min) &
+            (df_yf["Gap%"] <= gap_max) &
+            (df_yf["Open_adj"] >= open_min) &
+            (df_yf["Open_adj"] <= open_max)
+        ].copy()
+
+        # ===== CALCOLI AGGIUNTIVI =====
+        df_filtered["% High"] = ((df_filtered["High_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
+        df_filtered["% Low"] = ((df_filtered["Low_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
+        df_filtered["% Close"] = ((df_filtered["Close_adj"] - df_filtered["Open_adj"]) / df_filtered["Open_adj"] * 100).round(2)
+
+        # Colonna chiusura con pallino
+        def chiusura_signal(row):
+            if row["Close_adj"] > row["Open_adj"]:
+                return "🟢"
+            elif row["Close_adj"] < row["Open_adj"]:
+                return "🔴"
+            else:
+                return "🟡"
+
+        df_filtered["Chiusura"] = df_filtered.apply(chiusura_signal, axis=1)
+
+
+        # ===== FORMAT FINALI =====
+        df_filtered = df_filtered.copy()  # evitare warning di SettingWithCopy
+
+        # Rinomina colonne solo se non esistono già
+        rename_map = {
+            "Open_adj": "Open $",
+            "High_adj": "High $",
+            "Low_adj": "Low $",
+            "Close_adj": "Close $",
+            "Volume_adj": "Volume"
+        }
+
+        for old_col, new_col in rename_map.items():
+            if old_col in df_filtered.columns and new_col not in df_filtered.columns:
+                df_filtered.rename(columns={old_col: new_col}, inplace=True)
+
+        # Formatto date
+        df_filtered["Date"] = df_filtered["Date"].dt.strftime("%d-%m-%Y")
+
+        # Aggiungo ticker solo se non presente
+        if "Ticker" not in df_filtered.columns:
+            df_filtered["Ticker"] = ticker_input
+
+        display_cols = [
+            "Ticker", "Date", "Gap%", "Open $", "High $", "Low $", "Close $",
+            "% High", "% Low", "% Close", "Chiusura", "Volume"
+        ]
+
+        left_col, right_col = st.columns([1, 4])
+        with left_col:
+            st.markdown("### 🔁 Reverse split")
+            split_info = []
+            for date, ratio in splits.items():
+                if ratio < 1:  # reverse split
+                    split_info.append({
+                        "Date": pd.to_datetime(date).strftime("%d-%m-%Y"),
+                        "Reverse Split": f"1 : {int(round(1 / ratio))}"
+                    })
+            if split_info:
+                for s in split_info:
+                    st.markdown(f"- **{s['Date']}** → {s['Reverse Split']}")
+            else:
+                st.caption("Nessun reverse split rilevato")
+
+        with right_col:
+            st.dataframe(df_filtered[display_cols], width="stretch")
+            st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
+
+            
+
+        # HEAT MAP  
+        st.markdown("### 🔥 Heatmap gap per anno / mese")
+
+        metric_choice = st.selectbox(
+            "Metrica heatmap",
+            ["Conteggio gap", "Gap medio (%)"]
+        )
+        # ===== PREPARAZIONE DATI HEATMAP =====
+        df_heat = df_yf.copy()
+
+        df_heat["Year"] = df_heat["Date"].dt.year
+        df_heat["Month"] = df_heat["Date"].dt.month
+
+        if metric_choice == "Conteggio gap":
+            heatmap_data = (
+                df_heat[df_heat["Gap%"] >= gap_min]
+                .groupby(["Year", "Month"])
+                .size()
+                .unstack(fill_value=0)
+            )
+
+        else:  # Gap medio
+            heatmap_data = (
+                df_heat[df_heat["Gap%"] >= gap_min]
+                .groupby(["Year", "Month"])["Gap%"]
+                .mean()
+                .unstack()
+                .round(0)
+            )
+
+        # Ordino mesi da Gen a Dic
+        heatmap_data = heatmap_data.reindex(columns=range(1, 13))
+
+        month_names = {
+            1: "Gen", 2: "Feb", 3: "Mar", 4: "Apr",
+            5: "Mag", 6: "Giu", 7: "Lug", 8: "Ago",
+            9: "Set", 10: "Ott", 11: "Nov", 12: "Dic"
+        }
+
+        heatmap_data.rename(columns=month_names, inplace=True)
+
+        heatmap_display = heatmap_data.copy()
+        heatmap_display = heatmap_display.astype("Int64")
+
+        # Valori validi (>0)
+        valid_values = heatmap_display[heatmap_display > 0]
+
+        vmin = valid_values.min().min()
+        vmax = valid_values.max().max()
+
+        # 🔑 CASO LIMITE: se tutti i valori sono uguali (es. solo 1)
+        if pd.isna(vmin) or vmin == vmax:
+            vmax = vmin + 1
+
+        st.dataframe(
+            heatmap_display.style
+                # maschero None e 0 → restano bianchi
+                .background_gradient(
+                    cmap="Greens",
+                    axis=None,
+                    vmin=vmin,
+                    vmax=vmax
+                )
+                .apply(
+                    lambda x: ["background-color: transparent" if (pd.isna(v) or v == 0) else "" for v in x],
+                    axis=1
+                ),
+            width="stretch"
+        )
+    except Exception as e:
+        st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
+# endregion
+
+
+
 # -------------------------------------------------
-# SIDEBAR FILTRI
+# region SIDEBAR FILTRI
 # -------------------------------------------------
 st.sidebar.header("🔍 Filtri")
 
