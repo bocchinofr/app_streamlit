@@ -183,6 +183,41 @@ low_green = (
     else 0
 )
 
+# ---- ORARIO HIGH: MEDIA, MEDIANA, FILTRI RED/GREEN ----
+
+def orario_to_minuti(ora_str):
+    """Converte '9:31' -> minuti totali (es. 571)"""
+    try:
+        h, m = map(int, ora_str.split(":"))
+        return h * 60 + m
+    except:
+        return np.nan
+
+def minuti_to_orario(minuti):
+    """Converte minuti -> stringa 'HH:MM'"""
+    if np.isnan(minuti):
+        return "-"
+    h = int(minuti // 60)
+    m = int(round(minuti % 60))
+    return f"{h:02d}:{m:02d}"
+
+# Filtra solo valori validi
+orari_validi = df["Orario High"].dropna().apply(orario_to_minuti).dropna()
+
+# Media e mediana globali
+media_minuti = orari_validi.mean() if not orari_validi.empty else np.nan
+mediana_minuti = orari_validi.median() if not orari_validi.empty else np.nan
+
+media_orario_high = minuti_to_orario(media_minuti)
+mediana_orario_high = minuti_to_orario(mediana_minuti)
+
+# --- Filtri per chiusure RED / GREEN ---
+red = df[df["Chiusura"] == "RED"]["Orario High"].dropna().apply(orario_to_minuti)
+green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_minuti)
+
+mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
+mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
+
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 top_html = f"""
 <div class='kpi-top-box'>
@@ -216,6 +251,7 @@ kpi_rows = [
     ("Spinta media",(f"{filtered['%OH'].mean():.0f}%", f"{spinta_green:.0f}%", f"{spinta_red:.0f}%"), "multi"),
     ("Minimo medio",(f"{filtered['%OL'].mean():.0f}%", f"{low_green:.0f}%", f"{low_red:.0f}%"), "multi"),
     ("Break medio", (f"{filtered['break'].mean() * 100:.0f}%",f"{pmbreak_green:.0f}%", f"{pmbreak_red:.0f}%"), "multi"),
+    ("Orario High medio",(f"{media_orario_high:.0f}", f"{mediaorario_green:.0f}", f"{mediaorario_red:.0f}"), "multi"),
 ]
 
 
