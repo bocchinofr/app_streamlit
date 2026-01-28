@@ -140,9 +140,12 @@ if ticker_input:
             value=(2, 100)
         )
     with col3:
-        metric_choice = st.selectbox(
+        metric_choice = st.radio(
             "Metrica heatmap",
             ["Conteggio gap", "Gap medio (%)"]
+            index=1,
+            horizontal=True,
+            label_visibility="visible"
         )
 
     # Applico i filtri al dataframe storica
