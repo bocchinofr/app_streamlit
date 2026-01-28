@@ -238,7 +238,7 @@ if ticker_input:
 
         display_cols = [
             "Ticker", "Date", "Gap%", "Open $",
-            "% High", "% Low", "% Close", "Chiusura", "Volume"
+            "% High", "% Low", "% Close", "EoD", "Volume"
         ]
 
         left_col, center_col, right_col = st.columns([1, 4, 5])
