@@ -135,14 +135,34 @@ gap_green = (
     else 0
 )
 
-# snippet da inserire nel punto in cui calcoli gap_mean, gap_red, gap_green
+# --- Top box: I 3 KPI principali in un unico box giustificato ---
+top_html = f"""
+<div class='kpi-top-box'>
+  <div class='kpi-top'>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{total}</div>
+      <div class='top-kpi-label'>Totale record</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{red_close:.0f}%</div>
+      <div class='top-kpi-label'>Chiusure RED</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
+      <div class='top-kpi-label'>GAP medio</div>
+    </div>
+  </div>
+</div>
+"""
+st.markdown(top_html, unsafe_allow_html=True)
+
+# --- render GAP trio (mini-bar inline) ---
 def render_gap_trio(gap_mean, gap_red, gap_green):
     vals = [gap_mean or 0, gap_red or 0, gap_green or 0]
     labels = ["Totale", "RED", "GREEN"]
     colors = ["#6B7280", "#EF4444", "#10B981"]  # grigio, rosso, verde
 
     maxv = max(abs(v) for v in vals) or 1
-    # Calcola larghezze percentuali (relativo al massimo tra i tre)
     widths = [int((abs(v) / maxv) * 100) for v in vals]
 
     items_html = ""
@@ -167,31 +187,9 @@ def render_gap_trio(gap_mean, gap_red, gap_green):
     """
     st.markdown(html, unsafe_allow_html=True)
 
-# Esempio di chiamata (usa i valori calcolati nel tuo flusso)
+# Chiama la funzione per renderizzare il trio
 render_gap_trio(gap_mean, gap_red, gap_green)
 
-
-
-# --- Top box: I 3 KPI principali in un unico box giustificato ---
-top_html = f"""
-<div class='kpi-top-box'>
-  <div class='kpi-top'>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{total}</div>
-      <div class='top-kpi-label'>Totale record</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{red_close:.0f}%</div>
-      <div class='top-kpi-label'>Chiusure RED</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
-      <div class='top-kpi-label'>GAP medio</div>
-    </div>
-  </div>
-</div>
-"""
-st.markdown(top_html, unsafe_allow_html=True)
 
 # Lista dei KPI (label, value, optional color)
 kpi_rows = [
