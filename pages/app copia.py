@@ -235,7 +235,7 @@ if ticker_input:
             "% High", "% Low", "% Close", "Chiusura", "Volume"
         ]
 
-        left_col, right_col = st.columns([1, 4])
+        left_col, center_col, right_col = st.columns([1, 4, 3])
         with left_col:
             st.markdown("### 🔁 Reverse split")
             split_info = []
@@ -251,10 +251,11 @@ if ticker_input:
             else:
                 st.caption("Nessun reverse split rilevato")
 
-        with right_col:
+        with center_col:
             st.dataframe(df_filtered[display_cols], width="stretch")
             st.caption(f"Record filtrati: {len(df_filtered)} su {len(df_yf)} totali")
 
+        with right_col:
             # HEAT MAP  
             st.markdown("### 🔥 Heatmap gap per anno / mese")
 
