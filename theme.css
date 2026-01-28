@@ -87,7 +87,7 @@
   background: rgba(16, 185, 129, 0.12);
   color: #059669;
   padding: 4px 6px;
-  border-radius: 8px;
+  border-radius: 5px;
   display: inline-block;
   text-align: right;
 }
@@ -95,7 +95,7 @@
   background: rgba(239, 68, 68, 0.12);
   color: #dc2626;
   padding: 4px 6px;
-  border-radius: 8px;
+  border-radius: 5px;
   display: inline-block;
   text-align: right;
 }
@@ -104,6 +104,25 @@
   padding: 6px 10px;
   border-radius: 8px;
   display:inline-block;
+}
+
+/* Layout per KPI con valori multipli: riusa le classi value-highlight-* */
+.kpi-multi {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end; /* mantiene i valori multipli sul lato destro della riga */
+  align-items: center;
+}
+/* Uniforma dimensione e padding delle "pill" quando usate dentro .kpi-multi */
+.kpi-multi .value-highlight,
+.kpi-multi .value-highlight-red,
+.kpi-multi .value-highlight-green {
+  min-width: 64px;        /* larghezza minima per mantenere leggibilità */
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
 }
 
 /* Responsive: su schermi stretti impila i box */
@@ -118,6 +137,12 @@
   .top-kpi {
     width: 100%;
   }
+  /* su mobile rendi le pill più compatte */
+  .kpi-multi .value-highlight,
+  .kpi-multi .value-highlight-red,
+  .kpi-multi .value-highlight-green {
+    min-width: 44px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
 }
-
-
