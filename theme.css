@@ -79,7 +79,7 @@
   text-align: right;
   min-width: 120px;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 /* Evidenziazione valore (sfondo "pill") */
@@ -120,9 +120,9 @@
   min-width: 64px;        /* larghezza minima per mantenere leggibilità */
   text-align: center;
   padding: 4px 10px;
-  border-radius: 5px;
+  border-radius: 2px;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 18px;
   cursor: help; /* mostra il cursore "help" quando si passa sopra */
 }
 
