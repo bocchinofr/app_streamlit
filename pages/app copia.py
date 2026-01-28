@@ -194,9 +194,9 @@ def render_rows_html(rows):
             # ordina: (red, green, totale)
             red_val, green_val, total_val = value
             # testi dei tooltip (personalizzali a piacere)
-            red_title = "GAP medio sui record con chiusura RED"
-            green_title = "GAP medio sui record con chiusura GREEN"
-            total_title = "GAP medio su tutti i record filtrati"
+            red_title = "Valore sui record con chiusura RED"
+            green_title = "Valore sui record con chiusura GREEN"
+            total_title = "Valoer su tutti i record filtrati"
             value_html = (
                 "<div class='kpi-multi'>"
                 f"<span class='value-highlight-red' title='{red_title}'>{red_val}</span>"
