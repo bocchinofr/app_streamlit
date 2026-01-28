@@ -119,3 +119,43 @@
     width: 100%;
   }
 }
+
+
+/* --- Aggiunte per KPI trio (mini-bar inline) --- */
+.kpi-trio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.kpi-trio .trio-label {
+  width: 160px;        /* regola la larghezza dell'etichetta */
+  font-size: 14px;
+}
+.kpi-trio .trio-items {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 1;
+}
+.kpi-trio .trio-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+.kpi-trio .trio-bar-container {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+}
+.kpi-trio .trio-bar {
+  height: 100%;
+  border-radius: 6px;
+}
+.kpi-trio .trio-val {
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 13px;
+}
