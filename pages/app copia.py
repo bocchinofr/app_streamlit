@@ -257,8 +257,6 @@ if ticker_input:
 
         with right_col:
             # HEAT MAP  
-            st.markdown("### 🔥 Heatmap gap per anno / mese")
-
             metric_choice = st.selectbox(
                 "Metrica heatmap",
                 ["Conteggio gap", "Gap medio (%)"]
