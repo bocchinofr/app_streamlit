@@ -77,7 +77,7 @@
 }
 .kpi-value {
   text-align: right;
-  min-width: 120px;
+  min-width: 20px;
   font-weight: 600;
   font-size: 20px;
 }
