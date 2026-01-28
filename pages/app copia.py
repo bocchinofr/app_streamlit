@@ -37,33 +37,79 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 df = pd.read_csv(SHEET_URL)
 df.columns = df.columns.str.strip()
 
+# --- PULIZIA DATI ----
+# Rimuovo eventuali spazi nei nomi colonne
+df.columns = df.columns.str.strip()
+
+# Funzione robusta per parse date con dayfirst
 def parse_date(x):
     try:
-        return parser.parse(str(x), dayfirst=True).date()
+        return parser.parse(str(x).strip(), dayfirst=True)
     except:
         return pd.NaT
 
 df["Date"] = df["Date"].apply(parse_date)
-df["Chiusura"] = df["Chiusura"].astype(str).str.upper().str.strip()
+df["Date"] = df["Date"].apply(lambda x: x.date() if pd.notna(x) else pd.NaT)
 
+df["Chiusura"] = df["Chiusura"].str.upper().str.strip()
+
+# Funzione per convertire percentuali da stringhe con virgola e %
 def parse_percent(x):
     try:
-        return float(str(x).replace("%", "").replace(",", "."))
+        if pd.isna(x):
+            return np.nan
+        x = str(x).replace('%', '').replace(',', '.')
+        return float(x)
     except:
         return np.nan
 
-for col in ["GAP", "%Open_PMH", "%OH", "%OL"]:
+# Pulizia colonne percentuali
+percent_cols = ["GAP", "%Open_PMH", "%OH", "%OL"]
+for col in percent_cols:
     if col in df.columns:
-        df[col] = df[col].apply(parse_percent).fillna(0)
+        df[col] = df[col].apply(parse_percent)
 
-for col in ["OPEN", "Float", "break"]:
+# Pulizia colonne numeriche con virgola e separatore migliaia
+num_cols = ["OPEN", "Float", "break"]
+for col in num_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(
             df[col].astype(str)
-            .str.replace(".", "", regex=False)
-            .str.replace(",", ".", regex=False),
+            .str.replace('.', '', regex=False)   # rimuove punti migliaia
+            .str.replace(',', '.', regex=False), # converte virgole decimali
             errors="coerce"
-        ).fillna(0)
+        )
+
+# Sostituisco NaN con valori neutri per non perdere righe
+for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
+    if col in df.columns:
+        df[col] = df[col].fillna(0)
+ 
+
+# -----------------------------------------------
+# CONTROLLO DATI 
+# -----------------------------------------------
+
+problemi_dati = False  # flag per sapere se ci sono problemi
+
+# Mostra il titolo solo se ci sono problemi
+if problemi_dati:
+    st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">🛠️ Controllo dati</h3>', unsafe_allow_html=True)
+
+# Date non valide
+invalid_dates = df[df["Date"].isna()]
+if not invalid_dates.empty:
+    st.warning(f"⚠️ Attenzione: {len(invalid_dates)} righe con date non valide")
+    st.dataframe(invalid_dates[["Ticker", "Date"]])
+
+# Numeri non validi nelle colonne numeriche principali
+for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
+    if col in df.columns:
+        invalid_nums = df[df[col].isna()]
+        if not invalid_nums.empty:
+            st.warning(f"⚠️ Attenzione: {len(invalid_nums)} righe con valori non numerici in '{col}'")
+            st.dataframe(invalid_nums[["Ticker", col]])
+
 
 # -------------------------------------------------
 # SIDEBAR FILTRI
