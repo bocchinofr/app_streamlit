@@ -330,8 +330,6 @@ if ticker_input:
         st.error(f"Errore nel recupero dati Yahoo Finance: {e}")
 # endregion
 
-
-
 # -------------------------------------------------
 # region SIDEBAR FILTRI
 # -------------------------------------------------
