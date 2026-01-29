@@ -577,7 +577,7 @@ st.markdown(container_html, unsafe_allow_html=True)
 # endregion
 
 
-# --- INIZIO SEZIONE: Grafico orizzontale centrato su 0 (media High+Low per intervallo) ---
+# --- INIZIO SEZIONE: Grafico orizzontale centrato su 0 (fix etichette) ---
 import altair as alt
 
 try:
@@ -603,7 +603,7 @@ try:
             f"HIGH_{m}", f"HIGH{m}"
         ]
         low_candidates = [
-            f"%OL_{m}", f"%OL{m}", f"%OL_{m}m", f"%OL{m}m",
+            f"%OL_{m}", f"%OL{m}", f"%OL_{m}m", f"%OL_{m}m",
             f"Low_{m}m", f"Low_{m}", f"Low {m}m", f"Low {m}",
             f"LOW_{m}", f"LOW{m}"
         ]
@@ -619,11 +619,9 @@ try:
                 s = s.astype(str).str.replace("%", "").str.replace(",", ".")
                 return pd.to_numeric(s, errors="coerce")
         except Exception:
-            # fallback semplice
             pass
         # se numeric e abbiamo OPEN -> trattalo come prezzo assoluto e converti in %
         if pd.api.types.is_numeric_dtype(s) and open_series is not None and pd.api.types.is_numeric_dtype(open_series):
-            # calcola element-wise la % rispetto a OPEN
             return (s - open_series) / open_series * 100
         return pd.to_numeric(s, errors="coerce")
 
@@ -679,24 +677,24 @@ try:
         # range simmetrico attorno a 0 per visuale bilanciata
         minv = means_df["mean_percent"].min()
         maxv = means_df["mean_percent"].max()
-        absmax = max(abs(minv), abs(maxv))
-        # se troppo piccolo, imposta un minimo ragionevole per vedere la linea centrale
-        if np.isnan(absmax) or absmax == 0:
+        absmax = max(abs(minv) if pd.notna(minv) else 0, abs(maxv) if pd.notna(maxv) else 0)
+        if absmax == 0:
             absmax = 1.0
         pad = absmax * 0.1
         domain = [-absmax - pad, absmax + pad]
 
-        # grafico a barre orizzontali (una barra per minuto — media High+Low)
+        # base con asse y
         base = alt.Chart(means_df).encode(
             y=alt.Y('minute_str:N', sort=[f"{m} min" for m in minutes], title=None)
         )
 
+        # barre colorate in base al segno
         bars = base.mark_bar().encode(
             x=alt.X('mean_percent:Q', title='Media % rispetto a OPEN', scale=alt.Scale(domain=domain)),
             color=alt.condition(
                 alt.datum.mean_percent > 0,
-                alt.value("#2ca02c"),  # verde per positivo
-                alt.value("#d62728")   # rosso per negativo
+                alt.value("#2ca02c"),
+                alt.value("#d62728")
             ),
             tooltip=[
                 alt.Tooltip('minute:N', title='Minuto'),
@@ -709,14 +707,22 @@ try:
         # linea verticale a 0
         zero_rule = alt.Chart(pd.DataFrame({'x': [0]})).mark_rule(color='lightgray', strokeWidth=1).encode(x='x:Q')
 
-        # etichette numeriche a destra/sinistra della barra
-        labels = base.mark_text(dx=5, dy=0, color='white').encode(
-            x=alt.X('mean_percent:Q'),
-            text=alt.Text('mean_percent:Q', format='.2f'),
-            align=alt.condition(alt.datum.mean_percent > 0, alt.value('left'), alt.value('right'))
+        # etichette: layer separati per positivi e negativi per poter impostare align/dx
+        pos_labels = base.transform_filter(alt.datum.mean_percent > 0).mark_text(
+            dx=5, dy=0, color='black', align='left'
+        ).encode(
+            x='mean_percent:Q',
+            text=alt.Text('mean_percent:Q', format='.2f')
         )
 
-        chart = (bars + zero_rule + labels).properties(
+        neg_labels = base.transform_filter(alt.datum.mean_percent <= 0).mark_text(
+            dx=-5, dy=0, color='black', align='right'
+        ).encode(
+            x='mean_percent:Q',
+            text=alt.Text('mean_percent:Q', format='.2f')
+        )
+
+        chart = (bars + zero_rule + pos_labels + neg_labels).properties(
             title="Media High% & Low% per intervallo (una barra = media High+Low). Verde = positiva, Rosso = negativa",
             height=40 * len(means_df),
         ).configure_title(
@@ -727,9 +733,7 @@ try:
 
 except Exception as e:
     st.error(f"Errore costruzione grafico orizzontale centrato su 0: {e}")
-# --- FINE SEZIONE: Grafico orizzontale centrato su 0 ---
-
-
+# --- FINE SEZIONE: Grafico orizzontale centrato su 0 (fix etichette) ---
 
 
 # -------------------------------------------------
