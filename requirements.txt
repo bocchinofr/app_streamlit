@@ -9,4 +9,4 @@ gspread-dataframe
 google-auth
 openai
 yfinance
-ploty
+plotly
