@@ -485,7 +485,10 @@ green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_mi
 mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
 mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
+# ----------------------------------------------------------------
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
+# ----------------------------------------------------------------
+
 top_html = f"""
 <div class='kpi-top-box'>
   <div class='kpi-top'>
@@ -609,7 +612,7 @@ if "Market Cap" in filtered_sorted.columns:
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
     "%OH_30m", "%OL_30m",
-    "%OH_10-11", "%OL_10-11"
+    "%OH_1h", "%OL_1h"
 ]
 
 for col in percent_cols_display:
