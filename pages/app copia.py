@@ -574,15 +574,66 @@ st.markdown(container_html, unsafe_allow_html=True)
 # endregion
 
 # -------------------------------------------------
-# TABELLA
+# region TABELLA
 # -------------------------------------------------
-st.subheader("📋 Tabella di dettaglio")
 
-filtered_sorted = filtered.sort_values("Date", ascending=False)
+st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella di dettaglio</h3>', unsafe_allow_html=True)
 
-st.dataframe(
-    filtered_sorted,
-    use_container_width=True
-)
+cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
+if cols_to_drop:
+    filtered = filtered.drop(columns=cols_to_drop)
 
-st.caption(f"Record mostrati: {len(filtered_sorted)} su {len(df)}")
+filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
+
+if "Chiusura" in filtered_sorted.columns:
+    filtered_sorted["Chiusura"] = filtered_sorted["Chiusura"].replace({
+        "RED": "🔴 RED",
+        "GREEN": "🟢 GREEN"
+    })
+
+def to_millions(x):
+    try:
+        return f"{x/1_000_000:.2f} M"
+    except:
+        return "-"
+
+if "Shared Outstanding" in filtered_sorted.columns:
+    filtered_sorted["Shared Outstanding"] = filtered_sorted["Shared Outstanding"].apply(to_millions)
+
+if "Market Cap" in filtered_sorted.columns:
+    filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
+
+
+
+# --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
+percent_cols_display = [
+    "%Open_PMH", "%OH", "%OL",
+    "%OH_30m", "%OL_30m",
+    "%OH_10-11", "%OL_10-11"
+]
+
+for col in percent_cols_display:
+    if col in filtered_sorted.columns:
+        filtered_sorted[col] = pd.to_numeric(
+            filtered_sorted[col]
+                .astype(str)
+                .str.replace("%", "")
+                .str.replace(",", ".")   # <<< AGGIUNTO!
+                .str.strip(),
+            errors="coerce"
+        )
+
+
+for col in percent_cols_display:
+    if col in filtered_sorted.columns:
+        filtered_sorted[col] = filtered_sorted[col].apply(
+            lambda x: f"{x:.0f}" if pd.notna(x) else "-"
+        )
+
+
+st.dataframe(filtered_sorted, use_container_width=True)
+st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
+
+
+
+# endregion
