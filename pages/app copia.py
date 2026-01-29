@@ -581,8 +581,6 @@ st.markdown(container_html, unsafe_allow_html=True)
 import plotly.express as px
 
 try:
-    st.markdown("### ⏱️ Comportamento del prezzo per intervalli (1,5,30,60,90,120 minuti)")
-
     # minuti d'interesse
     minutes = [1, 5, 30, 60, 90, 120]
 
@@ -682,9 +680,6 @@ try:
 except Exception as e:
     st.error(f"Errore costruzione grafici per minuti: {e}")
 # --- FINE SEZIONE: Grafici per minuti ---
-
-
-
 
 
 # -------------------------------------------------
