@@ -577,109 +577,159 @@ st.markdown(container_html, unsafe_allow_html=True)
 # endregion
 
 
-# --- INIZIO SEZIONE: Grafici per minuti (aggiungi dopo i KPI, prima della tabella) ---
-import plotly.express as px
+# --- INIZIO SEZIONE: Grafico orizzontale centrato su 0 (media High+Low per intervallo) ---
+import altair as alt
 
 try:
-    # minuti d'interesse
+    st.markdown("### ⏱️ Media (High% & Low%) per intervallo — barre centrali rispetto a OPEN")
+
+    alt.data_transformers.disable_max_rows()
+
     minutes = [1, 5, 30, 60, 90, 120]
 
-    # funzione di ricerca colonne candidate
     def find_col(candidates, df):
         for c in candidates:
             if c in df.columns:
                 return c
         return None
 
-    # costruisco lista di colonne per high/low a ogni minuto cercando diverse convenzioni di naming
+    # cerca colonne possibili per ogni minuto (adatta se la tua nomenclatura è diversa)
     high_cols = {}
     low_cols = {}
     for m in minutes:
         high_candidates = [
-            f"High_{m}m", f"High_{m}"
+            f"%OH_{m}", f"%OH{m}", f"%OH_{m}m", f"%OH{m}m",
+            f"High_{m}m", f"High_{m}", f"High {m}m", f"High {m}",
+            f"HIGH_{m}", f"HIGH{m}"
         ]
         low_candidates = [
-            f"Low_{m}m", f"Low_{m}"
+            f"%OL_{m}", f"%OL{m}", f"%OL_{m}m", f"%OL{m}m",
+            f"Low_{m}m", f"Low_{m}", f"Low {m}m", f"Low {m}",
+            f"LOW_{m}", f"LOW{m}"
         ]
         high_cols[m] = find_col(high_candidates, filtered)
         low_cols[m] = find_col(low_candidates, filtered)
 
-    # Se non trovo nulla, avviso e salto
-    if not any(high_cols.values()) and not any(low_cols.values()):
-        st.info("Nessuna colonna 'high'/'low' riconosciuta per gli intervalli 1,5,30,60,90,120. Controlla i nomi delle colonne nel CSV.")
-    else:
-        # funzione per normalizzare un valore in percentuale rispetto a OPEN
-        def as_percent(series, maybe_is_percent, open_series):
-            # se la colonna è testuale con '%' lo convertiamo; se è già percentuale numerica la teniamo
-            s = series.copy()
+    # funzione che normalizza una serie a % rispetto a OPEN (se necessario)
+    def as_percent(series, open_series):
+        s = series.copy()
+        # se contiene '%' come stringa -> rimuovi e cast
+        try:
             if s.dtype == object or s.astype(str).str.contains("%").any():
-                s = s.astype(str).str.replace("%", "").str.replace(",", ".").astype(float)
-                return s
-            # se la colonna sembra essere un prezzo assoluto (non percentuale) e abbiamo OPEN -> trasformo in %
-            if pd.api.types.is_numeric_dtype(s) and pd.api.types.is_numeric_dtype(open_series):
-                return (s - open_series) / open_series * 100
-            # fallback: prova cast a numerico
-            return pd.to_numeric(s, errors="coerce")
+                s = s.astype(str).str.replace("%", "").str.replace(",", ".")
+                return pd.to_numeric(s, errors="coerce")
+        except Exception:
+            # fallback semplice
+            pass
+        # se numeric e abbiamo OPEN -> trattalo come prezzo assoluto e converti in %
+        if pd.api.types.is_numeric_dtype(s) and open_series is not None and pd.api.types.is_numeric_dtype(open_series):
+            # calcola element-wise la % rispetto a OPEN
+            return (s - open_series) / open_series * 100
+        return pd.to_numeric(s, errors="coerce")
 
-        # colleziono i dati per plotting: sia le medie, sia la distribuzione (long form)
-        summary_rows = []
-        long_rows = []
+    open_col = filtered["OPEN"] if "OPEN" in filtered.columns else None
 
-        for m in minutes:
-            hcol = high_cols.get(m)
-            lcol = low_cols.get(m)
+    rows = []
+    for m in minutes:
+        hcol = high_cols.get(m)
+        lcol = low_cols.get(m)
 
-            # prendo la colonna open (filtrata)
-            open_col = filtered["OPEN"] if "OPEN" in filtered.columns else None
+        mean_h = np.nan
+        mean_l = np.nan
 
-            if hcol is not None:
-                h_vals = as_percent(filtered[hcol], maybe_is_percent=True, open_series=open_col)
-                h_vals = h_vals.dropna()
-                if not h_vals.empty:
-                    summary_rows.append({"minute": m, "type": "High", "mean": h_vals.mean(), "median": h_vals.median(), "count": len(h_vals)})
-                    for v in h_vals:
-                        long_rows.append({"minute": m, "type": "High", "value": v})
+        if hcol is not None:
+            h_vals = as_percent(filtered[hcol], open_col).dropna()
+            if not h_vals.empty:
+                mean_h = h_vals.mean()
 
-            if lcol is not None:
-                l_vals = as_percent(filtered[lcol], maybe_is_percent=True, open_series=open_col)
-                l_vals = l_vals.dropna()
-                if not l_vals.empty:
-                    summary_rows.append({"minute": m, "type": "Low", "mean": l_vals.mean(), "median": l_vals.median(), "count": len(l_vals)})
-                    for v in l_vals:
-                        long_rows.append({"minute": m, "type": "Low", "value": v})
+        if lcol is not None:
+            l_vals = as_percent(filtered[lcol], open_col).dropna()
+            if not l_vals.empty:
+                mean_l = l_vals.mean()
 
-        summary_df = pd.DataFrame(summary_rows)
-        long_df = pd.DataFrame(long_rows)
+        # se non abbiamo né high né low per il minuto, salta
+        if np.isnan(mean_h) and np.isnan(mean_l):
+            continue
 
-        # Se non ci sono dati utili
-        if summary_df.empty or long_df.empty:
-            st.info("Non ci sono abbastanza dati per costruire i grafici sui minuti richiesti.")
+        # media delle due medie (se entrambe presenti), altrimenti prendi quella disponibile
+        if not np.isnan(mean_h) and not np.isnan(mean_l):
+            mean_both = (mean_h + mean_l) / 2.0
+        elif not np.isnan(mean_h):
+            mean_both = mean_h
         else:
-            # Grafico 1: barre orizzontali (mean High / mean Low) raggruppate per minuto
-            # trasformo summary_df in wide per avere due colonne mean_high e mean_low per minuto
-            wide = summary_df.pivot(index="minute", columns="type", values="mean").reset_index().fillna(0)
-            # normalizzo ordine minuti
-            wide["minute"] = pd.Categorical(wide["minute"], categories=minutes, ordered=True)
-            wide = wide.sort_values("minute")
+            mean_both = mean_l
 
-            # converto in long per plotly grouped bars
-            plot_df = wide.melt(id_vars="minute", value_vars=[c for c in wide.columns if c != "minute"], var_name="type", value_name="mean_percent")
-            fig_bar = px.bar(
-                plot_df,
-                x="mean_percent",
-                y="minute",
-                color="type",
-                orientation="h",
-                labels={"mean_percent": "Media % vs Open", "minute": "Minuti"},
-                color_discrete_map={"High": "green", "Low": "red"},
-                title="Media % High / Low per intervallo (rispetto a OPEN)"
-            )
-            fig_bar.update_layout(barmode="group", yaxis={"categoryorder":"array", "categoryarray": [str(m) for m in minutes]})
-            st.plotly_chart(fig_bar, use_container_width=True)
+        rows.append({
+            "minute": m,
+            "minute_str": f"{m} min",
+            "mean_percent": mean_both,
+            "mean_h": mean_h,
+            "mean_l": mean_l
+        })
+
+    means_df = pd.DataFrame(rows)
+
+    if means_df.empty:
+        st.info("Non ci sono colonne High/Low valide per gli intervalli selezionati. Controlla i nomi delle colonne nel CSV.")
+    else:
+        # Ordine e formato
+        means_df["minute_order"] = pd.Categorical(means_df["minute"], categories=minutes, ordered=True)
+        means_df = means_df.sort_values("minute_order")
+
+        # range simmetrico attorno a 0 per visuale bilanciata
+        minv = means_df["mean_percent"].min()
+        maxv = means_df["mean_percent"].max()
+        absmax = max(abs(minv), abs(maxv))
+        # se troppo piccolo, imposta un minimo ragionevole per vedere la linea centrale
+        if np.isnan(absmax) or absmax == 0:
+            absmax = 1.0
+        pad = absmax * 0.1
+        domain = [-absmax - pad, absmax + pad]
+
+        # grafico a barre orizzontali (una barra per minuto — media High+Low)
+        base = alt.Chart(means_df).encode(
+            y=alt.Y('minute_str:N', sort=[f"{m} min" for m in minutes], title=None)
+        )
+
+        bars = base.mark_bar().encode(
+            x=alt.X('mean_percent:Q', title='Media % rispetto a OPEN', scale=alt.Scale(domain=domain)),
+            color=alt.condition(
+                alt.datum.mean_percent > 0,
+                alt.value("#2ca02c"),  # verde per positivo
+                alt.value("#d62728")   # rosso per negativo
+            ),
+            tooltip=[
+                alt.Tooltip('minute:N', title='Minuto'),
+                alt.Tooltip('mean_percent:Q', format='.2f', title='Media % (High+Low)'),
+                alt.Tooltip('mean_h:Q', format='.2f', title='Media High%'),
+                alt.Tooltip('mean_l:Q', format='.2f', title='Media Low%')
+            ]
+        )
+
+        # linea verticale a 0
+        zero_rule = alt.Chart(pd.DataFrame({'x': [0]})).mark_rule(color='lightgray', strokeWidth=1).encode(x='x:Q')
+
+        # etichette numeriche a destra/sinistra della barra
+        labels = base.mark_text(dx=5, dy=0, color='white').encode(
+            x=alt.X('mean_percent:Q'),
+            text=alt.Text('mean_percent:Q', format='.2f'),
+            align=alt.condition(alt.datum.mean_percent > 0, alt.value('left'), alt.value('right'))
+        )
+
+        chart = (bars + zero_rule + labels).properties(
+            title="Media High% & Low% per intervallo (una barra = media High+Low). Verde = positiva, Rosso = negativa",
+            height=40 * len(means_df),
+        ).configure_title(
+            anchor='start'
+        )
+
+        st.altair_chart(chart, use_container_width=True)
 
 except Exception as e:
-    st.error(f"Errore costruzione grafici per minuti: {e}")
-# --- FINE SEZIONE: Grafici per minuti ---
+    st.error(f"Errore costruzione grafico orizzontale centrato su 0: {e}")
+# --- FINE SEZIONE: Grafico orizzontale centrato su 0 ---
+
+
 
 
 # -------------------------------------------------
