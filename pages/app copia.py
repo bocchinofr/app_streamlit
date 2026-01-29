@@ -576,6 +576,136 @@ st.markdown(container_html, unsafe_allow_html=True)
 
 # endregion
 
+
+# --- INIZIO SEZIONE: Grafici per minuti (aggiungi dopo i KPI, prima della tabella) ---
+import plotly.express as px
+
+try:
+    st.markdown("### ⏱️ Comportamento del prezzo per intervalli (1,5,30,60,90,120 minuti)")
+
+    # minuti d'interesse
+    minutes = [1, 5, 30, 60, 90, 120]
+
+    # funzione di ricerca colonne candidate
+    def find_col(candidates, df):
+        for c in candidates:
+            if c in df.columns:
+                return c
+        return None
+
+    # costruisco lista di colonne per high/low a ogni minuto cercando diverse convenzioni di naming
+    high_cols = {}
+    low_cols = {}
+    for m in minutes:
+        high_candidates = [
+            f"High_{m}m", f"High_{m}"
+        ]
+        low_candidates = [
+            f"Low_{m}m", f"Low_{m}"
+        ]
+        high_cols[m] = find_col(high_candidates, filtered)
+        low_cols[m] = find_col(low_candidates, filtered)
+
+    # Se non trovo nulla, avviso e salto
+    if not any(high_cols.values()) and not any(low_cols.values()):
+        st.info("Nessuna colonna 'high'/'low' riconosciuta per gli intervalli 1,5,30,60,90,120. Controlla i nomi delle colonne nel CSV.")
+    else:
+        # funzione per normalizzare un valore in percentuale rispetto a OPEN
+        def as_percent(series, maybe_is_percent, open_series):
+            # se la colonna è testuale con '%' lo convertiamo; se è già percentuale numerica la teniamo
+            s = series.copy()
+            if s.dtype == object or s.astype(str).str.contains("%").any():
+                s = s.astype(str).str.replace("%", "").str.replace(",", ".").astype(float)
+                return s
+            # se la colonna sembra essere un prezzo assoluto (non percentuale) e abbiamo OPEN -> trasformo in %
+            if pd.api.types.is_numeric_dtype(s) and pd.api.types.is_numeric_dtype(open_series):
+                return (s - open_series) / open_series * 100
+            # fallback: prova cast a numerico
+            return pd.to_numeric(s, errors="coerce")
+
+        # colleziono i dati per plotting: sia le medie, sia la distribuzione (long form)
+        summary_rows = []
+        long_rows = []
+
+        for m in minutes:
+            hcol = high_cols.get(m)
+            lcol = low_cols.get(m)
+
+            # prendo la colonna open (filtrata)
+            open_col = filtered["OPEN"] if "OPEN" in filtered.columns else None
+
+            if hcol is not None:
+                h_vals = as_percent(filtered[hcol], maybe_is_percent=True, open_series=open_col)
+                h_vals = h_vals.dropna()
+                if not h_vals.empty:
+                    summary_rows.append({"minute": m, "type": "High", "mean": h_vals.mean(), "median": h_vals.median(), "count": len(h_vals)})
+                    for v in h_vals:
+                        long_rows.append({"minute": m, "type": "High", "value": v})
+
+            if lcol is not None:
+                l_vals = as_percent(filtered[lcol], maybe_is_percent=True, open_series=open_col)
+                l_vals = l_vals.dropna()
+                if not l_vals.empty:
+                    summary_rows.append({"minute": m, "type": "Low", "mean": l_vals.mean(), "median": l_vals.median(), "count": len(l_vals)})
+                    for v in l_vals:
+                        long_rows.append({"minute": m, "type": "Low", "value": v})
+
+        summary_df = pd.DataFrame(summary_rows)
+        long_df = pd.DataFrame(long_rows)
+
+        # Se non ci sono dati utili
+        if summary_df.empty or long_df.empty:
+            st.info("Non ci sono abbastanza dati per costruire i grafici sui minuti richiesti.")
+        else:
+            # Grafico 1: barre orizzontali (mean High / mean Low) raggruppate per minuto
+            # trasformo summary_df in wide per avere due colonne mean_high e mean_low per minuto
+            wide = summary_df.pivot(index="minute", columns="type", values="mean").reset_index().fillna(0)
+            # normalizzo ordine minuti
+            wide["minute"] = pd.Categorical(wide["minute"], categories=minutes, ordered=True)
+            wide = wide.sort_values("minute")
+
+            # converto in long per plotly grouped bars
+            plot_df = wide.melt(id_vars="minute", value_vars=[c for c in wide.columns if c != "minute"], var_name="type", value_name="mean_percent")
+            fig_bar = px.bar(
+                plot_df,
+                x="mean_percent",
+                y="minute",
+                color="type",
+                orientation="h",
+                labels={"mean_percent": "Media % vs Open", "minute": "Minuti"},
+                color_discrete_map={"High": "green", "Low": "red"},
+                title="Media % High / Low per intervallo (rispetto a OPEN)"
+            )
+            fig_bar.update_layout(barmode="group", yaxis={"categoryorder":"array", "categoryarray": [str(m) for m in minutes]})
+            st.plotly_chart(fig_bar, use_container_width=True)
+
+            # Grafico 2: Boxplot con distribuzione (mostra variabilità)
+            # ordino minute come categoria per avere lo stesso ordine
+            long_df["minute"] = pd.Categorical(long_df["minute"], categories=minutes, ordered=True)
+            long_df = long_df.sort_values("minute")
+            fig_box = px.box(
+                long_df,
+                x="value",
+                y="minute",
+                color="type",
+                orientation="h",
+                labels={"value": "% vs Open", "minute": "Minuti"},
+                title="Distribuzione % High/Low per intervallo (boxplot)"
+            )
+            st.plotly_chart(fig_box, use_container_width=True)
+
+            # Piccolo sommario numerico (tabella) sotto i grafici
+            st.subheader("Riepilogo numerico per intervallo")
+            st.dataframe(summary_df.pivot(index="minute", columns="type")[["mean", "median", "count"]].fillna("-"))
+
+except Exception as e:
+    st.error(f"Errore costruzione grafici per minuti: {e}")
+# --- FINE SEZIONE: Grafici per minuti ---
+
+
+
+
+
 # -------------------------------------------------
 # region TABELLA
 # -------------------------------------------------
