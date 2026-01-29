@@ -679,25 +679,6 @@ try:
             fig_bar.update_layout(barmode="group", yaxis={"categoryorder":"array", "categoryarray": [str(m) for m in minutes]})
             st.plotly_chart(fig_bar, use_container_width=True)
 
-            # Grafico 2: Boxplot con distribuzione (mostra variabilità)
-            # ordino minute come categoria per avere lo stesso ordine
-            long_df["minute"] = pd.Categorical(long_df["minute"], categories=minutes, ordered=True)
-            long_df = long_df.sort_values("minute")
-            fig_box = px.box(
-                long_df,
-                x="value",
-                y="minute",
-                color="type",
-                orientation="h",
-                labels={"value": "% vs Open", "minute": "Minuti"},
-                title="Distribuzione % High/Low per intervallo (boxplot)"
-            )
-            st.plotly_chart(fig_box, use_container_width=True)
-
-            # Piccolo sommario numerico (tabella) sotto i grafici
-            st.subheader("Riepilogo numerico per intervallo")
-            st.dataframe(summary_df.pivot(index="minute", columns="type")[["mean", "median", "count"]].fillna("-"))
-
 except Exception as e:
     st.error(f"Errore costruzione grafici per minuti: {e}")
 # --- FINE SEZIONE: Grafici per minuti ---
