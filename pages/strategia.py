@@ -29,7 +29,7 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 def load_data():
     usecols = [
         "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
-        "Close_1030", "High_1m","High_5m","Low_1m","Low_5m","High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
+        "Close_60m", "High_1m","High_5m","Low_1m","Low_5m","High_60m", "Low_60m", "High_90m", "Low_90m", "Close_90m", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
         "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m", "Market Cap"
     ]
     df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
@@ -302,7 +302,7 @@ if mode == "90 minuti":
         elif filtered.at[idx, "SL"] == 1:
             exit_price = sl_price
         else:
-            exit_price = row["Close_1100"]
+            exit_price = row["Close_90m"]
 
         filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
 
@@ -357,7 +357,7 @@ else:
         elif filtered.at[idx, "SL"] == 1:
             exit_price = sl_price
         else:
-            exit_price = row["Close_1100"]
+            exit_price = row["Close_90m"]
 
         filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
 
@@ -716,7 +716,7 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m",
-                "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
+                "High_90m", "Low_90m", "Close_90m", "Entry_price", "SL_price", "TP_price",
                 "TP_90m%", "attivazione", "SL", "TP", "BEprofit"]
 
 
