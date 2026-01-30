@@ -577,163 +577,139 @@ st.markdown(container_html, unsafe_allow_html=True)
 # endregion
 
 
-# --- INIZIO SEZIONE: Grafico orizzontale centrato su 0 (fix etichette) ---
+# --- INIZIO SEZIONE: Grafico orizzontale centrato su 0 (mid-price vs OPEN) ---
 import altair as alt
 
 try:
-    st.markdown("### ⏱️ Media (High% & Low%) per intervallo — barre centrali rispetto a OPEN")
+    st.markdown("### ⏱️ Mid-price (High/Low) vs OPEN — media per intervallo (1,5,30,60,90,120 min)")
 
     alt.data_transformers.disable_max_rows()
 
     minutes = [1, 5, 30, 60, 90, 120]
 
-    def find_col(candidates, df):
-        for c in candidates:
-            if c in df.columns:
-                return c
-        return None
-
-    # cerca colonne possibili per ogni minuto (adatta se la tua nomenclatura è diversa)
-    high_cols = {}
-    low_cols = {}
-    for m in minutes:
-        high_candidates = [
-            f"%OH_{m}", f"%OH{m}", f"%OH_{m}m", f"%OH{m}m",
-            f"High_{m}m", f"High_{m}", f"High {m}m", f"High {m}",
-            f"HIGH_{m}", f"HIGH{m}"
-        ]
-        low_candidates = [
-            f"%OL_{m}", f"%OL{m}", f"%OL_{m}m", f"%OL_{m}m",
-            f"Low_{m}m", f"Low_{m}", f"Low {m}m", f"Low {m}",
-            f"LOW_{m}", f"LOW{m}"
-        ]
-        high_cols[m] = find_col(high_candidates, filtered)
-        low_cols[m] = find_col(low_candidates, filtered)
-
-    # funzione che normalizza una serie a % rispetto a OPEN (se necessario)
-    def as_percent(series, open_series):
-        s = series.copy()
-        # se contiene '%' come stringa -> rimuovi e cast
-        try:
-            if s.dtype == object or s.astype(str).str.contains("%").any():
-                s = s.astype(str).str.replace("%", "").str.replace(",", ".")
-                return pd.to_numeric(s, errors="coerce")
-        except Exception:
-            pass
-        # se numeric e abbiamo OPEN -> trattalo come prezzo assoluto e converti in %
-        if pd.api.types.is_numeric_dtype(s) and open_series is not None and pd.api.types.is_numeric_dtype(open_series):
-            return (s - open_series) / open_series * 100
-        return pd.to_numeric(s, errors="coerce")
-
-    open_col = filtered["OPEN"] if "OPEN" in filtered.columns else None
-
-    rows = []
-    for m in minutes:
-        hcol = high_cols.get(m)
-        lcol = low_cols.get(m)
-
-        mean_h = np.nan
-        mean_l = np.nan
-
-        if hcol is not None:
-            h_vals = as_percent(filtered[hcol], open_col).dropna()
-            if not h_vals.empty:
-                mean_h = h_vals.mean()
-
-        if lcol is not None:
-            l_vals = as_percent(filtered[lcol], open_col).dropna()
-            if not l_vals.empty:
-                mean_l = l_vals.mean()
-
-        # se non abbiamo né high né low per il minuto, salta
-        if np.isnan(mean_h) and np.isnan(mean_l):
-            continue
-
-        # media delle due medie (se entrambe presenti), altrimenti prendi quella disponibile
-        if not np.isnan(mean_h) and not np.isnan(mean_l):
-            mean_both = (mean_h + mean_l) / 2.0
-        elif not np.isnan(mean_h):
-            mean_both = mean_h
-        else:
-            mean_both = mean_l
-
-        rows.append({
-            "minute": m,
-            "minute_str": f"{m} min",
-            "mean_percent": mean_both,
-            "mean_h": mean_h,
-            "mean_l": mean_l
-        })
-
-    means_df = pd.DataFrame(rows)
-
-    if means_df.empty:
-        st.info("Non ci sono colonne High/Low valide per gli intervalli selezionati. Controlla i nomi delle colonne nel CSV.")
+    # assicurati OPEN numerico e valido
+    if "OPEN" not in filtered.columns:
+        st.info("Colonna 'OPEN' mancante nei dati: impossibile calcolare le percentuali.")
     else:
-        # Ordine e formato
-        means_df["minute_order"] = pd.Categorical(means_df["minute"], categories=minutes, ordered=True)
-        means_df = means_df.sort_values("minute_order")
+        open_series = pd.to_numeric(filtered["OPEN"], errors="coerce")
+        # scarta righe con OPEN non valido o <= 0 (evita divisione per zero)
+        valid_open_mask = open_series > 0
+        if valid_open_mask.sum() == 0:
+            st.info("Valori OPEN non validi (tutti zero o non numerici).")
+        else:
+            rows = []
+            for m in minutes:
+                hcol = f"High_{m}m"
+                lcol = f"Low_{m}m"
 
-        # range simmetrico attorno a 0 per visuale bilanciata
-        minv = means_df["mean_percent"].min()
-        maxv = means_df["mean_percent"].max()
-        absmax = max(abs(minv) if pd.notna(minv) else 0, abs(maxv) if pd.notna(maxv) else 0)
-        if absmax == 0:
-            absmax = 1.0
-        pad = absmax * 0.1
-        domain = [-absmax - pad, absmax + pad]
+                has_h = hcol in filtered.columns
+                has_l = lcol in filtered.columns
 
-        # base con asse y
-        base = alt.Chart(means_df).encode(
-            y=alt.Y('minute_str:N', sort=[f"{m} min" for m in minutes], title=None)
-        )
+                if not has_h and not has_l:
+                    # nessuna colonna per questo minuto -> salta
+                    continue
 
-        # barre colorate in base al segno
-        bars = base.mark_bar().encode(
-            x=alt.X('mean_percent:Q', title='Media % rispetto a OPEN', scale=alt.Scale(domain=domain)),
-            color=alt.condition(
-                alt.datum.mean_percent > 0,
-                alt.value("#2ca02c"),
-                alt.value("#d62728")
-            ),
-            tooltip=[
-                alt.Tooltip('minute:N', title='Minuto'),
-                alt.Tooltip('mean_percent:Q', format='.2f', title='Media % (High+Low)'),
-                alt.Tooltip('mean_h:Q', format='.2f', title='Media High%'),
-                alt.Tooltip('mean_l:Q', format='.2f', title='Media Low%')
-            ]
-        )
+                # prendi le serie e cast numericamente
+                h_series = pd.to_numeric(filtered[hcol], errors="coerce") if has_h else pd.Series([np.nan] * len(filtered))
+                l_series = pd.to_numeric(filtered[lcol], errors="coerce") if has_l else pd.Series([np.nan] * len(filtered))
 
-        # linea verticale a 0
-        zero_rule = alt.Chart(pd.DataFrame({'x': [0]})).mark_rule(color='lightgray', strokeWidth=1).encode(x='x:Q')
+                # calcolo mid: se entrambe presenti => (h+l)/2, altrimenti fallback sulla colonna esistente
+                mid = None
+                if has_h and has_l:
+                    mid = (h_series + l_series) / 2.0
+                elif has_h:
+                    mid = h_series.copy()
+                else:
+                    mid = l_series.copy()
 
-        # etichette: layer separati per positivi e negativi per poter impostare align/dx
-        pos_labels = base.transform_filter(alt.datum.mean_percent > 0).mark_text(
-            dx=5, dy=0, color='black', align='left'
-        ).encode(
-            x='mean_percent:Q',
-            text=alt.Text('mean_percent:Q', format='.2f')
-        )
+                # calcola percentuale rispetto a OPEN solo dove OPEN è valido e mid è valido
+                pct = ((mid - open_series) / open_series) * 100.0
+                pct = pct[valid_open_mask].dropna()
 
-        neg_labels = base.transform_filter(alt.datum.mean_percent <= 0).mark_text(
-            dx=-5, dy=0, color='black', align='right'
-        ).encode(
-            x='mean_percent:Q',
-            text=alt.Text('mean_percent:Q', format='.2f')
-        )
+                if pct.empty:
+                    continue
 
-        chart = (bars + zero_rule + pos_labels + neg_labels).properties(
-            title="Media High% & Low% per intervallo (una barra = media High+Low). Verde = positiva, Rosso = negativa",
-            height=40 * len(means_df),
-        ).configure_title(
-            anchor='start'
-        )
+                mean_pct = pct.mean()
+                count = len(pct)
 
-        st.altair_chart(chart, use_container_width=True)
+                # opzionale: media prezzi High/Low per info
+                mean_high_price = h_series[valid_open_mask].dropna().mean() if has_h else np.nan
+                mean_low_price = l_series[valid_open_mask].dropna().mean() if has_l else np.nan
+
+                rows.append({
+                    "minute": m,
+                    "minute_str": f"{m} min",
+                    "mean_percent": mean_pct,
+                    "count": count,
+                    "mean_high_price": mean_high_price,
+                    "mean_low_price": mean_low_price
+                })
+
+            means_df = pd.DataFrame(rows)
+
+            if means_df.empty:
+                st.info("Non sono stati trovati dati High_xxm / Low_xxm validi per gli intervalli richiesti.")
+            else:
+                # ordina e prepara dominio simmetrico intorno a 0
+                minutes_present = [r for r in minutes if r in means_df["minute"].values]
+                means_df["minute_order"] = pd.Categorical(means_df["minute"], categories=minutes, ordered=True)
+                means_df = means_df.sort_values("minute_order")
+
+                minv = means_df["mean_percent"].min()
+                maxv = means_df["mean_percent"].max()
+                absmax = max(abs(minv) if pd.notna(minv) else 0, abs(maxv) if pd.notna(maxv) else 0)
+                if absmax == 0:
+                    absmax = 1.0
+                pad = absmax * 0.1
+                domain = [-absmax - pad, absmax + pad]
+
+                base = alt.Chart(means_df).encode(
+                    y=alt.Y('minute_str:N', sort=[f"{m} min" for m in minutes], title=None)
+                )
+
+                bars = base.mark_bar().encode(
+                    x=alt.X('mean_percent:Q', title='Media % rispetto a OPEN', scale=alt.Scale(domain=domain)),
+                    color=alt.condition(
+                        alt.datum.mean_percent > 0,
+                        alt.value("#2ca02c"),
+                        alt.value("#d62728")
+                    ),
+                    tooltip=[
+                        alt.Tooltip('minute:N', title='Minuto'),
+                        alt.Tooltip('mean_percent:Q', format='.2f', title='Media % (mid vs OPEN)'),
+                        alt.Tooltip('count:Q', title='N righe usate'),
+                        alt.Tooltip('mean_high_price:Q', format='.2f', title='Media High price'),
+                        alt.Tooltip('mean_low_price:Q', format='.2f', title='Media Low price')
+                    ]
+                )
+
+                zero_rule = alt.Chart(pd.DataFrame({'x': [0]})).mark_rule(color='lightgray', strokeWidth=1).encode(x='x:Q')
+
+                # etichette: positivi a sinistra della barra (dx positivo), negativi a destra (dx negativo)
+                pos_labels = base.transform_filter(alt.datum.mean_percent > 0).mark_text(
+                    dx=5, dy=0, color='black', align='left'
+                ).encode(
+                    x='mean_percent:Q',
+                    text=alt.Text('mean_percent:Q', format='.2f')
+                )
+
+                neg_labels = base.transform_filter(alt.datum.mean_percent <= 0).mark_text(
+                    dx=-5, dy=0, color='black', align='right'
+                ).encode(
+                    x='mean_percent:Q',
+                    text=alt.Text('mean_percent:Q', format='.2f')
+                )
+
+                chart = (bars + zero_rule + pos_labels + neg_labels).properties(
+                    title="Media mid-price (High+Low)/2 rispetto a OPEN — media per intervallo",
+                    height=40 * len(means_df)
+                ).configure_title(anchor='start')
+
+                st.altair_chart(chart, use_container_width=True)
 
 except Exception as e:
-    st.error(f"Errore costruzione grafico orizzontale centrato su 0: {e}")
-# --- FINE SEZIONE: Grafico orizzontale centrato su 0 (fix etichette) ---
+    st.error(f"Errore costruzione grafico mid-price vs OPEN: {e}")
+# --- FINE SEZIONE: Grafico orizzontale centrato su 0 (mid-price vs OPEN) ---
 
 
 # -------------------------------------------------
