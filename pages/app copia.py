@@ -503,7 +503,7 @@ mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 # --- Top box: I 3 KPI principali in un unico box giustificato ---
 # ----------------------------------------------------------------
 
-st.subheader("📊 KPI principali")
+#st.subheader("📊 KPI principali")
 
 top_html = f"""
 <div class='kpi-top-box'>
