@@ -590,6 +590,86 @@ container_html = f"""
 
 st.markdown(container_html, unsafe_allow_html=True)
 
+
+
+
+
+
+# Creo due colonne principali: sinistra KPI, destra grafico
+col_kpi, col_chart = st.columns([2, 3])  # proporzione: KPI 2/5, grafico 3/5
+
+with col_kpi:
+    st.subheader("📊 KPI principali")
+
+    # Top box (totale, chiusure RED, GAP medio)
+    st.markdown(top_html, unsafe_allow_html=True)
+
+    # Lista dettagliata dei KPI
+    st.markdown(container_html, unsafe_allow_html=True)
+
+with col_chart:
+    # --- Sezione grafico Close vs Open ---
+    import plotly.graph_objects as go
+
+    if close_cols and not filtered.empty:
+        mean_values = (
+            filtered[close_cols]
+            .mean()
+            .rename(lambda x: x.replace("%Close_", ""))
+            .reindex(timeframes)
+        )
+
+        df_plot = mean_values.reset_index()
+        df_plot.columns = ["Timeframe", "Mean_pct"]
+
+        df_plot["Color"] = df_plot["Mean_pct"].apply(
+            lambda x: "#2ecc71" if x >= 0 else "#e74c3c"
+        )
+
+        fig = go.Figure()
+        fig.add_bar(
+            x=df_plot["Mean_pct"],
+            y=df_plot["Timeframe"],
+            orientation="h",
+            marker_color=df_plot["Color"],
+            text=df_plot["Mean_pct"].round(2),
+            textposition="outside"
+        )
+
+        fig.add_vline(
+            x=0,
+            line_width=2,
+            line_dash="dash",
+            line_color="white"
+        )
+
+        fig.update_layout(
+            title="Variazione media % del Close vs Open",
+            xaxis_title="Variazione % vs Open",
+            yaxis_title="Timeframe",
+            yaxis=dict(categoryorder="array", categoryarray=timeframes),
+            template="plotly_dark",
+            height=500,
+            margin=dict(l=60, r=40, t=60, b=40),
+            showlegend=False
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("Nessun dato disponibile per il grafico Close vs Open.")
+
+
+
+
+
+
+
+
+
+
+
+
+
 # endregion
 
 # -------------------------------------------------
