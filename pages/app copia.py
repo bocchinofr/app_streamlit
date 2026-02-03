@@ -98,9 +98,6 @@ for col in tf_cols:
         errors="coerce"
     )
 
-st.write(df[tf_cols].dtypes)
-
-
 # -----------------------------------------------
 # CONTROLLO DATI 
 # -----------------------------------------------
