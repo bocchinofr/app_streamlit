@@ -582,9 +582,6 @@ st.markdown(container_html, unsafe_allow_html=True)
 
 import plotly.graph_objects as go
 
-st.write("Colonne %Close disponibili:", close_cols)
-st.write("Sample valori:", filtered[close_cols].head())
-
 
 # --- colonne disponibili ---
 timeframes = [
@@ -592,6 +589,9 @@ timeframes = [
 ]
 
 close_cols = [f"%Close_{tf}" for tf in timeframes if f"%Close_{tf}" in filtered.columns]
+
+st.write("Colonne %Close disponibili:", close_cols)
+st.write("Sample valori:", filtered[close_cols].head())
 
 if close_cols and not filtered.empty:
 
@@ -642,6 +642,8 @@ if close_cols and not filtered.empty:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
+
 
 else:
     st.info("Nessun dato disponibile per il grafico Close vs Open.")
