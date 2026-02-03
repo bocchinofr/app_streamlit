@@ -652,10 +652,12 @@ if close_cols and not filtered.empty:
 
     st.plotly_chart(fig, use_container_width=True)
 
-
-
 else:
     st.info("Nessun dato disponibile per il grafico Close vs Open.")
+
+valid_ratio = df[tf_cols].notna().mean()
+st.write("Copertura dati per timeframe", valid_ratio)
+
 
 
 # endregion
