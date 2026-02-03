@@ -590,9 +590,6 @@ timeframes = [
 
 close_cols = [f"%Close_{tf}" for tf in timeframes if f"%Close_{tf}" in filtered.columns]
 
-st.write("TUTTE le colonne:", list(filtered.columns))
-
-
 if close_cols and not filtered.empty:
 
     # Media per timeframe sui ticker filtrati
