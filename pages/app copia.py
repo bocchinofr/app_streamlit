@@ -85,6 +85,19 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
     if col in df.columns:
         df[col] = df[col].fillna(0)
 
+# --- PULIZIA COLONNE TIMEFRAME (Close / High / Low) ---
+tf_cols = [
+    c for c in df.columns
+    if c.startswith(("Close_", "High_", "Low_"))
+]
+
+for col in tf_cols:
+    df[col] = pd.to_numeric(
+        df[col].astype(str)
+        .str.replace(",", ".", regex=False),
+        errors="coerce"
+    )
+
 
 # -----------------------------------------------
 # CONTROLLO DATI 
