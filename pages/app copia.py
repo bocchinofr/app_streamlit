@@ -611,6 +611,13 @@ with col_chart:
     # --- Sezione grafico Close vs Open ---
     import plotly.graph_objects as go
 
+    # --- colonne disponibili ---
+    timeframes = [
+        "1m","5m","15m","30m","45m","60m","90m","120m","240m"
+    ]
+
+    close_cols = [f"%Close_{tf}" for tf in timeframes if f"%Close_{tf}" in filtered.columns]
+
     if close_cols and not filtered.empty:
         mean_values = (
             filtered[close_cols]
