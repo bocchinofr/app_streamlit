@@ -94,7 +94,7 @@ tf_cols = [
 for col in tf_cols:
     df[col] = pd.to_numeric(
         df[col].astype(str)
-        .str.replace(",", ".", regex=False),
+        .str.replace(",", ".", regex=False).str.strip(),
         errors="coerce"
     )
 
