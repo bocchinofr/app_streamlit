@@ -617,7 +617,7 @@ with col_chart:
     if close_cols and not filtered.empty:
         mean_values = (
             filtered[close_cols]
-            .median()
+            .mean()
             .rename(lambda x: x.replace("%Close_", ""))
             .reindex(timeframes)
         )
