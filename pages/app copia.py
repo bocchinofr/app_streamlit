@@ -98,6 +98,9 @@ for col in tf_cols:
         errors="coerce"
     )
 
+
+
+
 # -----------------------------------------------
 # CONTROLLO DATI 
 # -----------------------------------------------
@@ -654,11 +657,6 @@ if close_cols and not filtered.empty:
 
 else:
     st.info("Nessun dato disponibile per il grafico Close vs Open.")
-
-valid_ratio = df[tf_cols].notna().mean()
-st.write("Copertura dati per timeframe", valid_ratio)
-
-
 
 # endregion
 
