@@ -582,6 +582,10 @@ st.markdown(container_html, unsafe_allow_html=True)
 
 import plotly.graph_objects as go
 
+st.write("Colonne %Close disponibili:", close_cols)
+st.write("Sample valori:", filtered[close_cols].head())
+
+
 # --- colonne disponibili ---
 timeframes = [
     "1m","5m","15m","30m","45m","60m","90m","120m","240m"
