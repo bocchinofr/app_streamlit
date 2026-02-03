@@ -88,7 +88,7 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 # --- PULIZIA COLONNE TIMEFRAME (Close / High / Low) ---
 tf_cols = [
     c for c in df.columns
-    if c.startswith(("Close_", "High_", "Low_"))
+    if c.startswith(("%Close_", "Close_", "High_", "Low_"))
 ]
 
 for col in tf_cols:
