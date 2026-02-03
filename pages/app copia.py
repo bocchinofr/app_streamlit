@@ -596,7 +596,7 @@ st.markdown(container_html, unsafe_allow_html=True)
 
 
 # Creo due colonne principali: sinistra KPI, destra grafico
-col_kpi, col_chart = st.columns([2, 3])  # proporzione: KPI 2/5, grafico 3/5
+col_kpi, col_chart = st.columns([3, 2])  # proporzione: KPI 2/5, grafico 3/5
 
 with col_kpi:
     st.subheader("📊 KPI principali")
