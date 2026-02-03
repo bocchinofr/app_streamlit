@@ -523,7 +523,7 @@ top_html = f"""
   </div>
 </div>
 """
-st.markdown(top_html, unsafe_allow_html=True)
+#st.markdown(top_html, unsafe_allow_html=True)
 
 # Lista dei KPI (label, value, optional color)
 kpi_rows = [
@@ -588,11 +588,7 @@ container_html = f"""
 </div>
 """
 
-st.markdown(container_html, unsafe_allow_html=True)
-
-
-
-
+#st.markdown(container_html, unsafe_allow_html=True)
 
 
 # Creo due colonne principali: sinistra KPI, destra grafico
