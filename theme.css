@@ -117,7 +117,7 @@
 .kpi-multi .value-highlight,
 .kpi-multi .value-highlight-red,
 .kpi-multi .value-highlight-green {
-  min-width: 120px;        /* larghezza minima per mantenere leggibilità */
+  min-width: 10px;        /* larghezza minima per mantenere leggibilità */
   text-align: center;
   padding: 1px 0px;
   border-radius: 3px;
