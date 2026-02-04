@@ -109,7 +109,7 @@
 /* Layout per KPI con valori multipli: riusa le classi value-highlight-* */
 .kpi-multi {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   justify-content: flex-end; /* mantiene i valori multipli sul lato destro della riga */
   align-items: center;
 }
