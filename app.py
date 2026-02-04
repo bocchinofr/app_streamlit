@@ -367,7 +367,7 @@ float_min = col_float_min.number_input(
 
 float_max = col_float_max.number_input(
     "Float MAX", 
-    value=5000000, 
+    value=15000000, 
     step=100000,
     min_value=0,
     max_value=1000000000,
