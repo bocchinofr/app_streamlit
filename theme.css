@@ -86,8 +86,8 @@
 .value-highlight-green {
   background: rgba(16, 185, 129, 0.12);
   color: #059669;
-  padding: 2px 2px;
-  border-radius: 5px;
+  padding: 2px 10px;
+  border-radius: 3px;
   display: inline-block;
   text-align: right;
 }
@@ -95,7 +95,7 @@
   background: rgba(239, 68, 68, 0.12);
   color: #dc2626;
   padding: 2px 2px;
-  border-radius: 5px;
+  border-radius: 3px;
   display: inline-block;
   text-align: right;
 }
@@ -120,7 +120,7 @@
   min-width: 64px;        /* larghezza minima per mantenere leggibilità */
   text-align: center;
   padding: 2px 2px;
-  border-radius: 4px;
+  border-radius: 3px;
   font-weight: 600;
   font-size: 16px;
   cursor: help; /* mostra il cursore "help" quando si passa sopra */
