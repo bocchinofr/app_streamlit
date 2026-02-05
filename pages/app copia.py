@@ -404,7 +404,7 @@ def kpi_card_textual(title,mean, red, green, suffix="%"):
     delta = red - green
 
     delta_sign = "+" if delta > 0 else ""
-    delta_color = "#2ecc71" if delta > 0 else ("#e74c3c" if delta < 0 else "#f1c40f")
+    delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
 
     html = f"""<div class="kpi-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
