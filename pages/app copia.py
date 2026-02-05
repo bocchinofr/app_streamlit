@@ -417,7 +417,10 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
             delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
             delta_html = f'<div class="kpi-delta" style="color:{delta_color};">Δ {delta_sign}{delta:.1f}{suffix}</div>'
         except (ValueError, TypeError):
-            delta_html = ""
+            delta_html = '<div class="kpi-delta">&nbsp;</div>'  # div vuoto ma mantiene spazio
+    else:
+        delta_html = '<div class="kpi-delta">&nbsp;</div>'      # div vuoto, invisibile ma occupa altezza
+
 
     html = f"""
     <div class="kpi-card">
