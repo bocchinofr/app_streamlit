@@ -411,7 +411,7 @@ def kpi_card_textual(title,total, red, green, suffix="%"):
         <div style="font-size:16px; font-weight:600;">{title}</div>
         <div style="font-size:20px; font-weight:700;">{total:.1f}{suffix}</div>
     </div>
-    <div style="display:flex; justify-content:space-between; font-size:16px; margin-bottom:4px;">
+    <div style="display:flex; justify-content:space-between; font-size:16px; margin-bottom:4px; font-weight:600;">
         <div style="color:#e74c3c;">Red: {red:.1f}{suffix}</div>
         <div style="color:#2ecc71;">Green: {green:.1f}{suffix}</div>
     </div>
