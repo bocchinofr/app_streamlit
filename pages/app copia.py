@@ -18,11 +18,11 @@ st.title("📈 Dashboard Analisi Small Cap")
 # Carica il CSS
 def local_css(file_name):
     with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+        css = f.read()
+        st.html(f"<style>{css}</style>")
+
 
 local_css("theme.css")
-
-st.markdown("<style>body{background:red !important;}</style>", unsafe_allow_html=True)
 
 
 # -------------------------------------------------
