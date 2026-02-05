@@ -412,8 +412,8 @@ def kpi_card_textual(title,total, red, green, suffix="%"):
         <div style="font-size:20px; font-weight:700;">{total:.1f}{suffix}</div>
     </div>
     <div style="display:flex; justify-content:space-between; font-size:16px; margin-bottom:4px;">
-        <div style="color:#e74c3c;">RedCLOSE: {red:.1f}{suffix}</div>
-        <div style="color:#2ecc71;">GREEN: {green:.1f}{suffix}</div>
+        <div style="color:#e74c3c;">Red: {red:.1f}{suffix}</div>
+        <div style="color:#2ecc71;">Green: {green:.1f}{suffix}</div>
     </div>
     <div style="font-weight:600; color:{delta_color}; font-size:14px;">
     Δ {delta_sign}{delta:.1f}{suffix}
