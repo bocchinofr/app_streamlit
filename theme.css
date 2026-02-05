@@ -1,3 +1,179 @@
-body {
-    background: red !important;
+/* Contenitore esterno del top box (sfondo/padding per tutto il box) */
+.kpi-top-box {
+  width: 100%;
+  padding: 12px 0px;        /* padding interno del box (modifica per più/meno spazio) */
+  border-radius: 10px;
+  background: rgba(147, 170, 233, 0.103);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+}
+
+/* Riga interna che contiene i 3 elementi e li giustifica da bordo a bordo */
+.kpi-top {
+  display: flex;
+  justify-content: space-between; /* distribuisce i 3 elementi su tutta la larghezza */
+  gap: 12px;                       /* spazio minimo tra gli elementi */
+  align-items: center;
+}
+
+/* Singolo elemento del top box: ogni elemento prende uno spazio flessibile uguale */
+.top-kpi {
+  flex: 1;                         /* fa sì che tutti e 3 i box si espandano in modo uguale */
+  text-align: center;
+  padding: 0px 0px;
+  border-radius: 8px;
+}
+
+/* Valore e label del top-kpi */
+.top-kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+.top-kpi-label {
+  font-size: 15px;
+  margin-top: 6px;
+  color: inherit;
+}
+
+
+/* KPI container: due box affiancati */
+.kpi-container {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+/* Singolo box KPI: aggiunto padding laterale maggiore */
+.kpi-box {
+  flex: 1;
+  padding: 16px 50px; /* <- più margine interno a destra e a sinistra */
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+
+/* Se vuoi due colori diversi per i box, personalizza queste classi */
+.kpi-box.left {
+  background: rgba(59,130,246,0.04);
+}
+.kpi-box.right {
+  background: rgba(99,102,241,0.02);
+}
+
+/* Righe KPI: label a sinistra, valore a destra */
+.kpi-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  border-bottom: none;
+  gap: 10px;
+}
+.kpi-label {
+  flex: 1;
+  color: inherit;
+  font-size: 14px;
+}
+.kpi-value {
+  text-align: right;
+  min-width: 120px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Evidenziazione valore (sfondo "pill") */
+.value-highlight-green {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  padding: 2px 3px;
+  border-radius: 3px;
+  display: inline-block;
+  text-align: right;
+}
+.value-highlight-red {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  padding: 2px 2px;
+  border-radius: 3px;
+  display: inline-block;
+  text-align: right;
+}
+.value-highlight {
+  background: rgba(255,255,255,0.04);
+  padding: 6px 10px;
+  border-radius: 8px;
+  display:inline-block;
+}
+
+/* Layout per KPI con valori multipli: riusa le classi value-highlight-* */
+.kpi-multi {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end; /* mantiene i valori multipli sul lato destro della riga */
+  align-items: center;
+}
+/* Uniforma dimensione e padding delle "pill" quando usate dentro .kpi-multi */
+.kpi-multi .value-highlight,
+.kpi-multi .value-highlight-red,
+.kpi-multi .value-highlight-green {
+  min-width: 10px;        /* larghezza minima per mantenere leggibilità */
+  text-align: center;
+  padding: 3px 3px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: help; /* mostra il cursore "help" quando si passa sopra */
+}
+
+/* Responsive: su schermi stretti impila i box */
+@media (max-width: 720px) {
+  .kpi-container {
+    flex-direction: column;
+  }
+  .kpi-top {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .top-kpi {
+    width: 100%;
+  }
+  /* su mobile rendi le pill più compatte */
+  .kpi-multi .value-highlight,
+  .kpi-multi .value-highlight-red,
+  .kpi-multi .value-highlight-green {
+    min-width: 44px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+.kpi-card{
+    background:#111;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 0 12px rgba(0,0,0,.45);
+    max-width:320px;
+}
+
+.kpi-title{
+    font-size:14px;
+    opacity:.7;
+    margin-bottom:6px;
+}
+
+.kpi-split{
+    display:flex;
+    justify-content:space-between;
+    font-size:22px;
+    font-weight:600;
+}
+
+.green{ color:#2ecc71; }
+.red{ color:#e74c3c; }
+
+.kpi-delta{
+    margin-top:6px;
+    font-size:14px;
+    font-weight:600;
 }
