@@ -427,7 +427,7 @@ def kpi_card_textual(title, red, green, suffix="%"):
         </div>
     </div>
     """
-    st.markdown(html, unsafe_allow_html=True)
+    st.write(html, unsafe_allow_html=True)
 
 # endregion
 
