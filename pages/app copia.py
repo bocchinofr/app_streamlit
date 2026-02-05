@@ -409,7 +409,7 @@ def kpi_card_textual(title, red, green, suffix="%"):
     html = f"""<div class="kpi-card">
     <div class="kpi-title">{title}</div>
     <div class="kpi-split">
-        <span class="total">⚪ {total:.1f}{suffix}</span>
+        <span class="mean">⚪ {mean:.1f}{suffix}</span>
         <span class="red">🔴 {red:.1f}{suffix}</span>
         <span class="green">🟢 {green:.1f}{suffix}</span>
     </div>
@@ -633,7 +633,7 @@ with col_kpi:
 
     kpi_card_textual(
         title="GAP Medio",
-        total= gap_mean,
+        mean= gap_mean,
         red=gap_red,
         green=gap_green
     )
