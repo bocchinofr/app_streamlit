@@ -659,7 +659,7 @@ with col_kpi:
                 total=kpi["total"],
                 red=kpi["red"],
                 green=kpi["green"],
-                suffix=kpi.get("suffix")
+                suffix=kpi.get("suffix"),
                 show_delta=kpi["show_delta"]
             )
 
