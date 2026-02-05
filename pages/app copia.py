@@ -406,7 +406,6 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
         delta = float(red) - float(green) if show_delta else 0
         delta_sign = "+" if delta > 0 else ""
         delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
-        delta_html = f'<div class="kpi-delta" style="color:{delta_color};">Δ {delta_sign}{delta:.1f}{suffix}</div>'
     except (ValueError, TypeError):
         delta_html = ""
 
@@ -427,9 +426,14 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
             <div class="red">Red: {fmt(red)}{suffix}</div>
             <div class="green">Green: {fmt(green)}{suffix}</div>
         </div>
-        {delta_html}
+        <div class="kpi-delta" style="color:{delta_color};">
+            Δ {delta_sign}{delta:.1f}{suffix}
+        </div>
     </div>
     """
+
+    st.markdown(html, unsafe_allow_html=True)
+
 
     st.markdown(html, unsafe_allow_html=True)
 
