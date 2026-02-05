@@ -400,8 +400,8 @@ filtered = filtered[
 # region KPI CARD TESTUALE
 # -------------------------------
 
-def kpi_card_textual(title,total, red, green, suffix):
-    delta = red - green
+def kpi_card_textual(title,total, red, green, suffix, show_delta=True):
+    delta = red - green if show_delta else 0
 
     delta_sign = "+" if delta > 0 else ""
     delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
@@ -644,7 +644,7 @@ with col_kpi:
         {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
         {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
         {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
-        #{"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": ""}
+        {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
     ]
 
     # 2️⃣ Creo 2 colonne
