@@ -400,7 +400,7 @@ filtered = filtered[
 # region KPI CARD TESTUALE
 # -------------------------------
 
-def kpi_card_textual(title,mean, red, green, suffix="%"):
+def kpi_card_textual(title,total, red, green, suffix="%"):
     delta = red - green
 
     delta_sign = "+" if delta > 0 else ""
@@ -636,7 +636,7 @@ with col_kpi:
 
     kpi_card_textual(
         title="GAP Medio",
-        mean= gap_mean,
+        total= gap_mean,
         red=gap_red,
         green=gap_green
     )
