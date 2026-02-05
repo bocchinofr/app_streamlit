@@ -660,7 +660,6 @@ with col_kpi:
                 red=kpi["red"],
                 green=kpi["green"],
                 suffix=kpi.get("suffix"),
-                show_delta=kpi["show_delta"]
             )
 
 
