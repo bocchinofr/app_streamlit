@@ -395,6 +395,41 @@ filtered = filtered[
 
 # endregion
 
+# -------------------------------
+# region KPI CARD TESTUALE
+# -------------------------------
+
+def kpi_card_textual(title, red, green, suffix="%"):
+    delta = green - red
+
+    if delta > 0:
+        delta_color = "#2ecc71"
+        delta_sign = "+"
+    elif delta < 0:
+        delta_color = "#e74c3c"
+        delta_sign = ""
+    else:
+        delta_color = "#f1c40f"
+        delta_sign = ""
+
+    html = f"""
+    <div class="kpi-card">
+        <div class="kpi-title">{title}</div>
+
+        <div class="kpi-split">
+            <span class="red">🔴 {red:.1f}{suffix}</span>
+            <span class="green">🟢 {green:.1f}{suffix}</span>
+        </div>
+
+        <div class="kpi-delta" style="color:{delta_color}">
+            Δ {delta_sign}{delta:.1f}{suffix}
+        </div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
+# endregion
+
 # -------------------------------------------------
 # region KPI
 # -------------------------------------------------
@@ -602,6 +637,16 @@ with col_kpi:
 
     # Lista dettagliata dei KPI
     st.markdown(container_html, unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.caption("🔬 Test nuova card")
+
+    kpi_card_textual(
+        title="GAP Medio",
+        red=gap_red,
+        green=gap_green
+    )
+
 
 with col_chart:
     # --- Sezione grafico Close vs Open ---
