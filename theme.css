@@ -35,15 +35,6 @@
   color: inherit;
 }
 
-
-/* KPI container: due box affiancati */
-.kpi-container {
-  display: flex;
-  gap: 10px;
-  align-items: stretch;
-  margin-bottom: 12px;
-}
-
 /* Singolo box KPI: aggiunto padding laterale maggiore */
 .kpi-box {
   flex: 1;
@@ -51,14 +42,6 @@
   border-radius: 10px;
   background: rgba(255,255,255,0.02);
   box-shadow: 0 1px 2px rgba(0,0,0,0.12);
-}
-
-/* Se vuoi due colori diversi per i box, personalizza queste classi */
-.kpi-box.left {
-  background: rgba(59,130,246,0.04);
-}
-.kpi-box.right {
-  background: rgba(99,102,241,0.02);
 }
 
 /* Righe KPI: label a sinistra, valore a destra */
@@ -82,69 +65,16 @@
   font-size: 16px;
 }
 
-/* Evidenziazione valore (sfondo "pill") */
-.value-highlight-green {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
-  padding: 2px 3px;
-  border-radius: 3px;
-  display: inline-block;
-  text-align: right;
-}
-.value-highlight-red {
-  background: rgba(239, 68, 68, 0.12);
-  color: #dc2626;
-  padding: 2px 2px;
-  border-radius: 3px;
-  display: inline-block;
-  text-align: right;
-}
-.value-highlight {
-  background: rgba(255,255,255,0.04);
-  padding: 6px 10px;
-  border-radius: 8px;
-  display:inline-block;
-}
-
-/* Layout per KPI con valori multipli: riusa le classi value-highlight-* */
-.kpi-multi {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end; /* mantiene i valori multipli sul lato destro della riga */
-  align-items: center;
-}
-/* Uniforma dimensione e padding delle "pill" quando usate dentro .kpi-multi */
-.kpi-multi .value-highlight,
-.kpi-multi .value-highlight-red,
-.kpi-multi .value-highlight-green {
-  min-width: 10px;        /* larghezza minima per mantenere leggibilità */
-  text-align: center;
-  padding: 3px 3px;
-  border-radius: 3px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: help; /* mostra il cursore "help" quando si passa sopra */
-}
 
 /* Responsive: su schermi stretti impila i box */
 @media (max-width: 720px) {
-  .kpi-container {
-    flex-direction: column;
-  }
+
   .kpi-top {
     flex-direction: column;
     gap: 10px;
   }
   .top-kpi {
     width: 100%;
-  }
-  /* su mobile rendi le pill più compatte */
-  .kpi-multi .value-highlight,
-  .kpi-multi .value-highlight-red,
-  .kpi-multi .value-highlight-green {
-    min-width: 44px;
-    padding: 4px 8px;
-    font-size: 12px;
   }
 }
 

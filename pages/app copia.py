@@ -569,72 +569,6 @@ top_html = f"""
 """
 #st.markdown(top_html, unsafe_allow_html=True)
 
-# Lista dei KPI (label, value, optional color)
-kpi_rows = [
-    ("GAP - massimo", f"{filtered['GAP'].max():.0f}%", "green"),
-    ("GAP - mediana", f"{gap_median:.0f}%", None),
-    ("GAP medio", (f"{gap_red:.0f}%", f"{gap_green:.0f}%", f"{gap_mean:.0f}%"), "multi"),
-    ("Open / PMH medio", (f"{filtered['%Open_PMH'].mean():.0f}%", f"{open_pmh_green:.0f}%", f"{open_pmh_red:.0f}%"), "multi"),
-    ("Open / PMH mediana", f"{filtered['%Open_PMH'].median():.0f}%", None),
-    ("Float medio", f"{filtered['Float'].mean():,.0f}", None),
-    ("Market Cap medio", f"{filtered['Market Cap'].mean() / 1_000_000:.0f}M", None),
-    ("Spinta media",(f"{filtered['%OH'].mean():.0f}%", f"{spinta_green:.0f}%", f"{spinta_red:.0f}%"), "multi"),
-    ("Minimo medio",(f"{filtered['%OL'].mean():.0f}%", f"{low_green:.0f}%", f"{low_red:.0f}%"), "multi"),
-    ("Break medio", (f"{filtered['break'].mean() * 100:.0f}%",f"{pmbreak_green:.0f}%", f"{pmbreak_red:.0f}%"), "multi"),
-    ("Orario High medio",(f"{media_orario_high}", f"{mediaorario_green}", f"{mediaorario_red}"), "multi"),
-]
-
-
-# Divido i KPI in due colonne/box
-n = len(kpi_rows)
-mid = (n + 1) // 2
-left_rows = kpi_rows[:mid]
-right_rows = kpi_rows[mid:]
-
-# Funzione render che supporta anche valori multipli (tuple/list) e riusa le classi value-highlight-*
-def render_rows_html(rows):
-    html = ""
-    for label, value, color in rows:
-        if isinstance(value, (list, tuple)):
-            # ordina: (red, green, totale)
-            red_val, green_val, total_val = value
-            # testi dei tooltip (personalizzali a piacere)
-            red_title = "Valore sui record con chiusura RED"
-            green_title = "Valore sui record con chiusura GREEN"
-            total_title = "Valoer su tutti i record filtrati"
-            value_html = (
-                "<div class='kpi-multi'>"
-                f"<span class='value-highlight-red' title='{red_title}'>{red_val}</span>"
-                f"<span class='value-highlight-green' title='{green_title}'>{green_val}</span>"
-                f"<span class='value-highlight' title='{total_title}'>{total_val}</span>"
-                "</div>"
-            )
-        else:
-            highlight_cls = "value-highlight-green" if color == "green" else ("value-highlight-red" if color == "red" else "")
-            if highlight_cls:
-                value_html = f"<span class='{highlight_cls}'>{value}</span>"
-            else:
-                value_html = f"{value}"
-        html += f"<div class='kpi-row'><div class='kpi-label'>{label}</div><div class='kpi-value'>{value_html}</div></div>"
-    return html
-
-left_html = render_rows_html(left_rows)
-right_html = render_rows_html(right_rows)
-
-container_html = f"""
-<div class='kpi-container'>
-  <div class='kpi-box left'>
-    {left_html}
-  </div>
-  <div class='kpi-box right'>
-    {right_html}
-  </div>
-</div>
-"""
-
-#st.markdown(container_html, unsafe_allow_html=True)
-
-
 # Creo due colonne principali: sinistra KPI, destra grafico
 col_kpi, col_chart = st.columns([3, 2])  # proporzione: KPI 2/5, grafico 3/5
 
@@ -643,12 +577,6 @@ with col_kpi:
 
     # Top box (totale, chiusure RED, GAP medio)
     st.markdown(top_html, unsafe_allow_html=True)
-
-    # Lista dettagliata dei KPI
-    st.markdown(container_html, unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.caption("🔬 Test nuova card")
 
     # 1️⃣ Lista KPI
     kpi_list = [
