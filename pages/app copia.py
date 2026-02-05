@@ -407,15 +407,18 @@ def kpi_card_textual(title,mean, red, green, suffix="%"):
     delta_color = "#2ecc71" if delta > 0 else ("#e74c3c" if delta < 0 else "#f1c40f")
 
     html = f"""<div class="kpi-card">
-    <div class="kpi-title">{title}</div>
-    <div class="kpi-split">
-        <span class="mean">⚪ {mean:.1f}{suffix}</span>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <div class="kpi-title">{title}</div>
+        <div class="total-value" style="font-size:20px; font-weight:600">{total:.1f}{suffix}</div>
+    </div>
+    <div class="kpi-split" style="font-size:16px;">
         <span class="red">🔴 {red:.1f}{suffix}</span>
         <span class="green">🟢 {green:.1f}{suffix}</span>
     </div>
-    <div class="kpi-delta" style="color:{delta_color}">Δ {delta_sign}{delta:.1f}{suffix}</div>
+    <div class="kpi-delta" style="color:{delta_color}; font-weight:600; margin-top:4px;">
+    Δ {delta_sign}{delta:.1f}{suffix}
+    </div>
     </div>"""
-
     st.markdown(html, unsafe_allow_html=True)
 
 # endregion
