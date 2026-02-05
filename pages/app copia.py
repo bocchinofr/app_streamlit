@@ -406,19 +406,21 @@ def kpi_card_textual(title,total, red, green, suffix="%"):
     delta_sign = "+" if delta > 0 else ""
     delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
 
-    html = f"""<div class="kpi-card" style="padding:10px; margin-bottom:10px; background-color:#1e1e1e; border-radius:8px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <div style="font-size:16px; font-weight:600;">{title}</div>
-        <div style="font-size:20px; font-weight:700;">{total:.1f}{suffix}</div>
+    html = f"""
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <div class="kpi-title">{title}</div>
+            <div class="kpi-total">{total:.1f}{suffix}</div>
+        </div>
+        <div class="kpi-split">
+            <div class="red">Red: {red:.1f}{suffix}</div>
+            <div class="green">Green: {green:.1f}{suffix}</div>
+        </div>
+        <div class="kpi-delta" style="color:{delta_color};">
+            Δ {delta_sign}{delta:.1f}{suffix}
+        </div>
     </div>
-    <div style="display:flex; justify-content:space-between; font-size:16px; margin-bottom:4px; font-weight:600;">
-        <div style="color:#e74c3c;">Red: {red:.1f}{suffix}</div>
-        <div style="color:#2ecc71;">Green: {green:.1f}{suffix}</div>
-    </div>
-    <div style="font-weight:600; color:{delta_color}; font-size:14px;">
-    Δ {delta_sign}{delta:.1f}{suffix}
-    </div>
-    </div>"""
+    """
 
     st.markdown(html, unsafe_allow_html=True)
 
