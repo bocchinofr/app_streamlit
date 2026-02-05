@@ -416,12 +416,10 @@ def kpi_card_textual(title, red, green, suffix="%"):
     html = f"""
     <div class="kpi-card">
         <div class="kpi-title">{title}</div>
-
         <div class="kpi-split">
             <span class="red">🔴 {red:.1f}{suffix}</span>
             <span class="green">🟢 {green:.1f}{suffix}</span>
         </div>
-
         <div class="kpi-delta" style="color:{delta_color}">
             Δ {delta_sign}{delta:.1f}{suffix}
         </div>
