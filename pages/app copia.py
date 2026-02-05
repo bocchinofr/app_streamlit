@@ -21,7 +21,6 @@ def local_css(file_name):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 local_css("theme.css")
-st.markdown("<style>body{background:red !important;}</style>", unsafe_allow_html=True)
 
 
 # -------------------------------------------------
