@@ -148,32 +148,50 @@
   }
 }
 
-.kpi-card{
-    background:#111;
-    padding:18px;
-    border-radius:14px;
-    box-shadow:0 0 12px rgba(0,0,0,.45);
-    max-width:320px;
+
+
+.kpi-card {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    font-family: "Arial", sans-serif;
 }
 
-.kpi-title{
-    font-size:14px;
-    opacity:.7;
-    margin-bottom:6px;
+.kpi-card .kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
 }
 
-.kpi-split{
-    display:flex;
-    justify-content:space-between;
-    font-size:22px;
-    font-weight:600;
+.kpi-card .kpi-title {
+    font-size: 16px;
+    font-weight: 600;
 }
 
-.green{ color:#2ecc71; }
-.red{ color:#e74c3c; }
+.kpi-card .kpi-total {
+    font-size: 20px;
+    font-weight: 700;
+}
 
-.kpi-delta{
-    margin-top:6px;
-    font-size:14px;
-    font-weight:600;
+.kpi-card .kpi-split {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.kpi-card .red {
+    color: #e74c3c;
+}
+
+.kpi-card .green {
+    color: #2ecc71;
+}
+
+.kpi-card .kpi-delta {
+    font-weight: 600;
+    font-size: 14px;
 }
