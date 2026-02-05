@@ -401,6 +401,17 @@ filtered = filtered[
 # -------------------------------
 
 def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
+    # delta solo se numerico e show_delta=True
+    try:
+        delta = float(red) - float(green) if show_delta else 0
+        delta_sign = "+" if delta > 0 else ""
+        # usa solo le classi CSS già presenti
+        delta_cls = "green" if delta < 0 else "red"
+    except (ValueError, TypeError):
+        delta_html = '<div class="kpi-delta">&nbsp;</div>'
+        delta = None
+        delta_cls = "red"
+
     # formattazione valori
     def fmt(x):
         try:
@@ -408,19 +419,7 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
         except (ValueError, TypeError):
             return str(x)
 
-    # delta solo se show_delta=True e valori numerici
-    delta_html = ""
-    if show_delta:
-        try:
-            delta = float(red) - float(green)
-            delta_sign = "+" if delta > 0 else ""
-            delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
-            delta_html = f'<div class="kpi-delta" style="color:{delta_color};">Δ {delta_sign}{delta:.1f}{suffix}</div>'
-        except (ValueError, TypeError):
-            delta_html = '<div class="kpi-delta">&nbsp;</div>'  # div vuoto ma mantiene spazio
-    else:
-        delta_html = '<div class="kpi-delta">&nbsp;</div>'      # div vuoto, invisibile ma occupa altezza
-
+    delta_html = f'<div class="kpi-delta {delta_cls}">Δ {delta_sign}{fmt(delta)}{suffix}</div>' if show_delta and delta is not None else '<div class="kpi-delta">&nbsp;</div>'
 
     html = f"""
     <div class="kpi-card">
