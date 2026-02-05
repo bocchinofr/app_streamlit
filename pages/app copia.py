@@ -633,6 +633,7 @@ with col_kpi:
 
     kpi_card_textual(
         title="GAP Medio",
+        total= gap_mean,
         red=gap_red,
         green=gap_green
     )
