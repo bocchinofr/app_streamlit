@@ -401,22 +401,23 @@ filtered = filtered[
 # -------------------------------
 
 def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
-    # delta solo se numerico e show_delta=True
-    try:
-        delta = float(red) - float(green) if show_delta else 0
-        delta_sign = "+" if delta > 0 else ""
-        delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
-        delta_html = f'<div class="kpi-delta" style="color:{delta_color};">Δ {delta_sign}{delta:.1f}{suffix}</div>'
-
-    except (ValueError, TypeError):
-        delta_html = ""
-
     # formattazione valori
     def fmt(x):
         try:
             return f"{x:.1f}"
         except (ValueError, TypeError):
             return str(x)
+
+    # delta solo se show_delta=True e valori numerici
+    delta_html = ""
+    if show_delta:
+        try:
+            delta = float(red) - float(green)
+            delta_sign = "+" if delta > 0 else ""
+            delta_color = "#2ecc71" if delta < 0 else ("#e74c3c" if delta > 0 else "#f1c40f")
+            delta_html = f'<div class="kpi-delta" style="color:{delta_color};">Δ {delta_sign}{delta:.1f}{suffix}</div>'
+        except (ValueError, TypeError):
+            delta_html = ""
 
     html = f"""
     <div class="kpi-card">
@@ -427,7 +428,6 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
         <div class="kpi-split">
             <div class="red">Red: {fmt(red)}{suffix}</div>
             <div class="green">Green: {fmt(green)}{suffix}</div>
-        </div>
         </div>
         {delta_html}
     </div>
