@@ -433,10 +433,7 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     """
 
     st.markdown(html, unsafe_allow_html=True)
-
-
-    st.markdown(html, unsafe_allow_html=True)
-
+    
 # endregion
 
 # -------------------------------------------------
