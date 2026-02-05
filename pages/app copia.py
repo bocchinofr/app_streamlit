@@ -400,7 +400,7 @@ filtered = filtered[
 # region KPI CARD TESTUALE
 # -------------------------------
 
-def kpi_card_textual(title,total, red, green, suffix, show_delta=True):
+def kpi_card_textual(title,total, red, green, suffix, show_delta):
     delta = red - green if show_delta else 0
 
     delta_sign = "+" if delta > 0 else ""
