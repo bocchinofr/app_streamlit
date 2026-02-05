@@ -637,13 +637,30 @@ with col_kpi:
     st.markdown("---")
     st.caption("🔬 Test nuova card")
 
-    kpi_card_textual(
-        title="GAP Medio",
-        total= gap_mean,
-        red=gap_red,
-        green=gap_green
-    )
+    # 1️⃣ Lista KPI
+    kpi_list = [
+        {"title": "GAP Medio", "total": gap_mean, "red": gap_red, "green": gap_green, "suffix": "%"},
+        {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
+        {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
+        {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
+        {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
+        {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": ""}
+    ]
 
+    # 2️⃣ Creo 2 colonne
+    col1, col2 = st.columns(2)
+
+    # 3️⃣ Ciclo e metto le card nelle colonne
+    for i, kpi in enumerate(kpi_list):
+        col = col1 if i % 2 == 0 else col2  # alterna le colonne
+        with col:
+            kpi_card_textual(
+                title=kpi["title"],
+                total=kpi["total"],
+                red=kpi["red"],
+                green=kpi["green"],
+                suffix=kpi.get("suffix", "%")
+            )
 
 with col_chart:
     # --- Sezione grafico Close vs Open ---
