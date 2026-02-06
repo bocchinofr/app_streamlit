@@ -697,6 +697,19 @@ filtered_sorted = filtered_sorted[
     [c for c in display_columns if c in filtered_sorted.columns]
 ]
 
+
+column_rename = {
+    "%Open_PMH": "O→PMH %",
+    "%OH": "Open → High %",
+    "%OL": "Open → Low %",
+    "break": "Break %",
+    "Shared Outstanding": "Shares Out.",
+}
+
+filtered_sorted = filtered_sorted.rename(columns=column_rename)
+
+
+
 if "Chiusura" in filtered_sorted.columns:
     filtered_sorted["Chiusura"] = filtered_sorted["Chiusura"].replace({
         "RED": "🔴 RED",
