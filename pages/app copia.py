@@ -669,15 +669,6 @@ with col_chart:
 
 
 
-
-
-
-
-
-
-
-
-
 # endregion
 
 # -------------------------------------------------
@@ -686,9 +677,23 @@ with col_chart:
 
 st.markdown('<h3 style="font-size:16px; color:#FFFFFF;">📋 Tabella di dettaglio</h3>', unsafe_allow_html=True)
 
-cols_to_drop = [c for c in filtered.columns if "high_v1" in c.lower()]
-if cols_to_drop:
-    filtered = filtered.drop(columns=cols_to_drop)
+display_columns = [
+    "Date",
+    "Ticker",
+    "Float",
+    "Market Cap",
+    "Shared Outstanding",
+    "Volume",
+    "Chiusura",
+    "%Open_PMH",
+    "%OH",
+    "%OL",
+    "break"
+]
+
+filtered_sorted = filtered_sorted[
+    [c for c in display_columns if c in filtered_sorted.columns]
+]
 
 filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
 
