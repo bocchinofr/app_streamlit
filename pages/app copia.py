@@ -768,13 +768,12 @@ for col in percent_cols_display:
         )
 
 
+display_df = filtered_sorted.copy()
+
+
 display_df[percent_cols_display] = display_df[percent_cols_display].apply(
     lambda col: col.str.replace(r"\.0+$", "", regex=True)
 )
-
-
-display_df = filtered_sorted.copy()
-
 
 
 for col in display_df.columns:
