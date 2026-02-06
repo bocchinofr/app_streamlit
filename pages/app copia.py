@@ -733,25 +733,23 @@ if "Market Cap" in filtered_sorted.columns:
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
     "%OH_30m", "%OL_30m",
-    "%OH_1h", "%OL_1h"
+    "%OH_1h", "%OL_1h",
+    "break"
 ]
 
 for col in percent_cols_display:
     if col in filtered_sorted.columns:
-        filtered_sorted[col] = pd.to_numeric(
-            filtered_sorted[col]
-                .astype(str)
-                .str.replace("%", "")
-                .str.replace(",", ".")   # <<< AGGIUNTO!
-                .str.strip(),
-            errors="coerce"
-        )
-
-
-for col in percent_cols_display:
-    if col in filtered_sorted.columns:
-        filtered_sorted[col] = filtered_sorted[col].apply(
-            lambda x: f"{x:.0f}" if pd.notna(x) else "-"
+        filtered_sorted[col] = (
+            pd.to_numeric(
+                filtered_sorted[col]
+                    .astype(str)
+                    .str.replace("%", "")
+                    .str.replace(",", ".")
+                    .str.strip(),
+                errors="coerce"
+            )
+            .round(0)
+            .astype("Int64")
         )
 
 
