@@ -682,9 +682,9 @@ display_columns = [
     "Ticker",
     "Float",
     "Market Cap",
-    "Shared Outstanding",
+    "Shares Outstanding",
     "Volume",
-    "Volume PM"
+    "Volume PM",
     "Chiusura",
     "%Open_PMH",
     "%OH",
@@ -704,7 +704,7 @@ column_rename = {
     "%Open_PMH": "O_PMH %",
     "%OH": "O_High %",
     "%OL": "O_Low %",
-    "Shared Outstanding": "Shares Out.",
+    "Shares Outstanding": "Shares Out.",
 }
 
 filtered_sorted = filtered_sorted.rename(columns=column_rename)
