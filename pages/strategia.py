@@ -308,36 +308,41 @@ def compute_outcomes(df, mode="90 minuti"):
         sl_price = row["SL_price"]
         tp_price = row["TP_price"]
 
+        # Flag per sapere se abbiamo già chiuso
+        closed = False
+
         for tf, high_col, low_col in tf_list:
-            # Considera solo timeframe successivi all'entry o il close finale
-            if row["entry_bucket"] is not None:
-                if tf != "close" and isinstance(tf, int) and tf <= row["entry_bucket"]:
-                    continue
+            # Considera solo timeframe successivi all'entry o close finale
+            if tf != "close" and isinstance(tf, int) and tf <= row["entry_bucket"]:
+                continue
 
             high = row.get(high_col, np.nan)
             low = row.get(low_col, np.nan)
 
+            # TP prima dello SL
             if pd.notna(low) and low <= tp_price:
                 df.at[idx, "TP"] = 1
                 df.at[idx, "Outcome"] = "TP"
-                break
+                closed = True
+                break  # chiusura effettuata
 
             if pd.notna(high) and high >= sl_price:
                 df.at[idx, "SL"] = 1
                 df.at[idx, "Outcome"] = "SL"
+                closed = True
                 break
 
-        # calcolo performance %
-        if df.at[idx, "TP"] == 1:
-            exit_price = tp_price
-        elif df.at[idx, "SL"] == 1:
-            exit_price = sl_price
-        else:
-            # Se non tocca TP/SL, prendiamo Close 90m o Entry
+        # Se non chiuso, consideriamo Close_90m
+        if not closed:
             exit_price = row.get("Close_90m", entry)
-        df.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
+            df.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
+        else:
+            # Se chiuso per TP o SL
+            exit_price = tp_price if df.at[idx, "TP"] == 1 else sl_price
+            df.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
 
     return df
+
 
 filtered = compute_entry_bucket(filtered, mode="90 minuti")
 filtered = compute_outcomes(filtered, mode="90 minuti")
