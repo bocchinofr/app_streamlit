@@ -719,8 +719,8 @@ if "Chiusura" in filtered_sorted.columns:
 
 if "break" in filtered_sorted.columns:
     filtered_sorted["break"] = filtered_sorted["break"].replace({
-        "1": "🟢",
-        "0": ""
+        1: "🟢",
+        0: ""
     })
 
 def to_millions(x):
