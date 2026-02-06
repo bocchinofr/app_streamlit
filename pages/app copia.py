@@ -748,7 +748,7 @@ if "Volume PM" in filtered_sorted.columns:
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
-    "%Open_PMH", "O_High %", "%OL",
+    "O_PMH %", "O_High %", "O_Low %",
     "%OH_30m", "%OL_30m",
     "%OH_1h", "%OL_1h"]
 
