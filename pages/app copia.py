@@ -717,7 +717,7 @@ if "Chiusura" in filtered_sorted.columns:
 
 def to_millions(x):
     try:
-        return f"{x/1_000_000:.2f} M"
+        return f"{x/1_000_000:.1f} M"
     except:
         return "-"
 
