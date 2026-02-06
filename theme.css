@@ -130,3 +130,13 @@
     font-weight: 600;
     font-size: 15px;
 }
+
+
+/* --------------------------
+  Allineamento celle tabella 
+  ---------------------------*/
+  
+div[data-testid="stDataFrame"] table td,
+div[data-testid="stDataFrame"] table th {
+    text-align: left !important;
+}

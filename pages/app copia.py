@@ -684,10 +684,12 @@ display_columns = [
     "Market Cap",
     "Shared Outstanding",
     "Volume",
+    "Volume PM"
     "Chiusura",
     "%Open_PMH",
     "%OH",
     "%OL",
+    "Orario High",
     "break"
 ]
 
