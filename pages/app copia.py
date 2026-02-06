@@ -699,10 +699,9 @@ filtered_sorted = filtered_sorted[
 
 
 column_rename = {
-    "%Open_PMH": "O→PMH %",
-    "%OH": "Open → High %",
-    "%OL": "Open → Low %",
-    "break": "Break %",
+    "%Open_PMH": "O_PMH %",
+    "%OH": "O_High %",
+    "%OL": "O_Low %",
     "Shared Outstanding": "Shares Out.",
 }
 
