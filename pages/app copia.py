@@ -758,25 +758,7 @@ for col in percent_cols_display:
         )
 
 
-# colonne percentuali già pulite
-for col in percent_cols_display:
-    if col in filtered_sorted.columns:
-        filtered_sorted[col] = filtered_sorted[col].round(0)
-
-# altre colonne float generiche
-float_cols = filtered_sorted.select_dtypes(include=["float", "float64"]).columns
-
-for col in float_cols:
-    filtered_sorted[col] = filtered_sorted[col].round(2)
-
-
-styled_df = filtered_sorted.style.set_properties(**{
-    "text-align": "left"
-})
-
-st.dataframe(styled_df, use_container_width=True)
-
-#st.dataframe(filtered_sorted, use_container_width=True)
+st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
 
 
