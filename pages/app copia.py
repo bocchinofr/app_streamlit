@@ -748,20 +748,7 @@ percent_cols_display = [
     "%OH_30m", "%OL_30m",
     "%OH_1h", "%OL_1h"]
 
-for col in percent_cols_display:
-    if col in filtered_sorted.columns:
-        filtered_sorted[col] = (
-            pd.to_numeric(
-                filtered_sorted[col]
-                    .astype(str)
-                    .str.replace("%", "")
-                    .str.replace(",", ".")
-                    .str.strip(),
-                errors="coerce"
-            )
-            .round(0)
-            .astype("Int64")
-        )
+
 for col in percent_cols_display:
     if col in filtered_sorted.columns:
         filtered_sorted[col] = filtered_sorted[col].apply(
