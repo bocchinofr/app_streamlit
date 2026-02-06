@@ -762,8 +762,12 @@ styled_df = filtered_sorted.style.set_properties(**{
     "text-align": "left"
 })
 
+st.markdown(
+    "<div style='height:400px; overflow:auto;'>",
+    unsafe_allow_html=True
+)
 st.table(styled_df)
-
+st.markdown("</div>", unsafe_allow_html=True)
 
 #st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
