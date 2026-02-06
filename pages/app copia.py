@@ -741,9 +741,7 @@ st.write(filtered_sorted["break"].unique())
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
     "%OH_30m", "%OL_30m",
-    "%OH_1h", "%OL_1h",
-    "break"
-]
+    "%OH_1h", "%OL_1h"]
 
 for col in percent_cols_display:
     if col in filtered_sorted.columns:
