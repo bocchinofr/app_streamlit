@@ -734,6 +734,7 @@ if "Shared Outstanding" in filtered_sorted.columns:
 if "Market Cap" in filtered_sorted.columns:
     filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
 
+st.write(filtered_sorted["break"].unique())
 
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
