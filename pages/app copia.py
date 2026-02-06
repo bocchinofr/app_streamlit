@@ -720,7 +720,7 @@ if "Chiusura" in filtered_sorted.columns:
 if "break" in filtered_sorted.columns:
     filtered_sorted["break"] = pd.to_numeric(
         filtered_sorted["break"], errors="coerce"
-    ).apply(lambda x: "🟢" if x == 1 else "")
+    ).apply(lambda x: "✅" if x == 1 else "")
 
 def to_millions(x):
     try:
@@ -734,7 +734,6 @@ if "Shared Outstanding" in filtered_sorted.columns:
 if "Market Cap" in filtered_sorted.columns:
     filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
 
-st.write(filtered_sorted["break"].unique())
 
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
