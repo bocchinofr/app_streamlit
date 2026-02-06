@@ -762,7 +762,11 @@ for col in percent_cols_display:
             .round(0)
             .astype("Int64")
         )
-
+for col in percent_cols_display:
+    if col in filtered_sorted.columns:
+        filtered_sorted[col] = filtered_sorted[col].apply(
+            lambda x: str(int(float(x))) if x not in ["-", "nan", "None"] else "-"
+        )
 
 
 display_df = filtered_sorted.copy()
