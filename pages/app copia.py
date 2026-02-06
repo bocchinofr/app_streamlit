@@ -724,6 +724,8 @@ if "break" in filtered_sorted.columns:
 
 def to_millions(x):
     try:
+        x = str(x).replace(".", "").replace(",", ".")
+        x = float(x)
         return f"{x/1_000_000:.1f} M"
     except:
         return "-"
@@ -736,6 +738,9 @@ if "Market Cap" in filtered_sorted.columns:
 
 if "Float" in filtered_sorted.columns:
     filtered_sorted["Float"] = filtered_sorted["Float"].apply(to_millions)
+
+if "Volume" in filtered_sorted.columns:
+    filtered_sorted["Volume"] = filtered_sorted["Volume"].apply(to_millions)
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
