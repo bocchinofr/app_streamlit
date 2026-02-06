@@ -747,35 +747,17 @@ if "Volume PM" in filtered_sorted.columns:
 
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
-# --- Percentuali senza simbolo e senza decimali ---
-percent_cols_display = [
-    "%Open_PMH", "%OH", "%OL",
-    "%OH_30m", "%OL_30m",
-    "%OH_1h", "%OL_1h"
-]
+
+
 
 display_df = filtered_sorted.copy()
-
-existing_percent_cols = [col for col in percent_cols_display if col in display_df.columns]
-
-for col in existing_percent_cols:
-    # converti in numero, poi in stringa senza decimali
-    display_df[col] = pd.to_numeric(
-        display_df[col].astype(str).str.replace("%","").str.replace(",", ".").str.strip(),
-        errors="coerce"
-    ).apply(lambda x: str(int(round(0))) if pd.notna(x) else "-")
 
 
 for col in display_df.columns:
     display_df[col] = display_df[col].astype(str)
 
 
-st.dataframe(
-    display_df,
-    use_container_width=True,
-    # formatta solo le colonne percentuali come stringa senza decimali
-    formatters={col: lambda x: f"{int(x) if pd.notna(x) else '-'}" for col in existing_percent_cols}
-)
+st.dataframe(display_df, use_container_width=True)
 
 st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
