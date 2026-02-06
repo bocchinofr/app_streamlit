@@ -747,36 +747,24 @@ if "Volume PM" in filtered_sorted.columns:
 
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
+# --- Percentuali senza simbolo e senza decimali ---
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
     "%OH_30m", "%OL_30m",
-    "%OH_1h", "%OL_1h"]
-
-for col in percent_cols_display:
-    if col in filtered_sorted.columns:
-        filtered_sorted[col] = (
-            pd.to_numeric(
-                filtered_sorted[col]
-                    .astype(str)
-                    .str.replace("%", "")
-                    .str.replace(",", ".")
-                    .str.strip(),
-                errors="coerce"
-            )
-            .round(0)
-            .astype("Int64")
-        )
-
+    "%OH_1h", "%OL_1h"
+]
 
 display_df = filtered_sorted.copy()
 
-# prendi solo le colonne che esistono davvero
 existing_percent_cols = [col for col in percent_cols_display if col in display_df.columns]
 
-# poi applica la sostituzione
-display_df[existing_percent_cols] = display_df[existing_percent_cols].apply(
-    lambda col: col.str.replace(r"\.0+$", "", regex=True)
-)
+for col in existing_percent_cols:
+    # converti in numero, poi in stringa senza decimali
+    display_df[col] = pd.to_numeric(
+        display_df[col].astype(str).str.replace("%","").str.replace(",", ".").str.strip(),
+        errors="coerce"
+    ).apply(lambda x: str(int(round(x))) if pd.notna(x) else "-")
+
 
 for col in display_df.columns:
     display_df[col] = display_df[col].astype(str)
