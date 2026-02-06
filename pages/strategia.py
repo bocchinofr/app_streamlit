@@ -338,7 +338,7 @@ else:
         (30, "High_30m", "Low_30m"),
         (45, "High_45m", "Low_45m"),
         (60, "High_60m", "Low_60m"),
-        (90, "High_90m", "Low_90m")
+        (90, "High_90m", "Low_90m"),
         (120, "High_120m", "Low_120m"),
         (240, "High_240m", "Low_240m"),
         ("close", "High", "Low")
