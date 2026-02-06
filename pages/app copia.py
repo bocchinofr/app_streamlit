@@ -717,6 +717,11 @@ if "Chiusura" in filtered_sorted.columns:
         "GREEN": "🟢 GREEN"
     })
 
+if "break" in filtered_sorted.columns:
+    filtered_sorted["break"] = filtered_sorted["break"].apply(
+        lambda x: "✅" if x == 1 else ""
+    )
+
 def to_millions(x):
     try:
         return f"{x/1_000_000:.1f} M"
