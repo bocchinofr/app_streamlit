@@ -135,8 +135,8 @@
 /* --------------------------
   Allineamento celle tabella 
   ---------------------------*/
-  
-div[data-testid="stDataFrame"] table td,
-div[data-testid="stDataFrame"] table th {
+
+/* FORCE left align su tutto il dataframe */
+div[data-testid="stDataFrame"] * {
     text-align: left !important;
 }
