@@ -728,8 +728,8 @@ def to_millions(x):
     except:
         return "-"
 
-if "Shared Outstanding" in filtered_sorted.columns:
-    filtered_sorted["Shared Outstanding"] = filtered_sorted["Shared Outstanding"].apply(to_millions)
+if "Shares Outstanding" in filtered_sorted.columns:
+    filtered_sorted["Shares Outstanding"] = filtered_sorted["Shares Outstanding"].apply(to_millions)
 
 if "Market Cap" in filtered_sorted.columns:
     filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
