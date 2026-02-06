@@ -763,7 +763,7 @@ for col in existing_percent_cols:
     display_df[col] = pd.to_numeric(
         display_df[col].astype(str).str.replace("%","").str.replace(",", ".").str.strip(),
         errors="coerce"
-    ).apply(lambda x: str(int(round(x))) if pd.notna(x) else "-")
+    ).apply(lambda x: str(int(round(0))) if pd.notna(x) else "-")
 
 
 for col in display_df.columns:
