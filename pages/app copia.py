@@ -758,7 +758,14 @@ for col in percent_cols_display:
         )
 
 
-st.dataframe(filtered_sorted, use_container_width=True)
+styled_df = filtered_sorted.style.set_properties(**{
+    "text-align": "left"
+})
+
+st.table(styled_df)
+
+
+#st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
 
 
