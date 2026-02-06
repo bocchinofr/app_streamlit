@@ -321,18 +321,18 @@ if mode == "90 minuti":
 
 else:
     # modalità fino a chiusura: aggiungiamo anche 30 minuti al primo timeframe
-timeframes = [
-    (1, "High_1m", "Low_1m"),
-    (5, "High_5m", "Low_5m"),
-    (15, "High_15m", "Low_15m"),  # NUOVO
-    (30, "High_30m", "Low_30m"),
-    (45, "High_45m", "Low_45m"),  # NUOVO
-    (60, "High_60m", "Low_60m"),
-    (90, "High_90m", "Low_90m"),
-    (120, "High_120m", "Low_120m"),
-    (240, "High_240m", "Low_240m"),
-    ("close", "High", "Low")
-]
+    timeframes = [
+        (1, "High_1m", "Low_1m"),
+        (5, "High_5m", "Low_5m"),
+        (15, "High_15m", "Low_15m"),  # NUOVO
+        (30, "High_30m", "Low_30m"),
+        (45, "High_45m", "Low_45m"),  # NUOVO
+        (60, "High_60m", "Low_60m"),
+        (90, "High_90m", "Low_90m"),
+        (120, "High_120m", "Low_120m"),
+        (240, "High_240m", "Low_240m"),
+        ("close", "High", "Low")
+    ]
 
 
     filtered["TP"] = 0
