@@ -748,7 +748,7 @@ if "Volume PM" in filtered_sorted.columns:
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
-    "%Open_PMH", "%OH", "%OL",
+    "%Open_PMH", "O_High %", "%OL",
     "%OH_30m", "%OL_30m",
     "%OH_1h", "%OL_1h"]
 
@@ -770,12 +770,11 @@ for col in percent_cols_display:
 
 display_df = filtered_sorted.copy()
 
-
 for col in display_df.columns:
     display_df[col] = display_df[col].astype(str)
 
-
 st.dataframe(display_df, use_container_width=True)
+
 
 st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
