@@ -748,7 +748,9 @@ if "Volume PM" in filtered_sorted.columns:
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
-    "O_PMH %", "O_High %", "O_Low %"]
+    "%Open_PMH", "%OH", "%OL",
+    "%OH_30m", "%OL_30m",
+    "%OH_1h", "%OL_1h"]
 
 for col in percent_cols_display:
     if col in filtered_sorted.columns:
@@ -767,11 +769,6 @@ for col in percent_cols_display:
 
 
 display_df = filtered_sorted.copy()
-
-
-display_df[percent_cols_display] = display_df[percent_cols_display].apply(
-    lambda col: col.str.replace(r"\.0+$", "", regex=True)
-)
 
 for col in display_df.columns:
     display_df[col] = display_df[col].astype(str)
