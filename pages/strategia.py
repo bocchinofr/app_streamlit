@@ -22,6 +22,17 @@ with col2:
         label_visibility="visible"
     )
 
+    # Valore di default
+    param_entry_tf = 60  # puoi cambiare tramite box Streamlit
+
+    # Esempio con Streamlit selectbox
+    param_entry_tf = st.selectbox(
+        "Seleziona timeframe per Entry",
+        options=[15, 30, 45, 60],
+        index=3  # default a 60 minuti
+    )
+
+
 # ---- CARICAMENTO DATI CON CACHE ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=xlsx"
 
@@ -236,7 +247,7 @@ filtered["SL_price"] = filtered["Open"] * (1 + param_sl/100)
 filtered["TP_price"] = filtered["Open"] * (1 + param_tp/100)
 filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 
-filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).astype(int)
+filtered["attivazione"] = (filtered[f"High_{param_entry_tf}m"] >= filtered["Entry_price"]).astype(int)
 
 # ---- ENTRY BUCKET (minimo timeframe in cui l'entry viene raggiunta) ----
 def get_entry_bucket(row):
