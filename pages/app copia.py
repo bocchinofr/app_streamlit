@@ -770,7 +770,12 @@ for col in display_df.columns:
     display_df[col] = display_df[col].astype(str)
 
 
-st.dataframe(display_df, use_container_width=True)
+st.dataframe(
+    display_df,
+    use_container_width=True,
+    # formatta solo le colonne percentuali come stringa senza decimali
+    formatters={col: lambda x: f"{int(x) if pd.notna(x) else '-'}" for col in existing_percent_cols}
+)
 
 st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
