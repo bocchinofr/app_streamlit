@@ -691,11 +691,11 @@ display_columns = [
     "break"
 ]
 
+filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
+
 filtered_sorted = filtered_sorted[
     [c for c in display_columns if c in filtered_sorted.columns]
 ]
-
-filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
 
 if "Chiusura" in filtered_sorted.columns:
     filtered_sorted["Chiusura"] = filtered_sorted["Chiusura"].replace({
