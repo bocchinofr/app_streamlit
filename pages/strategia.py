@@ -39,9 +39,9 @@ df = load_data()
 
 st.text("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar. \nSolo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
 
-
-# region Filtri
-# ---- FILTRI LATERALI ----
+#================================
+# region FILTRI LATERALI 
+#================================
 
 #st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
@@ -223,7 +223,16 @@ if selected_tickers:
 
 # endregion
 
-# region ---- CALCOLI ENTRY / SL / TP / ATTIVAZIONE ----
+
+# Ordina il dataframe filtrato per Date discendente
+filtered = filtered.sort_values(by="Date_dt", ascending=False)
+
+
+
+# ================================================
+# region CALCOLI ENTRY / SL / TP / ATTIVAZIONE 
+# ================================================
+
 filtered["SL_price"] = filtered["Open"] * (1 + param_sl/100)
 filtered["TP_price"] = filtered["Open"] * (1 + param_tp/100)
 filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
