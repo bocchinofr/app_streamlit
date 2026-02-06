@@ -337,6 +337,9 @@ def compute_outcomes(df, mode="90 minuti"):
     return df
 
 
+filtered = compute_entry_bucket(filtered, mode="90 minuti")
+filtered = compute_outcomes(filtered, mode="90 minuti")
+
 
 # Coerenza finale
 filtered.loc[filtered["SL"] == 1, "TP"] = 0
