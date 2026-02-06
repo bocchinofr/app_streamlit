@@ -239,19 +239,27 @@ filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).astype(int)
 
 # ---- ENTRY BUCKET (minimo timeframe in cui l'entry viene raggiunta) ----
-def get_entry_bucket(row, timeframes):
-    """
-    Restituisce il minimo timeframe in cui l'entry viene raggiunta.
-    Ignora i valori nulli.
-    
-    row: riga del dataframe
-    timeframes: lista di tuple (tf, high_col, low_col)
-    """
-    for tf, high_col, _ in timeframes:
-        high = row.get(high_col, np.nan)
-        if pd.notna(high) and high >= row["Entry_price"]:
-            return tf
-    return None
+def get_entry_bucket(row):
+    if row.get("High_1m", -np.inf) >= row["Entry_price"]:
+        return 1
+    elif row.get("High_5m", -np.inf) >= row["Entry_price"]:
+        return 5
+    elif row.get("High_15m", -np.inf) >= row["Entry_price"]:  # NUOVO
+        return 15
+    elif row.get("High_30m", -np.inf) >= row["Entry_price"]:
+        return 30
+    elif row.get("High_45m", -np.inf) >= row["Entry_price"]:  # NUOVO
+        return 45
+    elif row.get("High_60m", -np.inf) >= row["Entry_price"]:
+        return 60
+    elif row.get("High_90m", -np.inf) >= row["Entry_price"]:
+        return 90
+    elif row.get("High_120m", -np.inf) >= row["Entry_price"]:
+        return 120
+    elif row.get("High_240m", -np.inf) >= row["Entry_price"]:
+        return 240
+    else:
+        return None
 
 
 filtered["entry_bucket"] = filtered.apply(get_entry_bucket, axis=1)
