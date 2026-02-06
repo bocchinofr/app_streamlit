@@ -27,16 +27,13 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5
 
 @st.cache_data
 def load_data():
-    usecols = [
-        "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
-        "Close_60m", "High_1m","High_5m","Low_1m","Low_5m","High_60m", "Low_60m", "High_90m", "Low_90m", "Close_90m", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
-        "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m", "Market Cap"
-    ]
-    df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday", usecols=usecols)
+    # Carica tutte le colonne automaticamente
+    df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday")
     # Parse date
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.date
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.strftime("%d-%m-%Y")
     return df
+
 
 df = load_data()
 
