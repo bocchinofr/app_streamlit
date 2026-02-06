@@ -309,9 +309,10 @@ def compute_outcomes(df, mode="90 minuti"):
         tp_price = row["TP_price"]
 
         for tf, high_col, low_col in tf_list:
-            # Ignora timeframe prima dell'entry_bucket
-            if tf != "close" and tf <= row["entry_bucket"]:
-                continue
+            # Considera solo timeframe successivi all'entry o il close finale
+            if row["entry_bucket"] is not None:
+                if tf != "close" and isinstance(tf, int) and tf <= row["entry_bucket"]:
+                    continue
 
             high = row.get(high_col, np.nan)
             low = row.get(low_col, np.nan)
