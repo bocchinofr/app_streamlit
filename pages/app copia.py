@@ -766,7 +766,7 @@ for col in display_df.columns:
 
 st.dataframe(display_df, use_container_width=True)
 
-#st.dataframe(filtered_sorted, use_container_width=True)
+st.dataframe(filtered_sorted, use_container_width=True)
 st.caption(f"Sto mostrando {len(filtered_sorted)} record filtrati su {len(df)} totali.")
 
 
