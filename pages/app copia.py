@@ -737,9 +737,6 @@ if "Market Cap" in filtered_sorted.columns:
 if "Float" in filtered_sorted.columns:
     filtered_sorted["Float"] = filtered_sorted["Float"].apply(to_millions)
 
-if "Volume PM" in filtered_sorted.columns:
-    filtered_sorted["Volume PM"] = filtered_sorted["Volume PM"].apply(to_millions)
-
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
