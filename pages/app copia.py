@@ -734,7 +734,11 @@ if "Shares Out." in filtered_sorted.columns:
 if "Market Cap" in filtered_sorted.columns:
     filtered_sorted["Market Cap"] = filtered_sorted["Market Cap"].apply(to_millions)
 
+if "Volume" in filtered_sorted.columns:
+    filtered_sorted["Volume"] = filtered_sorted["Volume"].apply(to_millions)
 
+if "Volume PM" in filtered_sorted.columns:
+    filtered_sorted["Volume PM"] = filtered_sorted["Volume PM"].apply(to_millions)
 
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
