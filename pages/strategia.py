@@ -238,39 +238,14 @@ filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 
 filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).astype(int)
 
-# -----------------------------
-# Lista degli intervalli
-# -----------------------------
-timeframes_90m = [
-    (1, "High_1m", "Low_1m"),
-    (5, "High_5m", "Low_5m"),
-    (15, "High_15m", "Low_15m"),  # nuovo
-    (30, "High_30m", "Low_30m"),
-    (45, "High_45m", "Low_45m"),  # nuovo
-    (60, "High_60m", "Low_60m"),
-    (90, "High_90m", "Low_90m")
-]
-
-timeframes_full = [
-    (1, "High_1m", "Low_1m"),
-    (5, "High_5m", "Low_5m"),
-    (15, "High_15m", "Low_15m"),
-    (30, "High_30m", "Low_30m"),
-    (45, "High_45m", "Low_45m"),
-    (60, "High_60m", "Low_60m"),
-    (90, "High_90m", "Low_90m"),
-    (120, "High_120m", "Low_120m"),
-    (240, "High_240m", "Low_240m"),
-    ("close", "High", "Low")
-]
-
-# -----------------------------
-# Funzione per entry bucket
-# -----------------------------
+# ---- ENTRY BUCKET (minimo timeframe in cui l'entry viene raggiunta) ----
 def get_entry_bucket(row, timeframes):
     """
-    Restituisce il primo timeframe in cui l'entry viene raggiunta.
-    Ignora valori nulli.
+    Restituisce il minimo timeframe in cui l'entry viene raggiunta.
+    Ignora i valori nulli.
+    
+    row: riga del dataframe
+    timeframes: lista di tuple (tf, high_col, low_col)
     """
     for tf, high_col, _ in timeframes:
         high = row.get(high_col, np.nan)
@@ -278,67 +253,123 @@ def get_entry_bucket(row, timeframes):
             return tf
     return None
 
-# -----------------------------
-# Calcolo entry bucket
-# -----------------------------
-def compute_entry_bucket(df, mode="90 minuti"):
-    tf_list = timeframes_90m if mode=="90 minuti" else timeframes_full
-    df["entry_bucket"] = df.apply(lambda r: get_entry_bucket(r, tf_list), axis=1)
-    return df
 
-# -----------------------------
-# Calcolo TP/SL e performance %
-# -----------------------------
-def compute_outcomes(df, mode="90 minuti"):
-    tf_list = timeframes_90m if mode=="90 minuti" else timeframes_full
 
-    # Inizializza colonne
-    df["TP"] = 0
-    df["SL"] = 0
-    df["Outcome"] = ""
-    df["TP_90m%"] = 0.0
+filtered["entry_bucket"] = filtered.apply(get_entry_bucket, axis=1)
 
-    for idx, row in df.iterrows():
-        if row.get("attivazione", 0) != 1 or row.get("entry_bucket") is None:
+if mode == "90 minuti":
+    timeframes_90m = [
+        (1, "High_1m", "Low_1m"),
+        (5, "High_5m", "Low_5m"),
+        (15, "High_15m", "Low_15m"),  # NUOVO
+        (30, "High_30m", "Low_30m"),
+        (45, "High_45m", "Low_45m"),  # NUOVO
+        (60, "High_60m", "Low_60m"),
+        (90, "High_90m", "Low_90m")
+    ]
+
+
+    filtered["TP"] = 0
+    filtered["SL"] = 0
+    filtered["Outcome"] = None
+
+    for idx, row in filtered.iterrows():
+        if row["attivazione"] != 1 or row["entry_bucket"] is None:
             continue
 
         entry = row["Entry_price"]
         sl_price = row["SL_price"]
         tp_price = row["TP_price"]
 
-        for tf, high_col, low_col in tf_list:
-            # Ignora timeframe prima dell'entry_bucket
+        for tf, high_col, low_col in timeframes_90m:
+
+            # ⛔ ignora bucket <= entry (no ordine temporale affidabile)
+            if tf <= row["entry_bucket"]:
+                continue
+
+            high = row.get(high_col, np.nan)
+            low = row.get(low_col, np.nan)
+
+            # ❗ CASO PEGGIORATIVO: SL PRIORITARIO
+            if pd.notna(high) and high >= sl_price:
+                filtered.at[idx, "SL"] = 1
+                filtered.at[idx, "Outcome"] = "SL"
+                break
+
+            if pd.notna(low) and low <= tp_price:
+                filtered.at[idx, "TP"] = 1
+                filtered.at[idx, "Outcome"] = "TP"
+                break
+
+
+        # calcolo performance % in base a chi ha colpito
+        if filtered.at[idx, "TP"] == 1:
+            exit_price = tp_price
+        elif filtered.at[idx, "SL"] == 1:
+            exit_price = sl_price
+        else:
+            exit_price = row["Close_90m"]
+
+        filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
+
+else:
+    # modalità fino a chiusura: aggiungiamo anche 30 minuti al primo timeframe
+    timeframes = [
+        (1, "High_1m", "Low_1m"),
+        (5, "High_5m", "Low_5m"),
+        (15, "High_15m", "Low_15m"),  # NUOVO
+        (30, "High_30m", "Low_30m"),
+        (45, "High_45m", "Low_45m"),  # NUOVO
+        (60, "High_60m", "Low_60m"),
+        (90, "High_90m", "Low_90m"),
+        (120, "High_120m", "Low_120m"),
+        (240, "High_240m", "Low_240m"),
+        ("close", "High", "Low")
+    ]
+
+
+    filtered["TP"] = 0
+    filtered["SL"] = 0
+    filtered["Outcome"] = None
+
+    for idx, row in filtered.iterrows():
+        if row["attivazione"] != 1 or row["entry_bucket"] is None:
+            continue
+
+        entry = row["Entry_price"]
+        sl_price = row["SL_price"]
+        tp_price = row["TP_price"]
+
+        for tf, high_col, low_col in timeframes:
+
             if tf != "close" and tf <= row["entry_bucket"]:
                 continue
 
             high = row.get(high_col, np.nan)
             low = row.get(low_col, np.nan)
 
-            if pd.notna(low) and low <= tp_price:
-                df.at[idx, "TP"] = 1
-                df.at[idx, "Outcome"] = "TP"
-                break
-
+            # ❗ CASO PEGGIORATIVO
             if pd.notna(high) and high >= sl_price:
-                df.at[idx, "SL"] = 1
-                df.at[idx, "Outcome"] = "SL"
+                filtered.at[idx, "SL"] = 1
+                filtered.at[idx, "Outcome"] = "SL"
                 break
 
-        # calcolo performance %
-        if df.at[idx, "TP"] == 1:
+            if pd.notna(low) and low <= tp_price:
+                filtered.at[idx, "TP"] = 1
+                filtered.at[idx, "Outcome"] = "TP"
+                break
+
+
+        # calcolo performance % in base a chi ha colpito
+        if filtered.at[idx, "TP"] == 1:
             exit_price = tp_price
-        elif df.at[idx, "SL"] == 1:
+        elif filtered.at[idx, "SL"] == 1:
             exit_price = sl_price
         else:
-            # Se non tocca TP/SL, prendiamo Close 90m o Entry
-            exit_price = row.get("Close_90m", entry)
-        df.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
+            exit_price = row["Close_90m"]
 
-    return df
+        filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
 
-
-filtered = compute_entry_bucket(filtered, mode="90 minuti")
-filtered = compute_outcomes(filtered, mode="90 minuti")
 
 
 # Coerenza finale
