@@ -744,7 +744,7 @@ if "Volume PM" in filtered_sorted.columns:
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
     "%OH_30m", "%OL_30m",
-    "%OH_1h", "%OL_1h"]
+    "%OH_1h", "%OL_1h", "Volume"]
 
 for col in percent_cols_display:
     if col in filtered_sorted.columns:
