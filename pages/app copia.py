@@ -742,18 +742,31 @@ if "Float" in filtered_sorted.columns:
 if "Volume" in filtered_sorted.columns:
     filtered_sorted["Volume"] = filtered_sorted["Volume"].apply(to_millions)
 
+if "Volume PM" in filtered_sorted.columns:
+    filtered_sorted["Volume PM"] = filtered_sorted["Volume PM"].apply(to_millions)
+
+
 # --- RIMOZIONE SIMBOLO % NELLA TABELLA PER LE COLONNE PERCENTUALI ---
 percent_cols_display = [
     "%Open_PMH", "%OH", "%OL",
     "%OH_30m", "%OL_30m",
     "%OH_1h", "%OL_1h"]
 
-
 for col in percent_cols_display:
     if col in filtered_sorted.columns:
-        filtered_sorted[col] = filtered_sorted[col].apply(
-            lambda x: str(int(float(x))) if x not in ["-", "nan", "None"] else "-"
+        filtered_sorted[col] = (
+            pd.to_numeric(
+                filtered_sorted[col]
+                    .astype(str)
+                    .str.replace("%", "")
+                    .str.replace(",", ".")
+                    .str.strip(),
+                errors="coerce"
+            )
+            .round(0)
+            .astype("Int64")
         )
+
 
 
 display_df = filtered_sorted.copy()
