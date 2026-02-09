@@ -577,7 +577,7 @@ fig_bucket = px.bar(
 
 st.plotly_chart(fig_bucket, use_container_width=True)
 
-fig_time = px.line(
+fig_time = px.bar(
     daily_mg,
     x="Date",
     y="pct_red",
@@ -588,7 +588,10 @@ fig_time = px.line(
 
 st.plotly_chart(fig_time, use_container_width=True)
 
-
+st.dataframe(
+    daily_mg.sort_values("Date", ascending=False),
+    use_container_width=True
+)
 
 
 # endregion
