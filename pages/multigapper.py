@@ -564,6 +564,12 @@ with col2:
         width=0.95
     )
 
+    fig_time.update_layout(
+        bargap=0.05
+    )
+
+    fig_time.update_xaxes(type="category")
+
     st.plotly_chart(fig_time, use_container_width=True)
 
 # endregion
