@@ -228,14 +228,6 @@ multi_gapper_df["rank_gap_day"] = (
 
 multi_gapper_df["is_top_gap"] = multi_gapper_df["rank_gap_day"] == 1
 
-st.subheader("🧪 Debug multi-gapper")
-st.write("Numero giornate multi-gapper:", multi_gapper_days.shape[0])
-st.write("Numero record multi-gapper:", multi_gapper_df.shape[0])
-st.dataframe(
-    multi_gapper_df[["Date", "Ticker", "GAP", "n_gapper_day", "rank_gap_day"]]
-    .sort_values(["Date", "rank_gap_day"])
-)
-
 # -------------------------------------------------
 # DATASET MULTI-GAPPER (solo giornate valide)
 # -------------------------------------------------
@@ -587,11 +579,6 @@ fig_time = px.line(
 )
 
 st.plotly_chart(fig_time, use_container_width=True)
-
-st.dataframe(
-    daily_mg.sort_values("Date", ascending=False),
-    use_container_width=True
-)
 
 
 # endregion
