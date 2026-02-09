@@ -559,7 +559,10 @@ with col2:
         labels={"pct_red": "% RED", "Date_str": "Data"}
     )
 
-    fig_time.update_traces(marker_color=daily_mg["color"])
+    fig_time.update_traces(
+        marker_color=daily_mg["color"],
+        width=0.95
+    )
 
     st.plotly_chart(fig_time, use_container_width=True)
 
