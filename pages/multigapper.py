@@ -142,6 +142,16 @@ col_o1, col_o2 = st.sidebar.columns(2)
 open_min = col_o1.number_input("Open MIN", 0.0, 100.0, 1.0, step=0.1)
 open_max = col_o2.number_input("Open MAX", 0.0, 100.0, 100.0, step=0.1)
 
+st.sidebar.markdown("---")
+min_gapper_day = st.sidebar.number_input(
+    "Numero minimo gapper per giornata",
+    min_value=2,
+    max_value=10,
+    value=3,
+    step=1
+)
+
+
 # -------------------------------------------------
 # APPLY FILTERS
 # -------------------------------------------------
@@ -164,6 +174,25 @@ filtered = filtered[
     (filtered["Market Cap"] >= mc_min * 1_000_000) &
     (filtered["Market Cap"] <= mc_max * 1_000_000)
 ]
+
+
+# -------------------------------------------------
+# STEP 1 — GIORNATE MULTI-GAPPER
+# -------------------------------------------------
+
+# Conteggio gapper per ogni giornata
+gapper_per_day = (
+    filtered
+    .groupby("Date")["Ticker"]
+    .count()
+    .reset_index(name="n_gapper_day")
+)
+
+# Teniamo solo le giornate con almeno N gapper
+multi_gapper_days = gapper_per_day[
+    gapper_per_day["n_gapper_day"] >= min_gapper_day
+]
+
 
 # endregion
 
