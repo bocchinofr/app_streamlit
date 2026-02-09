@@ -577,7 +577,7 @@ fig_bucket = px.bar(
 
 st.plotly_chart(fig_bucket, use_container_width=True)
 
-fig_time = px.bar(
+fig_time = px.line(
     daily_mg,
     x="Date",
     y="pct_red",
