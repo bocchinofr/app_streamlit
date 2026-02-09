@@ -175,9 +175,10 @@ filtered = filtered[
     (filtered["Market Cap"] <= mc_max * 1_000_000)
 ]
 
+# endregion
 
 # -------------------------------------------------
-# STEP 1 — GIORNATE MULTI-GAPPER
+# region GIORNATE MULTI-GAPPER
 # -------------------------------------------------
 
 # Conteggio gapper per ogni giornata
@@ -192,6 +193,32 @@ gapper_per_day = (
 multi_gapper_days = gapper_per_day[
     gapper_per_day["n_gapper_day"] >= min_gapper_day
 ]
+
+
+# Dataset base multi-gapper
+multi_gapper_df = filtered.merge(
+    multi_gapper_days,
+    on="Date",
+    how="inner"
+)
+
+# Rank GAP giornaliero (1 = gap più alto)
+multi_gapper_df["rank_gap_day"] = (
+    multi_gapper_df
+    .groupby("Date")["GAP"]
+    .rank(method="first", ascending=False)
+    .astype(int)
+)
+
+multi_gapper_df["is_top_gap"] = multi_gapper_df["rank_gap_day"] == 1
+
+st.subheader("🧪 Debug multi-gapper")
+st.write("Numero giornate multi-gapper:", multi_gapper_days.shape[0])
+st.write("Numero record multi-gapper:", multi_gapper_df.shape[0])
+st.dataframe(
+    multi_gapper_df[["Date", "Ticker", "GAP", "n_gapper_day", "rank_gap_day"]]
+    .sort_values(["Date", "rank_gap_day"])
+)
 
 
 # endregion
