@@ -147,9 +147,6 @@ open_max = col_o2.number_input("Open MAX", 0.0, 100.0, 100.0, step=0.1)
 # -------------------------------------------------
 filtered = df.copy()
 
-if ticker_input:
-    filtered = filtered[filtered["Ticker"] == ticker_input]
-
 filtered = filtered[
     (filtered["GAP"] >= min_gap) &
     (filtered["%Open_PMH"] >= min_open_pmh) &
