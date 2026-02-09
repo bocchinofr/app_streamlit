@@ -11,7 +11,7 @@ st.set_page_config(page_title="Strategia Intraday", layout="wide")
 col1, col2 = st.columns([3, 1])
 
 with col1:
-    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday 2025</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday</h1>", unsafe_allow_html=True)
 
 with col2:
     mode = st.radio(
@@ -22,30 +22,39 @@ with col2:
         label_visibility="visible"
     )
 
+    # Valore di default
+    param_entry_tf = 60  # puoi cambiare tramite box Streamlit
+
+    # Esempio con Streamlit selectbox
+    param_entry_tf = st.selectbox(
+        "Seleziona timeframe per Entry",
+        options=[15, 30, 45, 60],
+        index=3  # default a 60 minuti
+    )
+
+
 # ---- CARICAMENTO DATI CON CACHE ----
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=xlsx"
 
 @st.cache_data
 def load_data():
-    usecols = [
-        "Date", "Ticker", "Open", "Gap%", "Shs Float", "Shares Outstanding", "TimeHigh", "HighPM", "High", "Low","Close",
-        "Close_1030", "High_60m", "Low_60m", "High_90m", "Low_90m", "Close_1100", "Volume", "VolumePM", "Volume_30m", "Volume_5m",
-        "High_120m", "Low_120m", "High_240m", "Low_240m", "High_30m", "Low_30m", "Market Cap"
-    ]
-    df = pd.read_excel(SHEET_URL, sheet_name="union_2025", usecols=usecols)
+    # Carica tutte le colonne automaticamente
+    df = pd.read_excel(SHEET_URL, sheet_name="scarico_intraday")
     # Parse date
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.date
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.strftime("%d-%m-%Y")
     return df
 
+
 df = load_data()
 
+st.text("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar. \nSolo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
 
+#================================
+# region FILTRI LATERALI 
+#================================
 
-# region Filtri
-# ---- FILTRI LATERALI ----
-
-st.sidebar.header("🔍 Filtri e parametri")
+#st.sidebar.header("🔍 Filtri e parametri")
 date_range = st.sidebar.date_input("Intervallo date", [])
 tickers = sorted(df["Ticker"].dropna().unique())
 selected_tickers = st.sidebar.multiselect(
@@ -54,16 +63,88 @@ selected_tickers = st.sidebar.multiselect(
     default=[],
     help="Seleziona uno o più ticker da analizzare (lascia vuoto per tutti)"
 )
-max_marketcap = st.sidebar.number_input("Market Cap massima", value=2_000_000_000)
-min_open = st.sidebar.number_input("Open minimo", value=2.0)
-min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
-max_float = st.sidebar.number_input("Shs Float", value=1000000000)
-param_sl = st.sidebar.number_input("%SL", value=30.0)
-param_tp = st.sidebar.number_input("%TP", value=-15.0)
-param_entry = st.sidebar.number_input("%entry", value=15.0)
-param_BE = st.sidebar.number_input("%BEparam", value=0.0,
-    help="Percentuale da aggiungere al prezzo di TP"
+
+# ====== MARKET CAP: DUE BOX (IN MILIONI) ======
+# Valori fissi di default in Milioni
+default_mc_min_M = 0
+default_mc_max_M = 2000
+
+col_mc_min, col_mc_max = st.sidebar.columns(2)
+
+marketcap_min_M = col_mc_min.number_input(
+    "MC Min ($M)", 
+    value=default_mc_min_M, 
+    step=10,
+    min_value=0,
+    max_value=2000,
+    help="Valore minimo di Market Cap in Milioni"
 )
+
+marketcap_max_M = col_mc_max.number_input(
+    "MC Max ($M)", 
+    value=default_mc_max_M, 
+    step=10,
+    min_value=0,
+    max_value=2000,
+    help="Valore massimo di Market Cap in Milioni"
+)
+
+# Converti in valori reali per il filtro
+marketcap_min = marketcap_min_M * 1_000_000
+marketcap_max = marketcap_max_M * 1_000_000
+
+# ====== ALTRI FILTRI ======
+
+
+col_min_open, col_max_open = st.sidebar.columns(2)
+
+min_open = col_min_open.number_input(
+    "Open min ($)",
+    value=2.0,
+    min_value=0.0,
+    max_value=500.0,
+    help="prezzo minimo di Open"
+)
+
+max_open = col_max_open.number_input(
+    "Open max ($)",
+    value=500.0,
+    min_value=0.0,
+    max_value=500.0,
+    help="prezzo minimo di Open"
+)
+
+min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
+
+col_float_min, col_float_max = st.sidebar.columns(2)
+
+min_float = col_float_min.number_input(
+    "Shs float min",
+    value=0,
+    min_value=0,
+    max_value=1000000000,
+    help="Short float minimo"
+)
+
+max_float = col_float_max.number_input(
+    "Shs float max",
+    value=200000000,
+    min_value=0,
+    max_value=1000000000,
+    help="Short float massimo"
+)
+
+with st.sidebar.expander("parametri strategia"):
+
+    param_sl = st.number_input("%SL", value=30.0)
+    param_tp = st.number_input("%TP", value=-15.0)
+    param_entry = st.number_input("%entry", value=15.0)
+    param_BE = st.number_input(
+        "%BEparam",
+        value=0.0,
+        help="Percentuale da aggiungere al prezzo di TP"
+    )
+
 
 filtered = df.copy()
 
@@ -87,16 +168,30 @@ if len(date_range) == 2:
         )
 
 # --- Filtro Open minimo e Gap% minimo ---
-filtered = filtered[filtered["Open"] >= min_open]
+filtered = filtered[
+    (filtered["Open"] >= min_open) &
+    (filtered["Open"] <= max_open)
+]
 filtered = filtered[filtered["Gap%"] >= min_gap]
+
+# Assicura che la colonna sia numerica
+filtered["Shs Float"] = pd.to_numeric(filtered["Shs Float"], errors="coerce")
+filtered["Shares Outstanding"] = pd.to_numeric(filtered["Shares Outstanding"], errors="coerce")
+
+# Sostituisci i valori null di Shs Float con Shares Outstanding
+filtered["Shs Float"].fillna(filtered["Shares Outstanding"], inplace=True)
+
+# Adesso puoi filtrare senza errori
 filtered = filtered[
-    (filtered["Shs Float"] <= max_float) | 
-    (filtered["Shs Float"].isna())
+    (filtered["Shs Float"] >= min_float) &
+    (filtered["Shs Float"] <= max_float)
 ]
+
 filtered = filtered[
-    (filtered["Market Cap"] <= max_marketcap) | 
-    (filtered["Market Cap"].isna())
+    (filtered["Market Cap"] >= marketcap_min) &
+    (filtered["Market Cap"] <= marketcap_max)
 ]
+
 
 # --- Filtro Ticker (se selezionato) ---
 if selected_tickers:
@@ -139,108 +234,162 @@ if selected_tickers:
 
 # endregion
 
-# region ---- CALCOLI ENTRY / SL / TP / ATTIVAZIONE ----
+
+# Ordina il dataframe filtrato per Date discendente
+filtered = filtered.sort_values(by="Date_dt", ascending=False)
+
+
+# ================================================
+# region CALCOLI ENTRY / SL / TP / ATTIVAZIONE 
+# ================================================
+
 filtered["SL_price"] = filtered["Open"] * (1 + param_sl/100)
 filtered["TP_price"] = filtered["Open"] * (1 + param_tp/100)
 filtered["Entry_price"] = filtered["Open"] * (1 + param_entry/100)
 
-filtered["attivazione"] = (filtered["High_60m"] >= filtered["Entry_price"]).astype(int)
+filtered["attivazione"] = (filtered[f"High_{param_entry_tf}m"] >= filtered["Entry_price"]).astype(int)
+
+# ---- ENTRY BUCKET (minimo timeframe in cui l'entry viene raggiunta) ----
+def get_entry_bucket(row):
+    if row.get("High_1m", -np.inf) >= row["Entry_price"]:
+        return 1
+    elif row.get("High_5m", -np.inf) >= row["Entry_price"]:
+        return 5
+    elif row.get("High_15m", -np.inf) >= row["Entry_price"]:  # NUOVO
+        return 15
+    elif row.get("High_30m", -np.inf) >= row["Entry_price"]:
+        return 30
+    elif row.get("High_45m", -np.inf) >= row["Entry_price"]:  # NUOVO
+        return 45
+    elif row.get("High_60m", -np.inf) >= row["Entry_price"]:
+        return 60
+    elif row.get("High_90m", -np.inf) >= row["Entry_price"]:
+        return 90
+    elif row.get("High_120m", -np.inf) >= row["Entry_price"]:
+        return 120
+    elif row.get("High_240m", -np.inf) >= row["Entry_price"]:
+        return 240
+    else:
+        return None
+
+
+filtered["entry_bucket"] = filtered.apply(get_entry_bucket, axis=1)
 
 if mode == "90 minuti":
-    # usiamo timeframes 30m, 60m, 90m
     timeframes_90m = [
-        ("High_30m", "Low_30m"),
-        ("High_60m", "Low_60m"),
-        ("High_90m", "Low_90m")
+        (1, "High_1m", "Low_1m"),
+        (5, "High_5m", "Low_5m"),
+        (15, "High_15m", "Low_15m"),
+        (30, "High_30m", "Low_30m"),
+        (45, "High_45m", "Low_45m"),
+        (60, "High_60m", "Low_60m"),
+        (90, "High_90m", "Low_90m")
     ]
 
-    # inizializzo colonne
-    filtered["SL"] = 0
     filtered["TP"] = 0
-    filtered["TP_90m%"] = 0.0
-    filtered["Outcome"] = "Hold"
+    filtered["SL"] = 0
+    filtered["Outcome"] = None
 
     for idx, row in filtered.iterrows():
-        if row["attivazione"] != 1:
+        if row["attivazione"] != 1 or row["entry_bucket"] is None:
             continue
-        
+
         entry = row["Entry_price"]
         sl_price = row["SL_price"]
         tp_price = row["TP_price"]
-        sl_hit = False
-        tp_hit = False
 
-        for high_col, low_col in timeframes_90m:
-            high = row[high_col]
-            low = row[low_col]
+        for tf, high_col, low_col in timeframes_90m:
 
-            # SHORT: SL se prezzo sale sopra SL_price
-            if not sl_hit and high >= sl_price:
+            # ⛔ ignora bucket <= entry (no ordine temporale affidabile)
+            if tf <= row["entry_bucket"]:
+                continue
+
+            high = row.get(high_col, np.nan)
+            low = row.get(low_col, np.nan)
+
+            # ❗ CASO PEGGIORATIVO: SL PRIORITARIO
+            if pd.notna(high) and high >= sl_price:
                 filtered.at[idx, "SL"] = 1
                 filtered.at[idx, "Outcome"] = "SL"
-                sl_hit = True
-                break  # fermiamo al primo evento
-
-            # SHORT: TP se prezzo scende sotto TP_price
-            if not tp_hit and low <= tp_price:
-                filtered.at[idx, "TP"] = 1
-                filtered.at[idx, "Outcome"] = "TP"
-                tp_hit = True
                 break
 
+            if pd.notna(low) and low <= tp_price:
+                filtered.at[idx, "TP"] = 1
+                filtered.at[idx, "Outcome"] = "TP"
+                break
+
+
         # calcolo performance % in base a chi ha colpito
-        close_price = row["Close_1100"] if filtered.at[idx, "TP"] == 0 else tp_price
-        filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
+        if filtered.at[idx, "TP"] == 1:
+            exit_price = tp_price
+        elif filtered.at[idx, "SL"] == 1:
+            exit_price = sl_price
+        else:
+            exit_price = row["Close_90m"]
+
+        filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
+
 else:
     # modalità fino a chiusura: aggiungiamo anche 30 minuti al primo timeframe
     timeframes = [
-        ("High_30m", "Low_30m"),
-        ("High_60m", "Low_60m"),
-        ("High_90m", "Low_90m"),
-        ("High_120m", "Low_120m"),
-        ("High_240m", "Low_240m"),
-        ("High", "Low")  # fallback finale
+        (1, "High_1m", "Low_1m"),
+        (5, "High_5m", "Low_5m"),
+        (15, "High_15m", "Low_15m"),
+        (30, "High_30m", "Low_30m"),
+        (45, "High_45m", "Low_45m"),
+        (60, "High_60m", "Low_60m"),
+        (90, "High_90m", "Low_90m"),
+        (120, "High_120m", "Low_120m"),
+        (240, "High_240m", "Low_240m"),
+        ("close", "High", "Low")
     ]
 
-    # inizializzo colonne
-    filtered["SL"] = 0
     filtered["TP"] = 0
-    filtered["TP_90m%"] = 0.0
-    filtered["Outcome"] = "Hold"
+    filtered["SL"] = 0
+    filtered["Outcome"] = None
 
     for idx, row in filtered.iterrows():
-        if row["attivazione"] != 1:
+        if row["attivazione"] != 1 or row["entry_bucket"] is None:
             continue
-        
+
         entry = row["Entry_price"]
         sl_price = row["SL_price"]
         tp_price = row["TP_price"]
-        sl_hit = False
-        tp_hit = False
 
-        for high_col, low_col in timeframes:
-            high = row[high_col]
-            low = row[low_col]
+        for tf, high_col, low_col in timeframes:
 
-            # SHORT: SL se prezzo sale sopra SL_price
-            if not sl_hit and high >= sl_price:
+            if tf != "close" and tf <= row["entry_bucket"]:
+                continue
+
+            high = row.get(high_col, np.nan)
+            low = row.get(low_col, np.nan)
+
+            # ❗ CASO PEGGIORATIVO
+            if pd.notna(high) and high >= sl_price:
                 filtered.at[idx, "SL"] = 1
                 filtered.at[idx, "Outcome"] = "SL"
-                sl_hit = True
                 break
 
-            # SHORT: TP se prezzo scende sotto TP_price
-            if not tp_hit and low <= tp_price:
+            if pd.notna(low) and low <= tp_price:
                 filtered.at[idx, "TP"] = 1
                 filtered.at[idx, "Outcome"] = "TP"
-                tp_hit = True
                 break
 
+
         # calcolo performance % in base a chi ha colpito
-        close_price = row["Close"] if filtered.at[idx, "TP"] == 0 else tp_price
-        filtered.at[idx, "TP_90m%"] = ((close_price - entry) / entry * 100)
+        if filtered.at[idx, "TP"] == 1:
+            exit_price = tp_price
+        elif filtered.at[idx, "SL"] == 1:
+            exit_price = sl_price
+        else:
+            exit_price = row["Close_90m"]
+
+        filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
 
 
+
+# Coerenza finale
+filtered.loc[filtered["SL"] == 1, "TP"] = 0
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
@@ -473,6 +622,15 @@ def show_kpi_section(df, title, box_color):
         else:
             vol30_vs_PM_mean = vol30_vs_PM_median = None
 
+        # --- Calcoli Market Cap ---
+        if "Market Cap" in df.columns:
+            mc_mean = df["Market Cap"].mean()
+            mc_median = df["Market Cap"].median()
+            mc_mean_str = f"{mc_mean/1_000_000:.0f}M"
+            mc_median_str = f"{mc_median/1_000_000:.2f}M"
+        else:
+            mc_mean_str = mc_median_str = "-"
+
         # --- Formattazione valori ---
         gap_mean_str = f"{gap_mean:.0f}%" if gap_mean is not None else "-"
         gap_median_str = f"{gap_median:.0f}%" if gap_median is not None else "-"
@@ -506,28 +664,29 @@ def show_kpi_section(df, title, box_color):
 
         # --- Lista dei box ---
         boxes = [
-            {"label": "Gap%", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
+            {"label": "Gap% medio", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
+            {"label": "MC medio", "value": mc_mean_str, "sub": f"Mediana: {mc_median_str}"},
             {"label": "Shs Float medio", "value": shs_float_mean_str, "sub": f"Mediana: {shs_float_median_str}"},
-            {"label": "Shs Outstanding medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
+            {"label": "Shs Out medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
             {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
             {"label": "TimeHigh medio", "value": time_mean_formatted},
-            {"label": "Open vs PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
-            {"label": "Volume medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
-            {"label": "VolumePM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
-            {"label": "Volume 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"},
-            {"label": "Vol 5m / PM", "value": vol5_vs_PM_mean_str, "sub": f"Mediana: {vol5_vs_PM_median_str}"},
-            {"label": "Vol 30m / PM", "value": vol30_vs_PM_mean_str, "sub": f"Mediana: {vol30_vs_PM_median_str}"}
+            {"label": "Open/PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
+            {"label": "Vol medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
+            {"label": "VolPM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
+            {"label": "Vol 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"},
+            {"label": "Vol5m/PM", "value": vol5_vs_PM_mean_str, "sub": f"Mediana: {vol5_vs_PM_median_str}"},
+            {"label": "Vol30m/PM", "value": vol30_vs_PM_mean_str, "sub": f"Mediana: {vol30_vs_PM_median_str}"}
         ]
 
 
         # --- Stile ---
         LABEL_STYLE = "font-size:14px; opacity:0.85;"
-        VALUE_STYLE = "font-size:24px; font-weight:bold;"
-        SUBVALUE_STYLE = "font-size:15px; font-weight:600; opacity:0.85; margin-top:6px;"
+        VALUE_STYLE = "font-size:20px; font-weight:bold; margin-left: 8px"
+        SUBVALUE_STYLE = "font-size:14px; font-weight:500; opacity:0.85; margin-top:0px;"
 
         BOX_STYLE = f"""
             background-color:{{}}; 
-            padding:15px; 
+            padding:5px; 
             border-radius:12px; 
             text-align:center; 
             box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
@@ -535,14 +694,14 @@ def show_kpi_section(df, title, box_color):
             flex-direction:column; 
             justify-content:center; 
             align-items:center;
-            min-height:150px;
+            min-height:50px;
         """
 
         # --- Container grid responsive ---
         container_html_start = """
         <div style="
             display:grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
             row-gap: 12px;
             margin-top: 10px;
@@ -556,10 +715,12 @@ def show_kpi_section(df, title, box_color):
         for box in boxes:
             sub_html = f'<div style="{SUBVALUE_STYLE}">{box["sub"]}</div>' if "sub" in box else ""
             boxes_html += f'<div style="{BOX_STYLE.format(box_color)}">' \
-                          f'<div style="{LABEL_STYLE}">{box["label"]}</div>' \
-                          f'<div style="{VALUE_STYLE}">{box["value"]}</div>' \
-                          f'{sub_html}' \
-                          f'</div>'
+                        f'<div style="display:flex; justify-content:center; align-items:center;">' \
+                        f'<div style="{LABEL_STYLE}">{box["label"]}</div>' \
+                        f'<div style="{VALUE_STYLE}">{box["value"]}</div>' \
+                        f'</div>' \
+                        f'{sub_html}' \
+                        f'</div>'
 
         st.markdown(container_html_start + boxes_html + container_html_end, unsafe_allow_html=True)
 
@@ -580,7 +741,7 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m",
-                "High_90m", "Low_90m", "Close_1100", "Entry_price", "SL_price", "TP_price",
+                "High_90m", "Low_90m", "Close_90m", "Entry_price", "SL_price", "TP_price",
                 "TP_90m%", "attivazione", "SL", "TP", "BEprofit"]
 
 
