@@ -143,13 +143,28 @@ open_min = col_o1.number_input("Open MIN", 0.0, 100.0, 1.0, step=0.1)
 open_max = col_o2.number_input("Open MAX", 0.0, 100.0, 100.0, step=0.1)
 
 st.sidebar.markdown("---")
-min_gapper_day = st.sidebar.number_input(
-    "Numero minimo gapper per giornata",
-    min_value=2,
-    max_value=10,
+st.sidebar.subheader("📊 Multi-gapper day")
+
+col_g1, col_g2 = st.sidebar.columns(2)
+
+min_gapper_day = col_g1.number_input(
+    "Gapper MIN",
+    min_value=1,
+    max_value=20,
     value=3,
-    step=1
+    step=1,
+    help= "numero minimo di gapper in giornata"
 )
+
+max_gapper_day = col_g2.number_input(
+    "Gapper MAX",
+    min_value=min_gapper_day,
+    max_value=50,
+    value=10,
+    step=1,
+    help= "numero massimo di gapper in giornata"
+)
+
 
 
 # -------------------------------------------------
@@ -178,7 +193,7 @@ filtered = filtered[
 # endregion
 
 # -------------------------------------------------
-# region GIORNATE MULTI-GAPPER
+# region MULTI-GAPPER
 # -------------------------------------------------
 
 # Conteggio gapper per ogni giornata
@@ -191,7 +206,8 @@ gapper_per_day = (
 
 # Teniamo solo le giornate con almeno N gapper
 multi_gapper_days = gapper_per_day[
-    gapper_per_day["n_gapper_day"] >= min_gapper_day
+    (gapper_per_day["n_gapper_day"] >= min_gapper_day) &
+    (gapper_per_day["n_gapper_day"] <= max_gapper_day)
 ]
 
 
