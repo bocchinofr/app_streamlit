@@ -406,7 +406,7 @@ daily_mg["pct_red"] *= 100
 
 
 # -------------------------------------------------
-# KPI GIORNALIERI (Step 4A)
+# KPI GIORNALIERI 
 # -------------------------------------------------
 
 avg_pct_red_day = daily_mg["pct_red"].mean() if not daily_mg.empty else 0
@@ -421,53 +421,6 @@ pct_days_red_75 = (
     (daily_mg["pct_red"] >= 75).mean() * 100
     if not daily_mg.empty else 0
 )
-
-
-# -------------------------------------------------
-# DISTRIBUZIONE % RED GIORNALIERA
-# -------------------------------------------------
-
-bins = [0, 25, 50, 75, 100]
-labels = ["0–25%", "25–50%", "50–75%", "75–100%"]
-
-daily_mg["red_bucket"] = pd.cut(
-    daily_mg["pct_red"],
-    bins=bins,
-    labels=labels,
-    include_lowest=True
-)
-
-bucket_dist = (
-    daily_mg["red_bucket"]
-    .value_counts()
-    .sort_index()
-)
-
-import plotly.express as px
-
-fig_bucket = px.bar(
-    x=bucket_dist.index,
-    y=bucket_dist.values,
-    labels={
-        "x": "% RED nella giornata",
-        "y": "Numero giornate"
-    },
-    title="Distribuzione giornaliera delle chiusure RED (Multi-Gap Days)"
-)
-
-st.plotly_chart(fig_bucket, use_container_width=True)
-
-fig_time = px.line(
-    daily_mg,
-    x="Date",
-    y="pct_red",
-    markers=True,
-    labels={"pct_red": "% RED"},
-    title="% RED per giornata (Multi-Gap)"
-)
-
-st.plotly_chart(fig_time, use_container_width=True)
-
 
 # endregion
 
@@ -551,6 +504,52 @@ for i, kpi in enumerate(kpi_list):
 
 # endregion
 
+# -------------------------------------------------
+# region DISTRIBUZIONE % RED GIORNALIERA
+# -------------------------------------------------
+
+bins = [0, 25, 50, 75, 100]
+labels = ["0–25%", "25–50%", "50–75%", "75–100%"]
+
+daily_mg["red_bucket"] = pd.cut(
+    daily_mg["pct_red"],
+    bins=bins,
+    labels=labels,
+    include_lowest=True
+)
+
+bucket_dist = (
+    daily_mg["red_bucket"]
+    .value_counts()
+    .sort_index()
+)
+
+import plotly.express as px
+
+fig_bucket = px.bar(
+    x=bucket_dist.index,
+    y=bucket_dist.values,
+    labels={
+        "x": "% RED nella giornata",
+        "y": "Numero giornate"
+    },
+    title="Distribuzione giornaliera delle chiusure RED (Multi-Gap Days)"
+)
+
+st.plotly_chart(fig_bucket, use_container_width=True)
+
+fig_time = px.line(
+    daily_mg,
+    x="Date",
+    y="pct_red",
+    markers=True,
+    labels={"pct_red": "% RED"},
+    title="% RED per giornata (Multi-Gap)"
+)
+
+st.plotly_chart(fig_time, use_container_width=True)
+
+# endregion
 
 
 # -------------------------------------------------
