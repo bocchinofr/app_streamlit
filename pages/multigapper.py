@@ -448,7 +448,7 @@ top_html = f"""
       <div class='top-kpi-label'>Numero giornate</div>
     </div>
     <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_gapper_per_day}</div>
+      <div class='top-kpi-value'>{avg_gapper_per_day:.1f}</div>
       <div class='top-kpi-label'>Numero gapper per day</div>
     </div>
     <div class='top-kpi'>
