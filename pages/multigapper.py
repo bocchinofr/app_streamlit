@@ -236,6 +236,13 @@ st.dataframe(
     .sort_values(["Date", "rank_gap_day"])
 )
 
+# -------------------------------------------------
+# DATASET MULTI-GAPPER (solo giornate valide)
+# -------------------------------------------------
+filtered_mg = filtered[
+    filtered["Date"].isin(multi_gapper_days["Date"])
+].copy()
+
 
 # endregion
 
@@ -286,10 +293,31 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
 # region KPI
 # -------------------------------------------------
 
-total = len(filtered)
-gap_mean = filtered["GAP"].mean() if total else 0
-gap_median = filtered["GAP"].median() if total else 0
-red_close = (filtered["Chiusura"] == "RED").mean() * 100 if total else 0
+total = len(filtered_mg)
+gap_mean = filtered_mg["GAP"].mean() if total else 0
+gap_median = filtered_mg["GAP"].median() if total else 0
+red_close = (filtered_mg["Chiusura"] == "RED").mean() * 100 if total else 0
+num_days_mg = filtered_mg["Date"].nunique()
+
+
+# -------------------------------------------------
+# % RED per giornata multi-gap
+# -------------------------------------------------
+
+red_pct_per_day = (
+    filtered_mg
+    .assign(is_red = filtered_mg["Chiusura"] == "RED")
+    .groupby("Date")["is_red"]
+    .mean()          # <- percentuale giornaliera
+    * 100
+)
+
+avg_red_pct_per_day = (
+    red_pct_per_day.mean()
+    if not red_pct_per_day.empty else 0
+)
+
+
 
 # --- Medie per red e green per GAP (aggiunte) ---
 gap_red = (
@@ -400,11 +428,19 @@ top_html = f"""
       <div class='top-kpi-label'>Totale record</div>
     </div>
     <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_red_pct_per_day:.0f}</div>
+      <div class='top-kpi-label'>Chiusure RED per day</div>
+    </div>
+    <div class='top-kpi'>
       <div class='top-kpi-value'>{red_close:.0f}%</div>
       <div class='top-kpi-label'>Chiusure RED</div>
     </div>
     <div class='top-kpi'>
       <div class='top-kpi-value'>{gap_mean:.0f}%</div>
+      <div class='top-kpi-label'>GAP medio</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{gap_median:.0f}%</div>
       <div class='top-kpi-label'>GAP medio</div>
     </div>
   </div>
