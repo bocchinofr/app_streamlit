@@ -428,7 +428,7 @@ top_html = f"""
       <div class='top-kpi-label'>Totale record</div>
     </div>
     <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_red_pct_per_day:.0f}</div>
+      <div class='top-kpi-value'>{avg_red_pct_per_day:.0f}%</div>
       <div class='top-kpi-label'>Chiusure RED per day</div>
     </div>
     <div class='top-kpi'>
