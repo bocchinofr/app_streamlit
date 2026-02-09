@@ -544,16 +544,14 @@ with col1:
     st.plotly_chart(fig_bucket, use_container_width=True)
 
 with col2:
-    fig_time = px.bar(
+    fig_time = px.line(
         daily_mg,
         x="Date",
         y="pct_red",
-        title="% RED per giornata (Multi-Gap)",
+        markers=True,
         labels={"pct_red": "% RED"},
+        title="% RED per giornata (Multi-Gap)"
     )
-
-    fig_time.update_traces(marker_color="#E74C3C")  # rosso
-
     st.plotly_chart(fig_time, use_container_width=True)
 
 # endregion
