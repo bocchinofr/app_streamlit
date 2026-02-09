@@ -211,23 +211,6 @@ multi_gapper_days = gapper_per_day[
 ]
 
 
-# Dataset base multi-gapper
-multi_gapper_df = filtered.merge(
-    multi_gapper_days,
-    on="Date",
-    how="inner"
-)
-
-# Rank GAP giornaliero (1 = gap più alto)
-multi_gapper_df["rank_gap_day"] = (
-    multi_gapper_df
-    .groupby("Date")["GAP"]
-    .rank(method="first", ascending=False)
-    .astype(int)
-)
-
-multi_gapper_df["is_top_gap"] = multi_gapper_df["rank_gap_day"] == 1
-
 # -------------------------------------------------
 # DATASET MULTI-GAPPER (solo giornate valide)
 # -------------------------------------------------
@@ -306,24 +289,6 @@ avg_gapper_per_day = (
     if not gapper_per_day_mg.empty else 0
 )
 
-
-
-# -------------------------------------------------
-# % RED per giornata multi-gap
-# -------------------------------------------------
-
-red_pct_per_day = (
-    filtered_mg
-    .assign(is_red = filtered_mg["Chiusura"] == "RED")
-    .groupby("Date")["is_red"]
-    .mean()          # <- percentuale giornaliera
-    * 100
-)
-
-avg_red_pct_per_day = (
-    red_pct_per_day.mean()
-    if not red_pct_per_day.empty else 0
-)
 
 
 # --- Medie per red e green per GAP (aggiunte) ---
@@ -421,83 +386,6 @@ green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_mi
 mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
 mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
-# ----------------------------------------------------------------
-# --- Top box: I 3 KPI principali in un unico box giustificato ---
-# ----------------------------------------------------------------
-
-#st.subheader("📊 KPI principali")
-
-top_html = f"""
-<div class='kpi-top-box'>
-  <div class='kpi-top'>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{total}</div>
-      <div class='top-kpi-label'>Totale record</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{num_days_mg}</div>
-      <div class='top-kpi-label'>Numero giornate</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_gapper_per_day:.1f}</div>
-      <div class='top-kpi-label'>Numero gapper per day</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_red_pct_per_day:.0f}%</div>
-      <div class='top-kpi-label'>Chiusure RED per day</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{red_close:.0f}%</div>
-      <div class='top-kpi-label'>Chiusure RED</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
-      <div class='top-kpi-label'>GAP medio</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{gap_median:.0f}%</div>
-      <div class='top-kpi-label'>GAP medio</div>
-    </div>
-  </div>
-</div>
-"""
-#st.markdown(top_html, unsafe_allow_html=True)
-
-
-st.subheader("📊 KPI principali")
-
-# Top box (totale, chiusure RED, GAP medio)
-st.markdown(top_html, unsafe_allow_html=True)
-
-# 1️⃣ Lista KPI
-kpi_list = [
-    {"title": "GAP Medio", "total": gap_mean, "red": gap_red, "green": gap_green, "suffix": "%"},
-    {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
-    {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
-    {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
-    {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
-    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
-]
-
-# 2️⃣ Creo 2 colonne
-col1, col2 = st.columns(2)
-
-# 3️⃣ Ciclo e metto le card nelle colonne
-for i, kpi in enumerate(kpi_list):
-    col = col1 if i % 2 == 0 else col2  # alterna le colonne
-    with col:
-        kpi_card_textual(
-            title=kpi["title"],
-            total=kpi["total"],
-            red=kpi["red"],
-            green=kpi["green"],
-            suffix=kpi.get("suffix"),
-            show_delta=kpi.get("show_delta", True)  # <- importante
-        )
-
-
-# endregion
-
 # -------------------------------------------------
 # region TABELLA GIORNALIERA MULTI-GAP
 # -------------------------------------------------
@@ -584,6 +472,84 @@ st.plotly_chart(fig_time, use_container_width=True)
 # endregion
 
 
+
+
+# ----------------------------------------------------------------
+# region TOP BOX
+# ----------------------------------------------------------------
+
+#st.subheader("📊 KPI principali")
+
+top_html = f"""
+<div class='kpi-top-box'>
+  <div class='kpi-top'>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{total}</div>
+      <div class='top-kpi-label'>Totale record</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{num_days_mg}</div>
+      <div class='top-kpi-label'>Numero giornate</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_gapper_per_day:.1f}</div>
+      <div class='top-kpi-label'>Numero gapper per day</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_pct_red_day:.0f}%</div>
+      <div class='top-kpi-label'>Chiusure RED per day</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{red_close:.0f}%</div>
+      <div class='top-kpi-label'>Chiusure RED</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
+      <div class='top-kpi-label'>GAP medio</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{gap_median:.0f}%</div>
+      <div class='top-kpi-label'>GAP mediana</div>
+    </div>
+  </div>
+</div>
+"""
+#st.markdown(top_html, unsafe_allow_html=True)
+
+
+st.subheader("📊 KPI principali")
+
+# Top box (totale, chiusure RED, GAP medio)
+st.markdown(top_html, unsafe_allow_html=True)
+
+# 1️⃣ Lista KPI
+kpi_list = [
+    {"title": "GAP Medio", "total": gap_mean, "red": gap_red, "green": gap_green, "suffix": "%"},
+    {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
+    {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
+    {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
+    {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
+    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
+]
+
+# 2️⃣ Creo 2 colonne
+col1, col2 = st.columns(2)
+
+# 3️⃣ Ciclo e metto le card nelle colonne
+for i, kpi in enumerate(kpi_list):
+    col = col1 if i % 2 == 0 else col2  # alterna le colonne
+    with col:
+        kpi_card_textual(
+            title=kpi["title"],
+            total=kpi["total"],
+            red=kpi["red"],
+            green=kpi["green"],
+            suffix=kpi.get("suffix"),
+            show_delta=kpi.get("show_delta", True)  # <- importante
+        )
+
+
+# endregion
 
 
 
