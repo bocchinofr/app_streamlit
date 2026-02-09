@@ -554,6 +554,7 @@ with col2:
         labels={"pct_red": "% RED", "Date_str": "Data"}
     )
 
+    fig_time.update_traces(marker_color=daily_mg["color"])
 
     st.plotly_chart(fig_time, width='stretch')
 
