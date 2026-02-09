@@ -544,15 +544,23 @@ with col1:
     st.plotly_chart(fig_bucket, use_container_width=True)
 
 with col2:
-    fig_time = px.line(
+    daily_mg["color"] = np.where(
+        daily_mg["pct_red"] >= 75, "darkred",
+        np.where(daily_mg["pct_red"] >= 50, "red", "green")
+    )
+
+    fig_time = px.bar(
         daily_mg,
         x="Date",
         y="pct_red",
-        markers=True,
+        title="% RED per giornata (Multi-Gap)",
         labels={"pct_red": "% RED"},
-        title="% RED per giornata (Multi-Gap)"
     )
-    st.plotly_chart(fig_time, use_container_width=True)
+
+    fig_time.update_traces(
+        marker_color=daily_mg["color"]
+    )
+
 
 # endregion
 
