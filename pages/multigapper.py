@@ -541,9 +541,14 @@ with col1:
         },
         title="Distribuzione giornaliera delle chiusure RED (Multi-Gap Days)"
     )
-    st.plotly_chart(fig_bucket, width='stretch')
+    st.plotly_chart(fig_bucket, use_container_width=True)
 
 with col2:
+    daily_mg["color"] = np.where(
+        daily_mg["pct_red"] >= 75, "#8B0000",
+        np.where(daily_mg["pct_red"] >= 50, "#E74C3C", "#2ECC71")
+    )
+
     daily_mg["Date_str"] = daily_mg["Date"].astype(str)
 
     fig_time = px.bar(
@@ -556,7 +561,7 @@ with col2:
 
     fig_time.update_traces(marker_color=daily_mg["color"])
 
-    st.plotly_chart(fig_time, width='stretch')
+    st.plotly_chart(fig_time, use_container_width=True)
 
 # endregion
 
