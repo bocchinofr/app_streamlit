@@ -563,6 +563,19 @@ bucket_dist = (
     .sort_index()
 )
 
+import plotly.express as px
+
+fig_bucket = px.bar(
+    x=bucket_dist.index,
+    y=bucket_dist.values,
+    labels={
+        "x": "% RED nella giornata",
+        "y": "Numero giornate"
+    },
+    title="Distribuzione giornaliera delle chiusure RED (Multi-Gap Days)"
+)
+
+st.plotly_chart(fig_bucket, use_container_width=True)
 
 
 
