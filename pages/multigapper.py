@@ -24,14 +24,6 @@ local_css("theme.css")
 
 
 # -------------------------------------------------
-# INPUT TICKER
-# -------------------------------------------------
-ticker_input = st.text_input(
-    "Inserisci un ticker (es. MARA, TSLA, AAPL)",
-    placeholder="Lascia vuoto per usare solo i dati intraday"
-).upper().strip()
-
-# -------------------------------------------------
 # region LOAD DATA
 # -------------------------------------------------
 SHEET_URL = "https://docs.google.com/spreadsheets/d/15ev2l8av7iil_-HsXMZihKxV-B5MgTVO-LnK1y_f2-o/export?format=csv"
