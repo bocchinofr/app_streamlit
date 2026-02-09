@@ -543,6 +543,28 @@ pct_days_red_75 = (
 )
 
 
+# -------------------------------------------------
+# DISTRIBUZIONE % RED GIORNALIERA
+# -------------------------------------------------
+
+bins = [0, 25, 50, 75, 100]
+labels = ["0–25%", "25–50%", "50–75%", "75–100%"]
+
+daily_mg["red_bucket"] = pd.cut(
+    daily_mg["pct_red"],
+    bins=bins,
+    labels=labels,
+    include_lowest=True
+)
+
+bucket_dist = (
+    daily_mg["red_bucket"]
+    .value_counts()
+    .sort_index()
+)
+
+
+
 
 
 # endregion
