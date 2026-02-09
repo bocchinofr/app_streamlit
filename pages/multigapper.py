@@ -541,7 +541,7 @@ with col1:
         },
         title="Distribuzione giornaliera delle chiusure RED (Multi-Gap Days)"
     )
-    st.plotly_chart(fig_bucket, use_container_width=True)
+    st.plotly_chart(fig_bucket, width='stretch')
 
 with col2:
     daily_mg["Date_str"] = daily_mg["Date"].astype(str)
@@ -556,8 +556,7 @@ with col2:
 
     fig_time.update_traces(marker_color=daily_mg["color"])
 
-
-    st.plotly_chart(fig_time, use_container_width=True)
+    st.plotly_chart(fig_time, width='stretch')
 
 # endregion
 
