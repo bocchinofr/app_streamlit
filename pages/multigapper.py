@@ -299,6 +299,22 @@ gap_median = filtered_mg["GAP"].median() if total else 0
 red_close = (filtered_mg["Chiusura"] == "RED").mean() * 100 if total else 0
 num_days_mg = filtered_mg["Date"].nunique()
 
+# -------------------------------------------------
+# Numero medio gapper per giornata multi-gap
+# -------------------------------------------------
+
+gapper_per_day_mg = (
+    filtered_mg
+    .groupby("Date")
+    .size()          # numero gapper in quel giorno
+)
+
+avg_gapper_per_day = (
+    gapper_per_day_mg.mean()
+    if not gapper_per_day_mg.empty else 0
+)
+
+
 
 # -------------------------------------------------
 # % RED per giornata multi-gap
@@ -429,7 +445,11 @@ top_html = f"""
     </div>
     <div class='top-kpi'>
       <div class='top-kpi-value'>{num_days_mg}</div>
-      <div class='top-kpi-label'>Totale record</div>
+      <div class='top-kpi-label'>Numero giornate</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_gapper_per_day}</div>
+      <div class='top-kpi-label'>Numero gapper per day</div>
     </div>
     <div class='top-kpi'>
       <div class='top-kpi-value'>{avg_red_pct_per_day:.0f}%</div>
