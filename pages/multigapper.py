@@ -544,20 +544,18 @@ with col1:
     st.plotly_chart(fig_bucket, use_container_width=True)
 
 with col2:
-    daily_mg["color"] = np.where(
-        daily_mg["pct_red"] >= 75, "#8B0000",
-        np.where(daily_mg["pct_red"] >= 50, "#E74C3C", "#2ECC71")
-    )
+    daily_mg["Date_str"] = daily_mg["Date"].astype(str)
 
     fig_time = px.bar(
         daily_mg,
-        x="Date",
+        x="Date_str",
         y="pct_red",
         title="% RED per giornata (Multi-Gap)",
-        labels={"pct_red": "% RED"},
+        labels={"pct_red": "% RED", "Date_str": "Data"}
     )
 
     fig_time.update_traces(marker_color=daily_mg["color"])
+
 
     st.plotly_chart(fig_time, use_container_width=True)
 
