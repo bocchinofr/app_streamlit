@@ -333,6 +333,24 @@ avg_red_pct_per_day = (
     if not red_pct_per_day.empty else 0
 )
 
+# -------------------------------------------------
+# KPI GIORNALIERI (Step 4A)
+# -------------------------------------------------
+
+avg_pct_red_day = daily_mg["pct_red"].mean() if not daily_mg.empty else 0
+median_pct_red_day = daily_mg["pct_red"].median() if not daily_mg.empty else 0
+
+pct_days_red_50 = (
+    (daily_mg["pct_red"] >= 50).mean() * 100
+    if not daily_mg.empty else 0
+)
+
+pct_days_red_75 = (
+    (daily_mg["pct_red"] >= 75).mean() * 100
+    if not daily_mg.empty else 0
+)
+
+
 
 
 # --- Medie per red e green per GAP (aggiunte) ---
@@ -506,6 +524,31 @@ for i, kpi in enumerate(kpi_list):
 
 
 # endregion
+
+# -------------------------------------------------
+# region TABELLA GIORNALIERA MULTI-GAP
+# -------------------------------------------------
+
+daily_mg = (
+    filtered_mg
+    .assign(is_red = filtered_mg["Chiusura"] == "RED")
+    .groupby("Date")
+    .agg(
+        num_gapper = ("Ticker", "count"),
+        num_red    = ("is_red", "sum"),
+        pct_red    = ("is_red", "mean")
+    )
+    .reset_index()
+)
+
+daily_mg["pct_red"] *= 100
+
+
+# endregion
+
+
+
+
 
 # -------------------------------------------------
 # region TABELLA
