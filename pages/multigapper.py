@@ -424,19 +424,13 @@ pct_days_red_75 = (
     if not daily_mg.empty else 0
 )
 
+# endregion
 
-filtered_mg["Volume PM"] = pd.to_numeric(
-    filtered_mg["Volume PM"], errors="coerce"
-)
+# --------------------------------------------
+# region CARTA D'IDENTITA
+# --------------------------------------------
 
-filtered_mg["pm_dollar_vol"] = filtered_mg["Volume PM"] * filtered_mg["OPEN"]
-
-filtered_mg["gapper_rank_day"] = (
-    filtered_mg
-    .groupby("Date")["GAP"]
-    .rank(ascending=False, method="first")
-)
-
+# Converzione campi testo in numeri
 
 # Timeframe highs
 for tf in [15, 30, 60]:
@@ -460,6 +454,19 @@ if "PM_high" in filtered_mg.columns:
         errors="coerce"
     )
 
+# Creazione calcoli per kpi CI
+
+filtered_mg["Volume PM"] = pd.to_numeric(
+    filtered_mg["Volume PM"], errors="coerce"
+)
+
+filtered_mg["pm_dollar_vol"] = filtered_mg["Volume PM"] * filtered_mg["OPEN"]
+
+filtered_mg["gapper_rank_day"] = (
+    filtered_mg
+    .groupby("Date")["GAP"]
+    .rank(ascending=False, method="first")
+)
 
 for tf in [15, 30, 60]:
     filtered_mg[f"oh_{tf}m"] = (
@@ -490,6 +497,65 @@ identity_df = filtered_mg[id_cols]
 
 
 # endregion
+
+# --------------------------------------------
+# region CARTA D'IDENTITA - DISPLAY
+# --------------------------------------------
+
+st.subheader("🆔 Carte d'identità azioni")
+
+# Separa GREEN vs RED
+green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
+red_df   = identity_df[identity_df["Chiusura"] == "RED"]
+
+# Funzione per calcolare statistiche sintetiche
+def ci_stats(df, label):
+    if df.empty:
+        return {k: "-" for k in [
+            "count", "GAP_mean", "PM_dollar_vol_mean", "OH_15m_mean", "OH_30m_mean", "OH_60m_mean",
+            "OL_15m_mean", "OL_30m_mean", "OL_60m_mean", "break_15m", "break_30m"
+        ]}
+    
+    return {
+        "count": len(df),
+        "GAP_mean": df["GAP"].mean(),
+        "PM_dollar_vol_mean": df["pm_dollar_vol"].mean(),
+        "OH_15m_mean": df["oh_15m"].mean(),
+        "OH_30m_mean": df["oh_30m"].mean(),
+        "OH_60m_mean": df["oh_60m"].mean(),
+        "OL_15m_mean": df["ol_15m"].mean(),
+        "OL_30m_mean": df["ol_30m"].mean(),
+        "OL_60m_mean": df["ol_60m"].mean(),
+        "break_15m": df["break_pmh_15m"].sum(),
+        "break_30m": df["break_pmh_30m"].sum()
+    }
+
+green_stats = ci_stats(green_df, "GREEN")
+red_stats   = ci_stats(red_df, "RED")
+
+# Crea due colonne affiancate
+col1, col2 = st.columns(2)
+
+# Box GREEN
+with col1:
+    st.markdown(f"### 🟢 LONG (GREEN) - {green_stats['count']} record")
+    st.markdown(f"- GAP medio: {green_stats['GAP_mean']:.1f}%")
+    st.markdown(f"- Dollar Volume PM medio: {green_stats['PM_dollar_vol_mean']:.0f}")
+    st.markdown(f"- OH 15m/30m/60m medio: {green_stats['OH_15m_mean']:.1f}% / {green_stats['OH_30m_mean']:.1f}% / {green_stats['OH_60m_mean']:.1f}%")
+    st.markdown(f"- OL 15m/30m/60m medio: {green_stats['OL_15m_mean']:.1f}% / {green_stats['OL_30m_mean']:.1f}% / {green_stats['OL_60m_mean']:.1f}%")
+    st.markdown(f"- Break PMH 15m/30m: {green_stats['break_15m']} / {green_stats['break_30m']}")
+
+# Box RED
+with col2:
+    st.markdown(f"### 🔴 SHORT (RED) - {red_stats['count']} record")
+    st.markdown(f"- GAP medio: {red_stats['GAP_mean']:.1f}%")
+    st.markdown(f"- Dollar Volume PM medio: {red_stats['PM_dollar_vol_mean']:.0f}")
+    st.markdown(f"- OH 15m/30m/60m medio: {red_stats['OH_15m_mean']:.1f}% / {red_stats['OH_30m_mean']:.1f}% / {red_stats['OH_60m_mean']:.1f}%")
+    st.markdown(f"- OL 15m/30m/60m medio: {red_stats['OL_15m_mean']:.1f}% / {red_stats['OL_30m_mean']:.1f}% / {red_stats['OL_60m_mean']:.1f}%")
+    st.markdown(f"- Break PMH 15m/30m: {red_stats['break_15m']} / {red_stats['break_30m']}")
+
+# endregion
+
 
 
 
