@@ -91,11 +91,11 @@ for col in tf_cols:
         errors="coerce"
     )
 
-
+# endregion
 
 
 # -----------------------------------------------
-# CONTROLLO DATI 
+# region CONTROLLO DATI 
 # -----------------------------------------------
 
 problemi_dati = False  # flag per sapere se ci sono problemi
@@ -502,15 +502,14 @@ identity_df = filtered_mg[id_cols]
 # region CARTA D'IDENTITA - DISPLAY
 # --------------------------------------------
 
-import streamlit as st
 import plotly.express as px
-import pandas as pd
 
 st.subheader("🆔 Carte d'identità azioni")
 
 # Separa GREEN vs RED
 green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
 red_df   = identity_df[identity_df["Chiusura"] == "RED"]
+
 
 def ci_box(df, label, color):
     if df.empty:
@@ -534,7 +533,7 @@ def ci_box(df, label, color):
         orientation='h',
         labels={"x": "Media (%)", "y": ""},
         color=list(mean_values.values()),
-        color_continuous_scale=[(0, "#E74C3C"), (0.5, "#ffffff"), (1, "#2ECC71")], # rosso -> bianco -> verde
+        color_continuous_scale=[(0, "#E74C3C"), (0.5, "#ffffff"), (1, "#2ECC71")],
         range_color=[min(mean_values.values()), max(mean_values.values())]
     )
     fig.update_layout(
@@ -543,22 +542,22 @@ def ci_box(df, label, color):
         coloraxis_showscale=False
     )
     
-    # KPI numerici
+    # KPI in mini-box
     kpi_html = f"""
     <div style="
-        background-color:{color}20;  /* trasparenza */
+        background-color:{color}20;
         padding:15px;
         border-radius:10px;
         border:1px solid {color};
         margin-bottom:10px;
     ">
         <h4 style="margin:0">{label}</h4>
-        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; margin-top:10px;">
-            <div><b>GAP medio:</b> {df['GAP'].mean():.1f}%</div>
-            <div><b>Dollar Vol PM medio:</b> {df['pm_dollar_vol'].mean():.0f}</div>
-            <div><b>%Open_PMH medio:</b> {df['%Open_PMH'].mean():.1f}%</div>
-            <div><b>Break PMH 15m/30m:</b> {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}</div>
-            <div><b>Rank giornaliero medio:</b> {df['gapper_rank_day'].mean():.1f}</div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>GAP medio: {df['GAP'].mean():.1f}%</div>
+            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Dollar Vol PM: {df['pm_dollar_vol'].mean():.0f}</div>
+            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
+            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Break 15/30: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}</div>
+            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Rank medio: {df['gapper_rank_day'].mean():.1f}</div>
         </div>
     </div>
     """
@@ -572,6 +571,7 @@ with col1:
     ci_box(green_df, "🟢 LONG (GREEN)", "#2ECC71")
 with col2:
     ci_box(red_df, "🔴 SHORT (RED)", "#E74C3C")
+
 
 
 # endregion
