@@ -530,29 +530,48 @@ def ci_stats(df, label):
         "break_30m": df["break_pmh_30m"].sum()
     }
 
-green_stats = ci_stats(green_df, "GREEN")
-red_stats   = ci_stats(red_df, "RED")
+import plotly.express as px
 
-# Crea due colonne affiancate
+def ci_box(df, label, color):
+    if df.empty:
+        st.write(f"No records for {label}")
+        return
+    
+    # Medie
+    mean_values = {
+        "OH 15m": df["oh_15m"].mean(),
+        "OH 30m": df["oh_30m"].mean(),
+        "OH 60m": df["oh_60m"].mean(),
+        "OL 15m": df["ol_15m"].mean(),
+        "OL 30m": df["ol_30m"].mean(),
+        "OL 60m": df["ol_60m"].mean()
+    }
+    
+    # Barre orizzontali
+    fig = px.bar(
+        x=list(mean_values.values()),
+        y=list(mean_values.keys()),
+        orientation='h',
+        labels={"x": "Media (%)", "y": "Parametro"},
+        title=f"{label} - Carte d'identità",
+        color_discrete_sequence=[color]*len(mean_values)
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Altri KPI numerici
+    st.markdown(f"- GAP medio: {df['GAP'].mean():.1f}%")
+    st.markdown(f"- Dollar Volume PM medio: {df['pm_dollar_vol'].mean():.0f}")
+    st.markdown(f"- %Open_PMH medio: {df['%Open_PMH'].mean():.1f}%")
+    st.markdown(f"- Break PMH 15m/30m: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}")
+    st.markdown(f"- Rank giornaliero medio: {df['gapper_rank_day'].mean():.1f}")
+
+# Due colonne affiancate
 col1, col2 = st.columns(2)
-
-# Box GREEN
 with col1:
-    st.markdown(f"### 🟢 LONG (GREEN) - {green_stats['count']} record")
-    st.markdown(f"- GAP medio: {green_stats['GAP_mean']:.1f}%")
-    st.markdown(f"- Dollar Volume PM medio: {green_stats['PM_dollar_vol_mean']:.0f}")
-    st.markdown(f"- OH 15m/30m/60m medio: {green_stats['OH_15m_mean']:.1f}% / {green_stats['OH_30m_mean']:.1f}% / {green_stats['OH_60m_mean']:.1f}%")
-    st.markdown(f"- OL 15m/30m/60m medio: {green_stats['OL_15m_mean']:.1f}% / {green_stats['OL_30m_mean']:.1f}% / {green_stats['OL_60m_mean']:.1f}%")
-    st.markdown(f"- Break PMH 15m/30m: {green_stats['break_15m']} / {green_stats['break_30m']}")
-
-# Box RED
+    ci_box(green_df, "🟢 LONG (GREEN)", "#2ECC71")
 with col2:
-    st.markdown(f"### 🔴 SHORT (RED) - {red_stats['count']} record")
-    st.markdown(f"- GAP medio: {red_stats['GAP_mean']:.1f}%")
-    st.markdown(f"- Dollar Volume PM medio: {red_stats['PM_dollar_vol_mean']:.0f}")
-    st.markdown(f"- OH 15m/30m/60m medio: {red_stats['OH_15m_mean']:.1f}% / {red_stats['OH_30m_mean']:.1f}% / {red_stats['OH_60m_mean']:.1f}%")
-    st.markdown(f"- OL 15m/30m/60m medio: {red_stats['OL_15m_mean']:.1f}% / {red_stats['OL_30m_mean']:.1f}% / {red_stats['OL_60m_mean']:.1f}%")
-    st.markdown(f"- Break PMH 15m/30m: {red_stats['break_15m']} / {red_stats['break_30m']}")
+    ci_box(red_df, "🔴 SHORT (RED)", "#E74C3C")
 
 # endregion
 
