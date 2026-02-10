@@ -502,76 +502,60 @@ identity_df = filtered_mg[id_cols]
 # region CARTA D'IDENTITA - DISPLAY
 # --------------------------------------------
 
-st.subheader("🆔 Carte d'identità azioni")
+import plotly.graph_objects as go
 
-# Separa GREEN vs RED
-green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
-red_df   = identity_df[identity_df["Chiusura"] == "RED"]
-
-# Funzione per calcolare statistiche sintetiche
-def ci_stats(df, label):
-    if df.empty:
-        return {k: "-" for k in [
-            "count", "GAP_mean", "PM_dollar_vol_mean", "OH_15m_mean", "OH_30m_mean", "OH_60m_mean",
-            "OL_15m_mean", "OL_30m_mean", "OL_60m_mean", "break_15m", "break_30m"
-        ]}
-    
-    return {
-        "count": len(df),
-        "GAP_mean": df["GAP"].mean(),
-        "PM_dollar_vol_mean": df["pm_dollar_vol"].mean(),
-        "OH_15m_mean": df["oh_15m"].mean(),
-        "OH_30m_mean": df["oh_30m"].mean(),
-        "OH_60m_mean": df["oh_60m"].mean(),
-        "OL_15m_mean": df["ol_15m"].mean(),
-        "OL_30m_mean": df["ol_30m"].mean(),
-        "OL_60m_mean": df["ol_60m"].mean(),
-        "break_15m": df["break_pmh_15m"].sum(),
-        "break_30m": df["break_pmh_30m"].sum()
-    }
-
-import plotly.express as px
-
-def ci_box(df, label, color):
+def ci_card(df, label, color_bg, suffix="%"):
     if df.empty:
         st.write(f"No records for {label}")
         return
     
-    # Medie
-    mean_values = {
-        "OH 15m": df["oh_15m"].mean(),
-        "OH 30m": df["oh_30m"].mean(),
-        "OH 60m": df["oh_60m"].mean(),
-        "OL 15m": df["ol_15m"].mean(),
-        "OL 30m": df["ol_30m"].mean(),
-        "OL 60m": df["ol_60m"].mean()
-    }
+    # Preparazione dati barre
+    bar_data = []
+    for tf in [15, 30, 60]:
+        # OH
+        val = df[f"oh_{tf}m"].mean()
+        bar_data.append({"name": f"H{tf}", "value": val})
+        # OL
+        val = df[f"ol_{tf}m"].mean()
+        bar_data.append({"name": f"L{tf}", "value": val})
     
-    # Barre orizzontali
-    fig = px.bar(
-        x=list(mean_values.values()),
-        y=list(mean_values.keys()),
+    # Colori barre: verde se positiva, rosso se negativa
+    bar_colors = ["#2ECC71" if x["value"] >= 0 else "#E74C3C" for x in bar_data]
+
+    # Creazione grafico
+    fig = go.Figure(go.Bar(
+        x=[x["value"] for x in bar_data],
+        y=[x["name"] for x in bar_data],
         orientation='h',
-        labels={"x": "Media (%)", "y": "Parametro"},
+        marker_color=bar_colors,
+        text=[f"{x['value']:.1f}{suffix}" for x in bar_data],
+        textposition='outside'
+    ))
+    fig.update_layout(
         title=f"{label} - Carte d'identità",
-        color_discrete_sequence=[color]*len(mean_values)
+        plot_bgcolor=color_bg,
+        paper_bgcolor=color_bg,
+        margin=dict(l=20, r=20, t=40, b=20),
+        xaxis_title=suffix,
+        yaxis_title="",
+        yaxis=dict(tickmode="array")
     )
-    
+
     st.plotly_chart(fig, use_container_width=True)
-    
-    # Altri KPI numerici
-    st.markdown(f"- GAP medio: {df['GAP'].mean():.1f}%")
-    st.markdown(f"- Dollar Volume PM medio: {df['pm_dollar_vol'].mean():.0f}")
-    st.markdown(f"- %Open_PMH medio: {df['%Open_PMH'].mean():.1f}%")
-    st.markdown(f"- Break PMH 15m/30m: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}")
-    st.markdown(f"- Rank giornaliero medio: {df['gapper_rank_day'].mean():.1f}")
+
+    # Box KPI testuali
+    kpi_card_textual("GAP medio", df["GAP"].mean(), df["GAP"].min(), df["GAP"].max(), suffix=suffix)
+    kpi_card_textual("Dollar Volume PM", df["pm_dollar_vol"].mean(), df["pm_dollar_vol"].min(), df["pm_dollar_vol"].max(), suffix="")
+    kpi_card_textual("%Open_PMH", df["%Open_PMH"].mean(), df["%Open_PMH"].min(), df["%Open_PMH"].max(), suffix=suffix)
+    kpi_card_textual("Break PMH 15/30m", df["break_pmh_15m"].sum(), df["break_pmh_30m"].sum(), 0, suffix="")
 
 # Due colonne affiancate
 col1, col2 = st.columns(2)
 with col1:
-    ci_box(green_df, "🟢 LONG (GREEN)", "#2ECC71")
+    ci_card(green_df, "🟢 LONG (GREEN)", "#eaf8ee")
 with col2:
-    ci_box(red_df, "🔴 SHORT (RED)", "#E74C3C")
+    ci_card(red_df, "🔴 SHORT (RED)", "#fdeaea")
+
 
 # endregion
 
