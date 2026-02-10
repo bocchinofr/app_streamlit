@@ -440,10 +440,10 @@ filtered_mg["gapper_rank_day"] = (
 
 for tf in [15, 30, 60]:
     filtered_mg[f"oh_{tf}m"] = (
-        (filtered_mg[f"High_{tf}m"] - filtered_mg["Open"]) / filtered_mg["OPEN"] * 100
+        (filtered_mg[f"High_{tf}m"] - filtered_mg["OPEN"]) / filtered_mg["OPEN"] * 100
     )
     filtered_mg[f"ol_{tf}m"] = (
-        (filtered_mg[f"Low_{tf}m"] - filtered_mg["Open"]) / filtered_mg["OPEN"] * 100
+        (filtered_mg[f"Low_{tf}m"] - filtered_mg["OPEN"]) / filtered_mg["OPEN"] * 100
     )
 
     filtered_mg[f"break_pmh_{tf}m"] = (
