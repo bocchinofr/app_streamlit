@@ -548,12 +548,12 @@ def ci_box(df, label, color):
     ">
         <h4 style="margin:0">{label}</h4>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-            <div style='flex: 35%; background:#fff2; padding:5px 10px; border-radius:5px;'>GAP : {df['GAP'].mean():.1f}%</div>
-            <div style='flex: 35%; background:#fff2; padding:5px 10px; border-radius:5px;'>$ Vol PM: {dollar_vol_m:.1f}M</div>
-            <div style='flex: 35%; background:#fff2; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
-            <div style='flex: 35%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 15: {df['break_pmh_15m'].sum()}</div>
-            <div style='flex: 35%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 30: {df['break_pmh_30m'].sum()}</div>
-            <div style='flex: 35%; background:#fff2; padding:5px 10px; border-radius:5px;'>Rank medio: {df['gapper_rank_day'].mean():.1f}</div>
+            <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>GAP : {df['GAP'].mean():.1f}%</div>
+            <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>$ Vol PM: {dollar_vol_m:.1f}M</div>
+            <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
+            <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 15: {df['break_pmh_15m'].sum()}</div>
+            <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 30: {df['break_pmh_30m'].sum()}</div>
+            <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>Rank medio: {df['gapper_rank_day'].mean():.1f}</div>
         </div>
     </div>
     """
