@@ -222,7 +222,7 @@ filtered_mg = filtered[
 # endregion
 
 # -------------------------------
-# region KPI CARD TESTUALE
+# region KPI CARD 
 # -------------------------------
 
 def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
@@ -386,6 +386,8 @@ green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_mi
 mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
 mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 
+# endregion
+
 # -------------------------------------------------
 # region TABELLA GIORNALIERA MULTI-GAP
 # -------------------------------------------------
@@ -421,6 +423,48 @@ pct_days_red_75 = (
     (daily_mg["pct_red"] >= 75).mean() * 100
     if not daily_mg.empty else 0
 )
+
+
+filtered_mg["pm_dollar_vol"] = filtered_mg["PM_volume"] * filtered_mg["Open"]
+
+filtered_mg["open_vs_pmh_pct"] = (
+    (filtered_mg["Open"] - filtered_mg["PM_high"]) / filtered_mg["PM_high"] * 100
+)
+
+filtered_mg["gapper_rank_day"] = (
+    filtered_mg
+    .groupby("Date")["GAP"]
+    .rank(ascending=False, method="first")
+)
+
+
+for tf in [15, 30, 60]:
+    filtered_mg[f"oh_{tf}m"] = (
+        (filtered_mg[f"High_{tf}m"] - filtered_mg["Open"]) / filtered_mg["Open"] * 100
+    )
+    filtered_mg[f"ol_{tf}m"] = (
+        (filtered_mg[f"Low_{tf}m"] - filtered_mg["Open"]) / filtered_mg["Open"] * 100
+    )
+
+    filtered_mg[f"break_pmh_{tf}m"] = (
+        filtered_mg[f"High_{tf}m"] >= filtered_mg["PM_high"]
+    ).astype(int)
+
+
+id_cols = [
+    "Date", "Ticker", "GAP",
+    "pm_volume", "pm_dollar_vol",
+    "open_vs_pmh_pct",
+    "gapper_rank_day",
+    "oh_15m", "oh_30m", "oh_60m",
+    "ol_15m", "ol_30m", "ol_60m",
+    "break_pmh_15m", "break_pmh_30m",
+    "Chiusura"
+]
+
+identity_df = filtered_mg[id_cols]
+
+
 
 # endregion
 
