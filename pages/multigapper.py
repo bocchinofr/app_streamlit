@@ -516,7 +516,7 @@ def ci_box(df, label, color):
         st.write(f"No records for {label}")
         return
     
-    # Medie per il grafico
+    # Grafico a barre
     mean_values = {
         "H15": df["oh_15m"].mean(),
         "H30": df["oh_30m"].mean(),
@@ -526,23 +526,18 @@ def ci_box(df, label, color):
         "L60": df["ol_60m"].mean()
     }
     
-    # Grafico a barre
     fig = px.bar(
         x=list(mean_values.values()),
         y=list(mean_values.keys()),
         orientation='h',
         labels={"x": "Media (%)", "y": ""},
-        color=list(mean_values.values()),
-        color_continuous_scale=[(0, "#E74C3C"), (0.5, "#ffffff"), (1, "#2ECC71")],
-        range_color=[min(mean_values.values()), max(mean_values.values())]
+        color_discrete_sequence=[color]*len(mean_values)
     )
-    fig.update_layout(
-        margin=dict(l=20, r=20, t=20, b=20),
-        height=250,
-        coloraxis_showscale=False
-    )
+    fig.update_layout(margin=dict(l=20, r=20, t=20, b=20), height=250)
     
-    # KPI in mini-box
+    # KPI in 3 colonne
+    dollar_vol_m = df['pm_dollar_vol'].mean() / 1_000_000
+    
     kpi_html = f"""
     <div style="
         background-color:{color}20;
@@ -553,11 +548,11 @@ def ci_box(df, label, color):
     ">
         <h4 style="margin:0">{label}</h4>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-            <div style='padding:5px 10px; border-radius:5px;'>GAP medio: {df['GAP'].mean():.1f}%</div>
-            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Dollar Vol PM: {df['pm_dollar_vol'].mean():.0f}</div>
-            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
-            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Break 15/30: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}</div>
-            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Rank medio: {df['gapper_rank_day'].mean():.1f}</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>GAP medio: {df['GAP'].mean():.1f}%</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Dollar Vol PM: {dollar_vol_m:.1f}M</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 15/30: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Rank medio: {df['gapper_rank_day'].mean():.1f}</div>
         </div>
     </div>
     """
@@ -571,6 +566,7 @@ with col1:
     ci_box(green_df, "🟢 LONG (GREEN)", "#2ECC71")
 with col2:
     ci_box(red_df, "🔴 SHORT (RED)", "#E74C3C")
+
 
 
 
