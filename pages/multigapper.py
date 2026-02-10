@@ -425,6 +425,10 @@ pct_days_red_75 = (
 )
 
 
+filtered_mg["Volume PM"] = pd.to_numeric(
+    filtered_mg["Volume PM"], errors="coerce"
+)
+
 filtered_mg["pm_dollar_vol"] = filtered_mg["Volume PM"] * filtered_mg["OPEN"]
 
 filtered_mg["gapper_rank_day"] = (
