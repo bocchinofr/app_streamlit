@@ -532,6 +532,15 @@ def ci_stats(df, label):
 
 import plotly.express as px
 
+   
+    # Altri KPI numerici
+    st.markdown(f"- GAP medio: {df['GAP'].mean():.1f}%")
+    st.markdown(f"- Dollar Volume PM medio: {df['pm_dollar_vol'].mean():.0f}")
+    st.markdown(f"- %Open_PMH medio: {df['%Open_PMH'].mean():.1f}%")
+    st.markdown(f"- Break PMH 15m/30m: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}")
+    st.markdown(f"- Rank giornaliero medio: {df['gapper_rank_day'].mean():.1f}")
+
+
 def ci_box(df, label, color):
     if df.empty:
         st.write(f"No records for {label}")
@@ -558,14 +567,6 @@ def ci_box(df, label, color):
     )
     
     st.plotly_chart(fig, use_container_width=True)
-    
-    # Altri KPI numerici
-    st.markdown(f"- GAP medio: {df['GAP'].mean():.1f}%")
-    st.markdown(f"- Dollar Volume PM medio: {df['pm_dollar_vol'].mean():.0f}")
-    st.markdown(f"- %Open_PMH medio: {df['%Open_PMH'].mean():.1f}%")
-    st.markdown(f"- Break PMH 15m/30m: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}")
-    st.markdown(f"- Rank giornaliero medio: {df['gapper_rank_day'].mean():.1f}")
-
 # Due colonne affiancate
 col1, col2 = st.columns(2)
 with col1:
