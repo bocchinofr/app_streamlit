@@ -544,6 +544,8 @@ def ci_box(df, label, color):
         xaxis_title="Media (%)",
         yaxis_title="",
         yaxis=dict(autorange="reversed")  # per avere H in alto e L in basso
+        text=[f"{val:.1f}%"],       # valore da mostrare
+        textposition="outside"       # "inside" o "outside" a seconda di dove vuoi
     )
     
     # KPI in 3 colonne
