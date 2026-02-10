@@ -553,7 +553,7 @@ def ci_box(df, label, color):
     ">
         <h4 style="margin:0">{label}</h4>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-            <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>GAP medio: {df['GAP'].mean():.1f}%</div>
+            <div style='padding:5px 10px; border-radius:5px;'>GAP medio: {df['GAP'].mean():.1f}%</div>
             <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Dollar Vol PM: {df['pm_dollar_vol'].mean():.0f}</div>
             <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
             <div style='background:#fff7; padding:5px 10px; border-radius:5px;'>Break 15/30: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}</div>
