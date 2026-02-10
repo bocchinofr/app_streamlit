@@ -425,7 +425,7 @@ pct_days_red_75 = (
 )
 
 
-filtered_mg["pm_dollar_vol"] = filtered_mg["Volume PM"] * filtered_mg["Open"]
+filtered_mg["pm_dollar_vol"] = filtered_mg["Volume PM"] * filtered_mg["OPEN"]
 
 filtered_mg["gapper_rank_day"] = (
     filtered_mg
