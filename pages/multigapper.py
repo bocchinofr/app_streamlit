@@ -516,7 +516,7 @@ def ci_box(df, label, color):
         st.write(f"No records for {label}")
         return
     
-    # Grafico a barre
+    # Grafico a barre con colori differenti per positivo/negativo
     mean_values = {
         "H15": df["oh_15m"].mean(),
         "H30": df["oh_30m"].mean(),
@@ -526,12 +526,19 @@ def ci_box(df, label, color):
         "L60": df["ol_60m"].mean()
     }
     
+    bar_colors = []
+    for k, v in mean_values.items():
+        if k.startswith("H"):
+            bar_colors.append("#2ECC71")  # verde
+        else:
+            bar_colors.append("#E74C3C")  # rosso
+    
     fig = px.bar(
         x=list(mean_values.values()),
         y=list(mean_values.keys()),
         orientation='h',
         labels={"x": "Media (%)", "y": ""},
-        color_discrete_sequence=[color]*len(mean_values)
+        color_discrete_sequence=bar_colors
     )
     fig.update_layout(margin=dict(l=20, r=20, t=20, b=20), height=250)
     
@@ -546,7 +553,10 @@ def ci_box(df, label, color):
         border:1px solid {color};
         margin-bottom:10px;
     ">
-        <h4 style="margin:0">{label}</h4>
+        <h4 style="margin:0; display:flex; justify-content:space-between;">
+            <span>{label}</span>
+            <span>Count: {len(df)}</span>
+        </h4>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
             <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>GAP : {df['GAP'].mean():.1f}%</div>
             <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>$ Vol PM: {dollar_vol_m:.1f}M</div>
