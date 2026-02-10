@@ -502,71 +502,69 @@ identity_df = filtered_mg[id_cols]
 # region CARTA D'IDENTITA - DISPLAY
 # --------------------------------------------
 
+import streamlit as st
+import plotly.express as px
+import pandas as pd
+
 st.subheader("🆔 Carte d'identità azioni")
 
 # Separa GREEN vs RED
 green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
 red_df   = identity_df[identity_df["Chiusura"] == "RED"]
 
-# Funzione per calcolare statistiche sintetiche
-def ci_stats(df, label):
-    if df.empty:
-        return {k: "-" for k in [
-            "count", "GAP_mean", "PM_dollar_vol_mean", "OH_15m_mean", "OH_30m_mean", "OH_60m_mean",
-            "OL_15m_mean", "OL_30m_mean", "OL_60m_mean", "break_15m", "break_30m"
-        ]}
-    
-    return {
-        "count": len(df),
-        "GAP_mean": df["GAP"].mean(),
-        "PM_dollar_vol_mean": df["pm_dollar_vol"].mean(),
-        "OH_15m_mean": df["oh_15m"].mean(),
-        "OH_30m_mean": df["oh_30m"].mean(),
-        "OH_60m_mean": df["oh_60m"].mean(),
-        "OL_15m_mean": df["ol_15m"].mean(),
-        "OL_30m_mean": df["ol_30m"].mean(),
-        "OL_60m_mean": df["ol_60m"].mean(),
-        "break_15m": df["break_pmh_15m"].sum(),
-        "break_30m": df["break_pmh_30m"].sum()
-    }
-
-import plotly.express as px
-
 def ci_box(df, label, color):
     if df.empty:
         st.write(f"No records for {label}")
         return
     
-    # Medie
+    # Medie per il grafico
     mean_values = {
-        "OH 15m": df["oh_15m"].mean(),
-        "OH 30m": df["oh_30m"].mean(),
-        "OH 60m": df["oh_60m"].mean(),
-        "OL 15m": df["ol_15m"].mean(),
-        "OL 30m": df["ol_30m"].mean(),
-        "OL 60m": df["ol_60m"].mean()
+        "H15": df["oh_15m"].mean(),
+        "H30": df["oh_30m"].mean(),
+        "H60": df["oh_60m"].mean(),
+        "L15": df["ol_15m"].mean(),
+        "L30": df["ol_30m"].mean(),
+        "L60": df["ol_60m"].mean()
     }
     
-    # Barre orizzontali
+    # Grafico a barre
     fig = px.bar(
         x=list(mean_values.values()),
         y=list(mean_values.keys()),
         orientation='h',
-        labels={"x": "Media (%)", "y": "Parametro"},
-        title=f"{label} - Carte d'identità",
-        color_discrete_sequence=[color]*len(mean_values)
+        labels={"x": "Media (%)", "y": ""},
+        color=list(mean_values.values()),
+        color_continuous_scale=[(0, "#E74C3C"), (0.5, "#ffffff"), (1, "#2ECC71")], # rosso -> bianco -> verde
+        range_color=[min(mean_values.values()), max(mean_values.values())]
+    )
+    fig.update_layout(
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=250,
+        coloraxis_showscale=False
     )
     
+    # KPI numerici
+    kpi_html = f"""
+    <div style="
+        background-color:{color}20;  /* trasparenza */
+        padding:15px;
+        border-radius:10px;
+        border:1px solid {color};
+        margin-bottom:10px;
+    ">
+        <h4 style="margin:0">{label}</h4>
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; margin-top:10px;">
+            <div><b>GAP medio:</b> {df['GAP'].mean():.1f}%</div>
+            <div><b>Dollar Vol PM medio:</b> {df['pm_dollar_vol'].mean():.0f}</div>
+            <div><b>%Open_PMH medio:</b> {df['%Open_PMH'].mean():.1f}%</div>
+            <div><b>Break PMH 15m/30m:</b> {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}</div>
+            <div><b>Rank giornaliero medio:</b> {df['gapper_rank_day'].mean():.1f}</div>
+        </div>
+    </div>
+    """
     
-    # Altri KPI numerici
-    st.markdown(f"- GAP medio: {df['GAP'].mean():.1f}%")
-    st.markdown(f"- Dollar Volume PM medio: {df['pm_dollar_vol'].mean():.0f}")
-    st.markdown(f"- %Open_PMH medio: {df['%Open_PMH'].mean():.1f}%")
-    st.markdown(f"- Break PMH 15m/30m: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}")
-    st.markdown(f"- Rank giornaliero medio: {df['gapper_rank_day'].mean():.1f}")
-
+    st.markdown(kpi_html, unsafe_allow_html=True)
     st.plotly_chart(fig, use_container_width=True)
-
 
 # Due colonne affiancate
 col1, col2 = st.columns(2)
@@ -574,6 +572,7 @@ with col1:
     ci_box(green_df, "🟢 LONG (GREEN)", "#2ECC71")
 with col2:
     ci_box(red_df, "🔴 SHORT (RED)", "#E74C3C")
+
 
 # endregion
 
