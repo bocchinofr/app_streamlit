@@ -535,7 +535,7 @@ def ci_box(df, label, color):
             x=list(mean_values.values()),
             y=list(mean_values.keys()),
             orientation='h',
-            marker_color=bar_colors
+            marker_color=bar_colors,
             text=[f"{v:.1f}%" for v in mean_values.values()],  # <--- qui
             textposition="outside"       # "inside" o "outside" a seconda di dove vuoi
         )
@@ -545,7 +545,7 @@ def ci_box(df, label, color):
         height=250,
         xaxis_title="Media (%)",
         yaxis_title="",
-        yaxis=dict(autorange="reversed"),  # per avere H in alto e L in basso
+        yaxis=dict(autorange="reversed")  # per avere H in alto e L in basso
     )
     
     # KPI in 3 colonne
