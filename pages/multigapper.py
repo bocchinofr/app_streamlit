@@ -555,7 +555,7 @@ def ci_box(df, label, color):
     ">
         <h4 style="margin:0; display:flex; justify-content:space-between;">
             <span>{label}</span>
-            <span>Count: {len(df)}</span>
+            <span>{len(df)}</span>
         </h4>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
             <div style='flex: 25%; background:#fff2; padding:5px 10px; border-radius:5px;'>GAP : {df['GAP'].mean():.1f}%</div>
@@ -574,9 +574,9 @@ def ci_box(df, label, color):
 # Due colonne affiancate
 col1, col2 = st.columns(2)
 with col1:
-    ci_box(green_df, "🟢 LONG (GREEN)", "#2ECC71")
+    ci_box(green_df, "🟢 LONG (close green)", "#2ECC71")
 with col2:
-    ci_box(red_df, "🔴 SHORT (RED)", "#E74C3C")
+    ci_box(red_df, "🔴 SHORT (close red)", "#E74C3C")
 
 
 
