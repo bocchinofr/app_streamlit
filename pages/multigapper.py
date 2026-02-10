@@ -510,6 +510,9 @@ st.subheader("🆔 Carte d'identità azioni")
 green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
 red_df   = identity_df[identity_df["Chiusura"] == "RED"]
 
+
+import plotly.graph_objects as go
+
 def ci_box(df, label, color):
     if df.empty:
         st.write(f"No records for {label}")
@@ -578,9 +581,6 @@ with col1:
     ci_box(green_df, "🟢 LONG (close green)", "#2ECC71")
 with col2:
     ci_box(red_df, "🔴 SHORT (close red)", "#E74C3C")
-
-
-
 
 
 # endregion
