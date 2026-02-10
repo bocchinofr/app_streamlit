@@ -425,11 +425,7 @@ pct_days_red_75 = (
 )
 
 
-filtered_mg["pm_dollar_vol"] = filtered_mg["PM_volume"] * filtered_mg["Open"]
-
-filtered_mg["open_vs_pmh_pct"] = (
-    (filtered_mg["Open"] - filtered_mg["PM_high"]) / filtered_mg["PM_high"] * 100
-)
+filtered_mg["pm_dollar_vol"] = filtered_mg["Volume PM"] * filtered_mg["Open"]
 
 filtered_mg["gapper_rank_day"] = (
     filtered_mg
@@ -454,7 +450,7 @@ for tf in [15, 30, 60]:
 id_cols = [
     "Date", "Ticker", "GAP",
     "pm_volume", "pm_dollar_vol",
-    "open_vs_pmh_pct",
+    "%Open_PMH",
     "gapper_rank_day",
     "oh_15m", "oh_30m", "oh_60m",
     "ol_15m", "ol_30m", "ol_60m",
