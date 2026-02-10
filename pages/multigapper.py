@@ -502,6 +502,34 @@ identity_df = filtered_mg[id_cols]
 # region CARTA D'IDENTITA - DISPLAY
 # --------------------------------------------
 
+st.subheader("🆔 Carte d'identità azioni")
+
+# Separa GREEN vs RED
+green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
+red_df   = identity_df[identity_df["Chiusura"] == "RED"]
+
+# Funzione per calcolare statistiche sintetiche
+def ci_stats(df, label):
+    if df.empty:
+        return {k: "-" for k in [
+            "count", "GAP_mean", "PM_dollar_vol_mean", "OH_15m_mean", "OH_30m_mean", "OH_60m_mean",
+            "OL_15m_mean", "OL_30m_mean", "OL_60m_mean", "break_15m", "break_30m"
+        ]}
+    
+    return {
+        "count": len(df),
+        "GAP_mean": df["GAP"].mean(),
+        "PM_dollar_vol_mean": df["pm_dollar_vol"].mean(),
+        "OH_15m_mean": df["oh_15m"].mean(),
+        "OH_30m_mean": df["oh_30m"].mean(),
+        "OH_60m_mean": df["oh_60m"].mean(),
+        "OL_15m_mean": df["ol_15m"].mean(),
+        "OL_30m_mean": df["ol_30m"].mean(),
+        "OL_60m_mean": df["ol_60m"].mean(),
+        "break_15m": df["break_pmh_15m"].sum(),
+        "break_30m": df["break_pmh_30m"].sum()
+    }
+
 import plotly.graph_objects as go
 
 def ci_card(df, label, color_bg, suffix="%"):
