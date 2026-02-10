@@ -438,6 +438,29 @@ filtered_mg["gapper_rank_day"] = (
 )
 
 
+# Timeframe highs
+for tf in [15, 30, 60]:
+    col = f"High_{tf}m"
+    if col in filtered_mg.columns:
+        filtered_mg[col] = pd.to_numeric(
+            filtered_mg[col]
+            .astype(str)
+            .str.replace(",", ".")
+            .str.strip(),
+            errors="coerce"
+        )
+
+# PM High
+if "PM_high" in filtered_mg.columns:
+    filtered_mg["PM_high"] = pd.to_numeric(
+        filtered_mg["PM_high"]
+        .astype(str)
+        .str.replace(",", ".")
+        .str.strip(),
+        errors="coerce"
+    )
+
+
 for tf in [15, 30, 60]:
     filtered_mg[f"oh_{tf}m"] = (
         (filtered_mg[f"High_{tf}m"] - filtered_mg["OPEN"]) / filtered_mg["OPEN"] * 100
