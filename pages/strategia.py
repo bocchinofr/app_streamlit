@@ -236,7 +236,7 @@ if selected_tickers:
 
 
 # Ordina il dataframe filtrato per Date discendente
-filtered = filtered.sort_values(by="Date_dt", ascending=False)
+#filtered = filtered.sort_values(by="Date_dt", ascending=False)
 
 
 # ================================================
