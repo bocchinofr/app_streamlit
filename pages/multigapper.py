@@ -529,73 +529,49 @@ def ci_stats(df, label):
         "break_15m": df["break_pmh_15m"].sum(),
         "break_30m": df["break_pmh_30m"].sum()
     }
-import streamlit as st
-import plotly.graph_objects as go
 
-def ci_card_box(df, label, bg_color="#eaf8ee", suffix="%"):
+import plotly.express as px
+
+def ci_box(df, label, color):
     if df.empty:
         st.write(f"No records for {label}")
         return
     
-    # Preparazione dati barre
-    bar_data = []
-    for tf in [15, 30, 60]:
-        # OH
-        val = df[f"oh_{tf}m"].mean()
-        bar_data.append({"name": f"H{tf}", "value": val})
-        # OL
-        val = df[f"ol_{tf}m"].mean()
-        bar_data.append({"name": f"L{tf}", "value": val})
-
-    bar_colors = ["#2ECC71" if x["value"] >= 0 else "#E74C3C" for x in bar_data]
-
-    # Creazione grafico
-    fig = go.Figure(go.Bar(
-        x=[x["value"] for x in bar_data],
-        y=[x["name"] for x in bar_data],
+    # Medie
+    mean_values = {
+        "OH 15m": df["oh_15m"].mean(),
+        "OH 30m": df["oh_30m"].mean(),
+        "OH 60m": df["oh_60m"].mean(),
+        "OL 15m": df["ol_15m"].mean(),
+        "OL 30m": df["ol_30m"].mean(),
+        "OL 60m": df["ol_60m"].mean()
+    }
+    
+    # Barre orizzontali
+    fig = px.bar(
+        x=list(mean_values.values()),
+        y=list(mean_values.keys()),
         orientation='h',
-        marker_color=bar_colors,
-        text=[f"{x['value']:.1f}{suffix}" for x in bar_data],
-        textposition='outside'
-    ))
-    fig.update_layout(
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        margin=dict(l=20, r=20, t=20, b=20),
-        xaxis_title=suffix,
-        yaxis_title="",
-        yaxis=dict(tickmode="array")
+        labels={"x": "Media (%)", "y": "Parametro"},
+        title=f"{label} - Carte d'identità",
+        color_discrete_sequence=[color]*len(mean_values)
     )
-
-    # Box con sfondo colorato
-    st.markdown(f"""
-    <div style="
-        background-color:{bg_color};
-        padding:15px;
-        border-radius:10px;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    ">
-        <h4 style="margin-bottom:10px">{label}</h4>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Inseriamo il grafico sotto il titolo dentro la card
+    
     st.plotly_chart(fig, use_container_width=True)
-
-    # KPI testuali sotto il grafico
-    kpi_card_textual("GAP medio", df["GAP"].mean(), df["GAP"].min(), df["GAP"].max(), suffix=suffix)
-    kpi_card_textual("Dollar Volume PM", df["pm_dollar_vol"].mean(), df["pm_dollar_vol"].min(), df["pm_dollar_vol"].max(), suffix="")
-    kpi_card_textual("%Open_PMH", df["%Open_PMH"].mean(), df["%Open_PMH"].min(), df["%Open_PMH"].max(), suffix=suffix)
-    kpi_card_textual("Break PMH 15/30m", df["break_pmh_15m"].sum(), df["break_pmh_30m"].sum(), 0, suffix="")
+    
+    # Altri KPI numerici
+    st.markdown(f"- GAP medio: {df['GAP'].mean():.1f}%")
+    st.markdown(f"- Dollar Volume PM medio: {df['pm_dollar_vol'].mean():.0f}")
+    st.markdown(f"- %Open_PMH medio: {df['%Open_PMH'].mean():.1f}%")
+    st.markdown(f"- Break PMH 15m/30m: {df['break_pmh_15m'].sum()} / {df['break_pmh_30m'].sum()}")
+    st.markdown(f"- Rank giornaliero medio: {df['gapper_rank_day'].mean():.1f}")
 
 # Due colonne affiancate
 col1, col2 = st.columns(2)
 with col1:
-    ci_card_box(green_df, "🟢 LONG (GREEN)", bg_color="#eaf8ee")
+    ci_box(green_df, "🟢 LONG (GREEN)", "#2ECC71")
 with col2:
-    ci_card_box(red_df, "🔴 SHORT (RED)", bg_color="#fdeaea")
-
-
+    ci_box(red_df, "🔴 SHORT (RED)", "#E74C3C")
 
 # endregion
 
