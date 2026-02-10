@@ -529,10 +529,10 @@ def ci_stats(df, label):
         "break_15m": df["break_pmh_15m"].sum(),
         "break_30m": df["break_pmh_30m"].sum()
     }
-
+import streamlit as st
 import plotly.graph_objects as go
 
-def ci_card(df, label, color_bg, suffix="%"):
+def ci_card_box(df, label, bg_color="#eaf8ee", suffix="%"):
     if df.empty:
         st.write(f"No records for {label}")
         return
@@ -546,8 +546,7 @@ def ci_card(df, label, color_bg, suffix="%"):
         # OL
         val = df[f"ol_{tf}m"].mean()
         bar_data.append({"name": f"L{tf}", "value": val})
-    
-    # Colori barre: verde se positiva, rosso se negativa
+
     bar_colors = ["#2ECC71" if x["value"] >= 0 else "#E74C3C" for x in bar_data]
 
     # Creazione grafico
@@ -560,18 +559,30 @@ def ci_card(df, label, color_bg, suffix="%"):
         textposition='outside'
     ))
     fig.update_layout(
-        title=f"{label} - Carte d'identità",
-        plot_bgcolor=color_bg,
-        paper_bgcolor=color_bg,
-        margin=dict(l=20, r=20, t=40, b=20),
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        margin=dict(l=20, r=20, t=20, b=20),
         xaxis_title=suffix,
         yaxis_title="",
         yaxis=dict(tickmode="array")
     )
 
+    # Box con sfondo colorato
+    st.markdown(f"""
+    <div style="
+        background-color:{bg_color};
+        padding:15px;
+        border-radius:10px;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    ">
+        <h4 style="margin-bottom:10px">{label}</h4>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Inseriamo il grafico sotto il titolo dentro la card
     st.plotly_chart(fig, use_container_width=True)
 
-    # Box KPI testuali
+    # KPI testuali sotto il grafico
     kpi_card_textual("GAP medio", df["GAP"].mean(), df["GAP"].min(), df["GAP"].max(), suffix=suffix)
     kpi_card_textual("Dollar Volume PM", df["pm_dollar_vol"].mean(), df["pm_dollar_vol"].min(), df["pm_dollar_vol"].max(), suffix="")
     kpi_card_textual("%Open_PMH", df["%Open_PMH"].mean(), df["%Open_PMH"].min(), df["%Open_PMH"].max(), suffix=suffix)
@@ -580,9 +591,10 @@ def ci_card(df, label, color_bg, suffix="%"):
 # Due colonne affiancate
 col1, col2 = st.columns(2)
 with col1:
-    ci_card(green_df, "🟢 LONG (GREEN)", "#eaf8ee")
+    ci_card_box(green_df, "🟢 LONG (GREEN)", bg_color="#eaf8ee")
 with col2:
-    ci_card(red_df, "🔴 SHORT (RED)", "#fdeaea")
+    ci_card_box(red_df, "🔴 SHORT (RED)", bg_color="#fdeaea")
+
 
 
 # endregion
