@@ -510,7 +510,6 @@ st.subheader("🆔 Carte d'identità azioni")
 green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
 red_df   = identity_df[identity_df["Chiusura"] == "RED"]
 
-
 def ci_box(df, label, color):
     if df.empty:
         st.write(f"No records for {label}")
@@ -526,21 +525,23 @@ def ci_box(df, label, color):
         "L60": df["ol_60m"].mean()
     }
     
-    bar_colors = []
-    for k, v in mean_values.items():
-        if k.startswith("H"):
-            bar_colors.append("#2ECC71")  # verde
-        else:
-            bar_colors.append("#E74C3C")  # rosso
+    bar_colors = ["#2ECC71" if k.startswith("H") else "#E74C3C" for k in mean_values.keys()]
     
-    fig = px.bar(
-        x=list(mean_values.values()),
-        y=list(mean_values.keys()),
-        orientation='h',
-        labels={"x": "Media (%)", "y": ""},
-        color_discrete_sequence=bar_colors
+    fig = go.Figure(
+        go.Bar(
+            x=list(mean_values.values()),
+            y=list(mean_values.keys()),
+            orientation='h',
+            marker_color=bar_colors
+        )
     )
-    fig.update_layout(margin=dict(l=20, r=20, t=20, b=20), height=250)
+    fig.update_layout(
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=250,
+        xaxis_title="Media (%)",
+        yaxis_title="",
+        yaxis=dict(autorange="reversed")  # per avere H in alto e L in basso
+    )
     
     # KPI in 3 colonne
     dollar_vol_m = df['pm_dollar_vol'].mean() / 1_000_000
@@ -577,6 +578,7 @@ with col1:
     ci_box(green_df, "🟢 LONG (close green)", "#2ECC71")
 with col2:
     ci_box(red_df, "🔴 SHORT (close red)", "#E74C3C")
+
 
 
 
