@@ -360,8 +360,8 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
 # -------------------------------------------------
 
 daily_mg = (
-    filtered_mg
-    .assign(is_red = filtered_mg["Chiusura"] == "RED")
+    filtered
+    .assign(is_red = filtered["Chiusura"] == "RED")
     .groupby("Date")
     .agg(
         num_gapper = ("Ticker", "count"),
@@ -393,14 +393,14 @@ pct_days_red_75 = (
 
 # calcolo Close %
 
-filtered_mg["day_close_pct"] = (
-    (filtered_mg["Close"] - filtered_mg["OPEN"]) / filtered_mg["OPEN"] * 100
+filtered["day_close_pct"] = (
+    (filtered["Close"] - filtered["OPEN"]) / filtered["OPEN"] * 100
 )
 
 # Suddivisione dataset
-total_df = filtered_mg.copy()
-green_df = filtered_mg[filtered_mg["Chiusura"] == "GREEN"]
-red_df   = filtered_mg[filtered_mg["Chiusura"] == "RED"]
+total_df = filtered.copy()
+green_df = filtered[filtered["Chiusura"] == "GREEN"]
+red_df   = filtered[filtered["Chiusura"] == "RED"]
 
 def structure_stats(df):
     if df.empty:
@@ -432,9 +432,9 @@ stats_red   = structure_stats(red_df)
 # Timeframe highs
 for tf in [15, 30, 60]:
     col = f"High_{tf}m"
-    if col in filtered_mg.columns:
-        filtered_mg[col] = pd.to_numeric(
-            filtered_mg[col]
+    if col in filtered.columns:
+        filtered[col] = pd.to_numeric(
+            filtered[col]
             .astype(str)
             .str.replace(",", ".")
             .str.strip(),
@@ -442,9 +442,9 @@ for tf in [15, 30, 60]:
         )
 
 # PM High
-if "PM_high" in filtered_mg.columns:
-    filtered_mg["PM_high"] = pd.to_numeric(
-        filtered_mg["PM_high"]
+if "PM_high" in filtered.columns:
+    filtered["PM_high"] = pd.to_numeric(
+        filtered["PM_high"]
         .astype(str)
         .str.replace(",", ".")
         .str.strip(),
@@ -453,28 +453,28 @@ if "PM_high" in filtered_mg.columns:
 
 # Creazione calcoli per kpi CI
 
-filtered_mg["Volume PM"] = pd.to_numeric(
-    filtered_mg["Volume PM"], errors="coerce"
+filtered["Volume PM"] = pd.to_numeric(
+    filtered["Volume PM"], errors="coerce"
 )
 
-filtered_mg["pm_dollar_vol"] = filtered_mg["Volume PM"] * filtered_mg["OPEN"]
+filtered["pm_dollar_vol"] = filtered["Volume PM"] * filtered["OPEN"]
 
-filtered_mg["gapper_rank_day"] = (
-    filtered_mg
+filtered["gapper_rank_day"] = (
+    filtered
     .groupby("Date")["GAP"]
     .rank(ascending=False, method="first")
 )
 
 for tf in [15, 30, 60]:
-    filtered_mg[f"oh_{tf}m"] = (
-        (filtered_mg[f"High_{tf}m"] - filtered_mg["OPEN"]) / filtered_mg["OPEN"] * 100
+    filtered[f"oh_{tf}m"] = (
+        (filtered[f"High_{tf}m"] - filtered["OPEN"]) / filtered["OPEN"] * 100
     )
-    filtered_mg[f"ol_{tf}m"] = (
-        (filtered_mg[f"Low_{tf}m"] - filtered_mg["OPEN"]) / filtered_mg["OPEN"] * 100
+    filtered[f"ol_{tf}m"] = (
+        (filtered[f"Low_{tf}m"] - filtered["OPEN"]) / filtered["OPEN"] * 100
     )
 
-    filtered_mg[f"break_pmh_{tf}m"] = (
-        filtered_mg[f"High_{tf}m"] >= filtered_mg["PM_high"]
+    filtered[f"break_pmh_{tf}m"] = (
+        filtered[f"High_{tf}m"] >= filtered["PM_high"]
     ).astype(int)
 
 
@@ -489,7 +489,7 @@ id_cols = [
     "Chiusura", "%OH","%OL","day_close_pct"
 ]
 
-identity_df = filtered_mg[id_cols]
+identity_df = filtered[id_cols]
 
 
 
