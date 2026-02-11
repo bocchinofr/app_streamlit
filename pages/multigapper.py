@@ -194,6 +194,7 @@ filtered = filtered[
 
 # -------------------------------------------------
 # region MULTI-GAPPER
+# creazione dataset gapper
 # -------------------------------------------------
 
 # Conteggio gapper per ogni giornata
@@ -223,6 +224,7 @@ filtered_mg = filtered[
 
 # -------------------------------
 # region KPI CARD 
+# crea il layout per le card kpi
 # -------------------------------
 
 def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
@@ -266,6 +268,7 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
 
 # -------------------------------------------------
 # region KPI
+# creazione dei kpi
 # -------------------------------------------------
 
 total = len(filtered_mg)
@@ -288,8 +291,6 @@ avg_gapper_per_day = (
     gapper_per_day_mg.mean()
     if not gapper_per_day_mg.empty else 0
 )
-
-
 
 # --- Medie per red e green per GAP (aggiunte) ---
 gap_red = (
@@ -423,6 +424,36 @@ pct_days_red_75 = (
     (daily_mg["pct_red"] >= 75).mean() * 100
     if not daily_mg.empty else 0
 )
+
+# calcolo Close %
+
+filtered_mg["day_close_pct"] = (
+    (filtered_mg["Close"] - filtered_mg["OPEN"]) / filtered_mg["OPEN"] * 100
+)
+
+# Suddivisione dataset
+total_df = filtered_mg.copy()
+green_df = filtered_mg[filtered_mg["Chiusura"] == "GREEN"]
+red_df   = filtered_mg[filtered_mg["Chiusura"] == "RED"]
+
+def structure_stats(df):
+    if df.empty:
+        return None
+    
+    return {
+        "High_mean": df["%OH"].mean(),
+        "High_median": df["%OH"].median(),
+        "Low_mean": df["%OL"].mean(),
+        "Low_median": df["%OL"].median(),
+        "Close_mean": df["day_close_pct"].mean(),
+        "Open_vs_PMH": df["%Open_PMH"].mean()
+    }
+
+stats_total = structure_stats(total_df)
+stats_green = structure_stats(green_df)
+stats_red   = structure_stats(red_df)
+
+
 
 # endregion
 
@@ -632,6 +663,22 @@ top_html = f"""
 </div>
 """
 #st.markdown(top_html, unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 st.subheader("📊 KPI principali")
