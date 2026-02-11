@@ -468,56 +468,69 @@ oh_green = filtered.loc[filtered["Chiusura"] == "GREEN", ["oh_15m","oh_30m","oh_
 ol_red = filtered.loc[filtered["Chiusura"] == "RED", ["ol_15m","ol_30m","ol_60m"]].mean()
 ol_green = filtered.loc[filtered["Chiusura"] == "GREEN", ["ol_15m","ol_30m","ol_60m"]].mean()
 
+
+
 import plotly.graph_objects as go
 
-def ci_box(df, label):
+def ci_box_single(df):
     if df.empty:
-        st.write(f"No records for {label}")
+        st.write("Nessun dato disponibile")
         return
-    
-    # Calcolo medie per barre H e L
-    mean_values = {
-        "H15": df["oh_15m"].mean(),
-        "H30": df["oh_30m"].mean(),
-        "H60": df["oh_60m"].mean(),
-        "L15": df["ol_15m"].mean(),
-        "L30": df["ol_30m"].mean(),
-        "L60": df["ol_60m"].mean()
-    }
-    
-    # Colori: H verdi, L rosse
-    bar_colors = ["#2ECC71" if k.startswith("H") else "#E74C3C" for k in mean_values.keys()]
-    
-    # Creazione grafico a barre orizzontali
-    fig = go.Figure(
-        go.Bar(
-            x=list(mean_values.values()),
-            y=list(mean_values.keys()),
-            orientation='h',
-            marker_color=bar_colors,
-            text=[f"{v:.1f}%" for v in mean_values.values()],
-            textposition="outside"
-        )
-    )
-    
-    # Layout per H in alto e L in basso
+
+    timeframes = ["15", "30", "60"]
+    labels = [f"H{tf}" for tf in timeframes] + [f"L{tf}" for tf in timeframes]
+
+    # Calcolo medie
+    total_means = [df[f"oh_{tf}m"].mean() for tf in timeframes] + [df[f"ol_{tf}m"].mean() for tf in timeframes]
+    red_means   = [df[df["Chiusura"]=="RED"][f"oh_{tf}m"].mean() for tf in timeframes] + [df[df["Chiusura"]=="RED"][f"ol_{tf}m"].mean() for tf in timeframes]
+    green_means = [df[df["Chiusura"]=="GREEN"][f"oh_{tf}m"].mean() for tf in timeframes] + [df[df["Chiusura"]=="GREEN"][f"ol_{tf}m"].mean() for tf in timeframes]
+
+    # Grafico
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=total_means,
+        y=labels,
+        name="Totale",
+        orientation='h',
+        marker_color="#3498DB",  # azzurrino
+        text=[f"{v:.1f}%" for v in total_means],
+        textposition="outside"
+    ))
+
+    fig.add_trace(go.Bar(
+        x=red_means,
+        y=labels,
+        name="RED",
+        orientation='h',
+        marker_color="#E74C3C",
+        text=[f"{v:.1f}%" for v in red_means],
+        textposition="outside"
+    ))
+
+    fig.add_trace(go.Bar(
+        x=green_means,
+        y=labels,
+        name="GREEN",
+        orientation='h',
+        marker_color="#2ECC71",
+        text=[f"{v:.1f}%" for v in green_means],
+        textposition="outside"
+    ))
+
     fig.update_layout(
+        barmode='group',  # le barre affiancate
         margin=dict(l=20, r=20, t=20, b=20),
-        height=300,
+        height=400,
         xaxis_title="Media (%)",
-        yaxis_title="",
         yaxis=dict(autorange="reversed")
     )
-    
+
     st.plotly_chart(fig, use_container_width=True)
 
 
-# Grafici intraday per tutti i record
-ci_box(filtered, "Tutti")
+ci_box_single(filtered)
 
-# Grafici intraday separati per RED e GREEN
-ci_box(filtered[filtered["Chiusura"] == "RED"], "RED")
-ci_box(filtered[filtered["Chiusura"] == "GREEN"], "GREEN")
 
 
 # endregion
