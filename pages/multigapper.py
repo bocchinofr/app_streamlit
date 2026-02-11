@@ -423,8 +423,58 @@ stats_red   = structure_stats(red_df)
 
 # endregion
 
+
+# ----------------------------------------------------------------
+# region TOP BOX
+# ----------------------------------------------------------------
+
+#st.subheader("📊 KPI principali")
+
+top_html = f"""
+<div class='kpi-top-box'>
+  <div class='kpi-top'>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{total}</div>
+      <div class='top-kpi-label'>Totale record</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{num_days_mg}</div>
+      <div class='top-kpi-label'>Numero giornate</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_gapper_per_day:.1f}</div>
+      <div class='top-kpi-label'>Numero gapper per day</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_pct_red_day:.0f}%</div>
+      <div class='top-kpi-label'>Chiusure RED per day</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{red_close:.0f}%</div>
+      <div class='top-kpi-label'>Chiusure RED</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
+      <div class='top-kpi-label'>GAP medio</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{gap_median:.0f}%</div>
+      <div class='top-kpi-label'>GAP mediana</div>
+    </div>
+  </div>
+</div>
+"""
+
+st.subheader("📊 KPI principali")
+
+# Top box (totale, chiusure RED, GAP medio)
+st.markdown(top_html, unsafe_allow_html=True)
+
+# endregion
+
+
 # --------------------------------------------
-# region CARTA D'IDENTITA
+# region GRAFICO INTRADAY
 # --------------------------------------------
 
 # Converzione campi testo in numeri
@@ -535,60 +585,8 @@ ci_box_single(filtered)
 
 # endregion
 
-
-
-
-
-# ----------------------------------------------------------------
-# region TOP BOX
-# ----------------------------------------------------------------
-
-#st.subheader("📊 KPI principali")
-
-top_html = f"""
-<div class='kpi-top-box'>
-  <div class='kpi-top'>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{total}</div>
-      <div class='top-kpi-label'>Totale record</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{num_days_mg}</div>
-      <div class='top-kpi-label'>Numero giornate</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_gapper_per_day:.1f}</div>
-      <div class='top-kpi-label'>Numero gapper per day</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_pct_red_day:.0f}%</div>
-      <div class='top-kpi-label'>Chiusure RED per day</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{red_close:.0f}%</div>
-      <div class='top-kpi-label'>Chiusure RED</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
-      <div class='top-kpi-label'>GAP medio</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{gap_median:.0f}%</div>
-      <div class='top-kpi-label'>GAP mediana</div>
-    </div>
-  </div>
-</div>
-"""
-#st.markdown(top_html, unsafe_allow_html=True)
-
-st.subheader("📊 KPI principali")
-
-# Top box (totale, chiusure RED, GAP medio)
-st.markdown(top_html, unsafe_allow_html=True)
-
-
 #---------------------------------
-# GRAFICO CONFRONTO
+# region GRAFICO CONFRONTO
 # -------------------------------
 
 import plotly.graph_objects as go
@@ -643,10 +641,12 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
+# endregion
 
 
 # -------------------------------------
-
+# region KPI LISTA
+# ------------------------------------
 
 # 1️⃣ Lista KPI
 kpi_list = [
@@ -677,6 +677,7 @@ for i, kpi in enumerate(kpi_list):
 
 
 # endregion
+
 
 # -------------------------------------------------
 # region DISTRIBUZIONE % RED GIORNALIERA
