@@ -674,19 +674,60 @@ st.markdown(top_html, unsafe_allow_html=True)
 # GRAFICO CONFRONTO
 # -------------------------------
 
-st.write(green_df.columns)
 
+# --------------------------------------------
+# BLOCCO 2 - CONFRONTO GENERALE E RED/GREEN
+# --------------------------------------------
 
 import plotly.graph_objects as go
+import streamlit as st
 
-metrics = ["%OH", "%OL", "day_close_pct"]
-labels  = ["High %", "Low %", "Close %"]
+st.subheader("📊 Confronto KPI generali e chiusure RED/GREEN")
+
+# --- STEP 0: separa RED / GREEN ---
+green_df = identity_df[identity_df["Chiusura"] == "GREEN"].copy()
+red_df   = identity_df[identity_df["Chiusura"] == "RED"].copy()
+
+# --- STEP 1: KPI GENERALI ---
+# Definisci qui tutti i KPI che vuoi mostrare
+general_kpi = {
+    "Totale record": len(identity_df),
+    "Numero giornate": identity_df["Date"].nunique(),
+    "Gap medio (%)": identity_df["GAP"].mean(),
+    "Gap mediana (%)": identity_df["GAP"].median(),
+    "%Open_PMH medio": identity_df["%Open_PMH"].mean(),
+    "Dollar Volume PM medio (M)": identity_df["pm_dollar_vol"].mean() / 1_000_000,
+    "% Chiusure RED": len(red_df)/len(identity_df)*100 if len(identity_df)>0 else 0,
+    "% Chiusure GREEN": len(green_df)/len(identity_df)*100 if len(identity_df)>0 else 0
+}
+
+# Mostra KPI generali in top-box
+top_html = "<div class='kpi-top-box'><div class='kpi-top'>"
+for k, v in general_kpi.items():
+    if isinstance(v, float):
+        display_val = f"{v:.1f}" + ("%" if "%" in k else "")
+    else:
+        display_val = str(v)
+    top_html += f"""
+    <div class='top-kpi'>
+        <div class='top-kpi-value'>{display_val}</div>
+        <div class='top-kpi-label'>{k}</div>
+    </div>
+    """
+top_html += "</div></div>"
+
+st.markdown(top_html, unsafe_allow_html=True)
+
+# --- STEP 2: GRAFICO RED vs GREEN ---
+metrics = ["oh_15m", "oh_30m", "oh_60m", "ol_15m", "ol_30m", "ol_60m"]
+labels  = ["H15", "H30", "H60", "L15", "L30", "L60"]
 
 green_means = [green_df[m].mean() for m in metrics]
 red_means   = [red_df[m].mean() for m in metrics]
 
 fig = go.Figure()
 
+# GREEN
 fig.add_trace(go.Bar(
     x=labels,
     y=green_means,
@@ -696,6 +737,7 @@ fig.add_trace(go.Bar(
     textposition="outside"
 ))
 
+# RED
 fig.add_trace(go.Bar(
     x=labels,
     y=red_means,
@@ -707,29 +749,43 @@ fig.add_trace(go.Bar(
 
 fig.update_layout(
     barmode="group",
-    title="Confronto performance giornaliera",
+    title="Confronto performance intraday e close",
     yaxis_title="% da Open",
     height=400
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
+# --- STEP 3: MINI-CARD KPI RED / GREEN ---
+def mini_card(df, label, color):
+    if df.empty:
+        return ""
+    dollar_vol_m = df['pm_dollar_vol'].mean() / 1_000_000
+    html = f"""
+    <div style='background:{color}20; padding:15px; border-radius:10px; border:1px solid {color}; margin-bottom:10px;'>
+        <h4 style='margin:0; display:flex; justify-content:space-between;'>
+            <span>{label}</span>
+            <span>n={len(df)}</span>
+        </h4>
+        <div style='display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;'>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Gap medio: {df['GAP'].mean():.1f}%</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Gap mediana: {df['GAP'].median():.1f}%</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Dollar Vol PM: {dollar_vol_m:.1f}M</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 15m: {df['break_pmh_15m'].sum()}</div>
+            <div style='flex: 30%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 30m: {df['break_pmh_30m'].sum()}</div>
+        </div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
 
-# -------------------------------------
-# RIGA DIFFERENZIALE NUMERICO 
-# -------------------------------------
+# Due colonne affiancate
+col1, col2 = st.columns(2)
+with col1:
+    mini_card(green_df, "GREEN", "#2ECC71")
+with col2:
+    mini_card(red_df, "RED", "#E74C3C")
 
-delta_high = stats_green["High_mean"] - stats_red["High_mean"]
-delta_close = stats_green["Close_mean"] - stats_red["Close_mean"]
-delta_low = stats_green["Low_mean"] - stats_red["Low_mean"]
-
-st.markdown(f"""
-**Differenze Green vs Red**
-
-- Δ High medio: {delta_high:.2f}%
-- Δ Low medio: {delta_low:.2f}%
-- Δ %Close medio: {delta_close:.2f}%
-""")
 
 # -------------------------------------
 
