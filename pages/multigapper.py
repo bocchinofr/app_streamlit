@@ -664,7 +664,10 @@ top_html = f"""
 """
 #st.markdown(top_html, unsafe_allow_html=True)
 
+st.subheader("📊 KPI principali")
 
+# Top box (totale, chiusure RED, GAP medio)
+st.markdown(top_html, unsafe_allow_html=True)
 
 
 #---------------------------------
@@ -743,10 +746,7 @@ st.markdown(f"""
 # -------------------------------------
 
 
-st.subheader("📊 KPI principali")
 
-# Top box (totale, chiusure RED, GAP medio)
-st.markdown(top_html, unsafe_allow_html=True)
 
 # 1️⃣ Lista KPI
 kpi_list = [
