@@ -473,6 +473,100 @@ st.markdown(top_html, unsafe_allow_html=True)
 # endregion
 
 
+
+#---------------------------------
+# region GRAFICO CONFRONTO
+# -------------------------------
+
+import plotly.graph_objects as go
+
+st.subheader("📊 Struttura Giornaliera – Totale vs Green vs Red")
+
+metrics = [
+    "High_mean",
+    "High_median",
+    "Low_mean",
+    "Low_median",
+    "Close_mean",
+    "Open_vs_PMH"
+]
+
+labels = [
+    "High Medio",
+    "High Mediana",
+    "Low Medio",
+    "Low Mediana",
+    "%Close Medio",
+    "%Open vs PMH"
+]
+
+fig = go.Figure()
+
+fig.add_bar(
+    name="Totale",
+    x=labels,
+    y=[stats_total[m] for m in metrics],
+)
+
+fig.add_bar(
+    name="Green",
+    x=labels,
+    y=[stats_green[m] for m in metrics],
+)
+
+fig.add_bar(
+    name="Red",
+    x=labels,
+    y=[stats_red[m] for m in metrics],
+)
+
+fig.update_layout(
+    barmode="group",
+    height=400,
+    xaxis_title="Metriche",
+    yaxis_title="Percentuale (%)",
+    margin=dict(l=20, r=20, t=20, b=20),
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+# endregion
+
+
+# -------------------------------------
+# region KPI LISTA
+# ------------------------------------
+
+# 1️⃣ Lista KPI
+kpi_list = [
+    {"title": "GAP Medio", "total": gap_mean, "red": gap_red, "green": gap_green, "suffix": "%"},
+    {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
+    {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
+    {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
+    {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
+    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
+]
+
+# 2️⃣ Creo 2 colonne
+col1, col2, col3 = st.columns(3)
+columns = [col1, col2, col3]  # mettiamo le colonne in una lista per ciclarle facilmente
+
+# 3️⃣ Ciclo e metto le card nelle colonne
+for i, kpi in enumerate(kpi_list):
+    col = columns[i % 3]  # ora alterna tra col1, col2, col3
+    with col:
+        kpi_card_textual(
+            title=kpi["title"],
+            total=kpi["total"],
+            red=kpi["red"],
+            green=kpi["green"],
+            suffix=kpi.get("suffix"),
+            show_delta=kpi.get("show_delta", True)  # <- importante
+        )
+
+
+# endregion
+
 # --------------------------------------------
 # region GRAFICO INTRADAY
 # --------------------------------------------
@@ -581,99 +675,6 @@ def ci_box_single(df):
 
 ci_box_single(filtered)
 
-
-
-# endregion
-
-#---------------------------------
-# region GRAFICO CONFRONTO
-# -------------------------------
-
-import plotly.graph_objects as go
-
-st.subheader("📊 Struttura Giornaliera – Totale vs Green vs Red")
-
-metrics = [
-    "High_mean",
-    "High_median",
-    "Low_mean",
-    "Low_median",
-    "Close_mean",
-    "Open_vs_PMH"
-]
-
-labels = [
-    "High Medio",
-    "High Mediana",
-    "Low Medio",
-    "Low Mediana",
-    "%Close Medio",
-    "%Open vs PMH"
-]
-
-fig = go.Figure()
-
-fig.add_bar(
-    name="Totale",
-    x=labels,
-    y=[stats_total[m] for m in metrics],
-)
-
-fig.add_bar(
-    name="Green",
-    x=labels,
-    y=[stats_green[m] for m in metrics],
-)
-
-fig.add_bar(
-    name="Red",
-    x=labels,
-    y=[stats_red[m] for m in metrics],
-)
-
-fig.update_layout(
-    barmode="group",
-    height=400,
-    xaxis_title="Metriche",
-    yaxis_title="Percentuale (%)",
-    margin=dict(l=20, r=20, t=20, b=20),
-)
-
-st.plotly_chart(fig, use_container_width=True)
-
-# endregion
-
-
-# -------------------------------------
-# region KPI LISTA
-# ------------------------------------
-
-# 1️⃣ Lista KPI
-kpi_list = [
-    {"title": "GAP Medio", "total": gap_mean, "red": gap_red, "green": gap_green, "suffix": "%"},
-    {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
-    {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
-    {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
-    {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
-    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
-]
-
-# 2️⃣ Creo 2 colonne
-col1, col2, col3 = st.columns(3)
-columns = [col1, col2, col3]  # mettiamo le colonne in una lista per ciclarle facilmente
-
-# 3️⃣ Ciclo e metto le card nelle colonne
-for i, kpi in enumerate(kpi_list):
-    col = columns[i % 3]  # ora alterna tra col1, col2, col3
-    with col:
-        kpi_card_textual(
-            title=kpi["title"],
-            total=kpi["total"],
-            red=kpi["red"],
-            green=kpi["green"],
-            suffix=kpi.get("suffix"),
-            show_delta=kpi.get("show_delta", True)  # <- importante
-        )
 
 
 # endregion
