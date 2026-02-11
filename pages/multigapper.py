@@ -578,42 +578,6 @@ def ci_box(df, label, color):
         yaxis_title="",
         yaxis=dict(autorange="reversed")  # per avere H in alto e L in basso
     )
-    
-    # KPI in 3 colonne
-    dollar_vol_m = df['pm_dollar_vol'].mean() / 1_000_000
-    
-    kpi_html = f"""
-    <div style="
-        background-color:{color}20;
-        padding:15px;
-        border-radius:10px;
-        border:1px solid {color};
-        margin-bottom:10px;
-    ">
-        <h4 style="margin:0; display:flex; justify-content:space-between;">
-            <span>{label}</span>
-            <span>{len(df)}</span>
-        </h4>
-        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-            <div style='flex: 15%; background:#fff2; padding:5px 10px; border-radius:5px;'>GAP : {df['GAP'].mean():.1f}%</div>
-            <div style='flex: 15%; background:#fff2; padding:5px 10px; border-radius:5px;'>$ Vol PM: {dollar_vol_m:.1f}M</div>
-            <div style='flex: 15%; background:#fff2; padding:5px 10px; border-radius:5px;'>%Open_PMH: {df['%Open_PMH'].mean():.1f}%</div>
-            <div style='flex: 15%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 15: {df['break_pmh_15m'].sum()}</div>
-            <div style='flex: 15%; background:#fff2; padding:5px 10px; border-radius:5px;'>Break 30: {df['break_pmh_30m'].sum()}</div>
-            <div style='flex: 15%; background:#fff2; padding:5px 10px; border-radius:5px;'>Rank medio: {df['gapper_rank_day'].mean():.1f}</div>
-        </div>
-    </div>
-    """
-    
-    st.markdown(kpi_html, unsafe_allow_html=True)
-    st.plotly_chart(fig, use_container_width=True)
-
-# Due colonne affiancate
-col1, col2 = st.columns(2)
-with col1:
-    ci_box(green_df, "🟢 LONG (close green)", "#2ECC71")
-with col2:
-    ci_box(red_df, "🔴 SHORT (close red)", "#E74C3C")
 
 
 # endregion
@@ -729,8 +693,6 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 # -------------------------------------
-
-
 
 
 # 1️⃣ Lista KPI
