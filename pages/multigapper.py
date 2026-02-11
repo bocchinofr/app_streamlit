@@ -501,6 +501,12 @@ def intraday_bar(means_red, means_green):
     return fig
 
 
+# Creiamo il grafico intraday
+fig_intraday = intraday_bar(oh_red, oh_green)
+
+# Visualizziamo in Streamlit
+st.plotly_chart(fig_intraday, use_container_width=True)
+
 
 # endregion
 
