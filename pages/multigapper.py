@@ -667,6 +667,63 @@ top_html = f"""
 
 
 
+#---------------------------------
+# GRAFICO CONFRONTO
+# -------------------------------
+
+
+import plotly.graph_objects as go
+
+st.subheader("📊 Struttura Giornaliera – Totale vs Green vs Red")
+
+metrics = [
+    "High_mean",
+    "High_median",
+    "Low_mean",
+    "Low_median",
+    "Close_mean",
+    "Open_vs_PMH"
+]
+
+labels = [
+    "High Medio",
+    "High Mediana",
+    "Low Medio",
+    "Low Mediana",
+    "%Close Medio",
+    "%Open vs PMH"
+]
+
+fig = go.Figure()
+
+fig.add_bar(
+    name="Totale",
+    x=labels,
+    y=[stats_total[m] for m in metrics],
+)
+
+fig.add_bar(
+    name="Green",
+    x=labels,
+    y=[stats_green[m] for m in metrics],
+)
+
+fig.add_bar(
+    name="Red",
+    x=labels,
+    y=[stats_red[m] for m in metrics],
+)
+
+fig.update_layout(
+    barmode="group",
+    height=400,
+    xaxis_title="Metriche",
+    yaxis_title="Percentuale (%)",
+    margin=dict(l=20, r=20, t=20, b=20),
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
 
 
 
