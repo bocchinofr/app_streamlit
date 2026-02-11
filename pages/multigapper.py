@@ -677,55 +677,42 @@ st.markdown(top_html, unsafe_allow_html=True)
 
 import plotly.graph_objects as go
 
-st.subheader("📊 Struttura Giornaliera – Totale vs Green vs Red")
+metrics = ["day_high_pct", "day_low_pct", "day_close_pct"]
+labels  = ["High %", "Low %", "Close %"]
 
-metrics = [
-    "High_mean",
-    "High_median",
-    "Low_mean",
-    "Low_median",
-    "Close_mean",
-    "Open_vs_PMH"
-]
-
-labels = [
-    "High Medio",
-    "High Mediana",
-    "Low Medio",
-    "Low Mediana",
-    "%Close Medio",
-    "%Open vs PMH"
-]
+green_means = [green_df[m].mean() for m in metrics]
+red_means   = [red_df[m].mean() for m in metrics]
 
 fig = go.Figure()
 
-fig.add_bar(
-    name="Totale",
+fig.add_trace(go.Bar(
     x=labels,
-    y=[stats_total[m] for m in metrics],
-)
+    y=green_means,
+    name="GREEN",
+    marker_color="#2ECC71",
+    text=[f"{v:.1f}%" for v in green_means],
+    textposition="outside"
+))
 
-fig.add_bar(
-    name="Green",
+fig.add_trace(go.Bar(
     x=labels,
-    y=[stats_green[m] for m in metrics],
-)
-
-fig.add_bar(
-    name="Red",
-    x=labels,
-    y=[stats_red[m] for m in metrics],
-)
+    y=red_means,
+    name="RED",
+    marker_color="#E74C3C",
+    text=[f"{v:.1f}%" for v in red_means],
+    textposition="outside"
+))
 
 fig.update_layout(
     barmode="group",
-    height=400,
-    xaxis_title="Metriche",
-    yaxis_title="Percentuale (%)",
-    margin=dict(l=20, r=20, t=20, b=20),
+    title="Confronto performance giornaliera",
+    yaxis_title="% da Open",
+    height=400
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
+
 
 # -------------------------------------
 # RIGA DIFFERENZIALE NUMERICO 
