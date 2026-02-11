@@ -63,7 +63,7 @@ for col in percent_cols:
         df[col] = df[col].apply(parse_percent)
 
 # Pulizia colonne numeriche con virgola e separatore migliaia
-num_cols = ["OPEN", "Float", "break"]
+num_cols = ["OPEN", "Float", "break", "Close"]
 for col in num_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(
