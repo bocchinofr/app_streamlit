@@ -677,7 +677,7 @@ st.markdown(top_html, unsafe_allow_html=True)
 
 import plotly.graph_objects as go
 
-metrics = ["%OH", "%OL", "day_close_pct"]
+metrics = ["High_mean", "%OL", "day_close_pct"]
 labels  = ["High %", "Low %", "Close %"]
 
 green_means = [green_df[m].mean() for m in metrics]
