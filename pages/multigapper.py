@@ -496,12 +496,10 @@ identity_df = filtered[id_cols]
 # endregion
 
 # --------------------------------------------
-# region CARTA D'IDENTITA - DISPLAY
+# region CARTA D'IDENTITA 
 # --------------------------------------------
 
 import plotly.express as px
-
-st.subheader("🆔 Carte d'identità azioni")
 
 # Separa GREEN vs RED
 green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
