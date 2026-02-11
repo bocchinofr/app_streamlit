@@ -468,44 +468,48 @@ oh_green = filtered.loc[filtered["Chiusura"] == "GREEN", ["oh_15m","oh_30m","oh_
 ol_red = filtered.loc[filtered["Chiusura"] == "RED", ["ol_15m","ol_30m","ol_60m"]].mean()
 ol_green = filtered.loc[filtered["Chiusura"] == "GREEN", ["ol_15m","ol_30m","ol_60m"]].mean()
 
-def intraday_bar(means_red, means_green):
-    import plotly.graph_objects as go
+import plotly.graph_objects as go
 
-    fig = go.Figure()
-
-    # Barre RED
-    fig.add_trace(go.Bar(
-        x=means_red.values,
-        y=[f"H{tf}" for tf in [15,30,60]],
-        orientation='h',
-        name='RED',
-        marker_color='#E74C3C'
-    ))
-
-    # Barre GREEN
-    fig.add_trace(go.Bar(
-        x=means_green.values,
-        y=[f"H{tf}" for tf in [15,30,60]],
-        orientation='h',
-        name='GREEN',
-        marker_color='#2ECC71'
-    ))
-
+def ci_box(df, label):
+    if df.empty:
+        st.write(f"No records for {label}")
+        return
+    
+    # Calcolo medie per barre H e L
+    mean_values = {
+        "H15": df["oh_15m"].mean(),
+        "H30": df["oh_30m"].mean(),
+        "H60": df["oh_60m"].mean(),
+        "L15": df["ol_15m"].mean(),
+        "L30": df["ol_30m"].mean(),
+        "L60": df["ol_60m"].mean()
+    }
+    
+    # Colori: H verdi, L rosse
+    bar_colors = ["#2ECC71" if k.startswith("H") else "#E74C3C" for k in mean_values.keys()]
+    
+    # Creazione grafico a barre orizzontali
+    fig = go.Figure(
+        go.Bar(
+            x=list(mean_values.values()),
+            y=list(mean_values.keys()),
+            orientation='h',
+            marker_color=bar_colors,
+            text=[f"{v:.1f}%" for v in mean_values.values()],
+            textposition="outside"
+        )
+    )
+    
+    # Layout per H in alto e L in basso
     fig.update_layout(
-        barmode='group',
-        height=250,
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=300,
         xaxis_title="Media (%)",
+        yaxis_title="",
         yaxis=dict(autorange="reversed")
     )
-
-    return fig
-
-
-# Creiamo il grafico intraday
-fig_intraday = intraday_bar(oh_red, oh_green)
-
-# Visualizziamo in Streamlit
-st.plotly_chart(fig_intraday, use_container_width=True)
+    
+    st.plotly_chart(fig, use_container_width=True)
 
 
 # endregion
