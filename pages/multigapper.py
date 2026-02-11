@@ -451,97 +451,55 @@ if "PM_high" in filtered.columns:
         errors="coerce"
     )
 
-# Creazione calcoli per kpi CI
-
-filtered["Volume PM"] = pd.to_numeric(
-    filtered["Volume PM"], errors="coerce"
-)
-
-filtered["pm_dollar_vol"] = filtered["Volume PM"] * filtered["OPEN"]
-
-filtered["gapper_rank_day"] = (
-    filtered
-    .groupby("Date")["GAP"]
-    .rank(ascending=False, method="first")
-)
+# Creazione calcoli per grafici intraday
 
 for tf in [15, 30, 60]:
-    filtered[f"oh_{tf}m"] = (
-        (filtered[f"High_{tf}m"] - filtered["OPEN"]) / filtered["OPEN"] * 100
-    )
-    filtered[f"ol_{tf}m"] = (
-        (filtered[f"Low_{tf}m"] - filtered["OPEN"]) / filtered["OPEN"] * 100
-    )
+    # %H/L rispetto all'open
+    filtered[f"oh_{tf}m"] = (filtered[f"High_{tf}m"] - filtered["OPEN"]) / filtered["OPEN"] * 100
+    filtered[f"ol_{tf}m"] = (filtered[f"Low_{tf}m"] - filtered["OPEN"]) / filtered["OPEN"] * 100
 
-    filtered[f"break_pmh_{tf}m"] = (
-        filtered[f"High_{tf}m"] >= filtered["PM_high"]
-    ).astype(int)
+    # Break PMH
+    filtered[f"break_pmh_{tf}m"] = (filtered[f"High_{tf}m"] >= filtered["PM_high"]).astype(int)
 
+# Medie per i grafici intraday
+oh_red = filtered.loc[filtered["Chiusura"] == "RED", ["oh_15m","oh_30m","oh_60m"]].mean()
+oh_green = filtered.loc[filtered["Chiusura"] == "GREEN", ["oh_15m","oh_30m","oh_60m"]].mean()
 
-id_cols = [
-    "Date", "Ticker", "GAP",
-    "Volume PM", "pm_dollar_vol",
-    "%Open_PMH",
-    "gapper_rank_day",
-    "oh_15m", "oh_30m", "oh_60m",
-    "ol_15m", "ol_30m", "ol_60m",
-    "break_pmh_15m", "break_pmh_30m",
-    "Chiusura", "%OH","%OL","day_close_pct"
-]
+ol_red = filtered.loc[filtered["Chiusura"] == "RED", ["ol_15m","ol_30m","ol_60m"]].mean()
+ol_green = filtered.loc[filtered["Chiusura"] == "GREEN", ["ol_15m","ol_30m","ol_60m"]].mean()
 
-identity_df = filtered[id_cols]
+def intraday_bar(means_red, means_green):
+    import plotly.graph_objects as go
 
+    fig = go.Figure()
 
+    # Barre RED
+    fig.add_trace(go.Bar(
+        x=means_red.values,
+        y=[f"H{tf}" for tf in [15,30,60]],
+        orientation='h',
+        name='RED',
+        marker_color='#E74C3C'
+    ))
 
-# endregion
+    # Barre GREEN
+    fig.add_trace(go.Bar(
+        x=means_green.values,
+        y=[f"H{tf}" for tf in [15,30,60]],
+        orientation='h',
+        name='GREEN',
+        marker_color='#2ECC71'
+    ))
 
-# --------------------------------------------
-# region CARTA D'IDENTITA 
-# --------------------------------------------
-
-import plotly.express as px
-
-# Separa GREEN vs RED
-green_df = identity_df[identity_df["Chiusura"] == "GREEN"]
-red_df   = identity_df[identity_df["Chiusura"] == "RED"]
-
-
-import plotly.graph_objects as go
-
-def ci_box(df, label, color):
-    if df.empty:
-        st.write(f"No records for {label}")
-        return
-    
-    # Grafico a barre con colori differenti per positivo/negativo
-    mean_values = {
-        "H15": df["oh_15m"].mean(),
-        "H30": df["oh_30m"].mean(),
-        "H60": df["oh_60m"].mean(),
-        "L15": df["ol_15m"].mean(),
-        "L30": df["ol_30m"].mean(),
-        "L60": df["ol_60m"].mean()
-    }
-    
-    bar_colors = ["#2ECC71" if k.startswith("H") else "#E74C3C" for k in mean_values.keys()]
-    
-    fig = go.Figure(
-        go.Bar(
-            x=list(mean_values.values()),
-            y=list(mean_values.keys()),
-            orientation='h',
-            marker_color=bar_colors,
-            text=[f"{v:.1f}%" for v in mean_values.values()],  # <--- qui
-            textposition="outside"       # "inside" o "outside" a seconda di dove vuoi
-        )
-    )
     fig.update_layout(
-        margin=dict(l=20, r=20, t=20, b=20),
+        barmode='group',
         height=250,
         xaxis_title="Media (%)",
-        yaxis_title="",
-        yaxis=dict(autorange="reversed")  # per avere H in alto e L in basso
+        yaxis=dict(autorange="reversed")
     )
+
+    return fig
+
 
 
 # endregion
