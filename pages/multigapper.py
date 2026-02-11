@@ -120,6 +120,16 @@ for col in ["GAP", "Float", "%Open_PMH", "OPEN", "%OH", "%OL", "break"]:
 
 # endregion
 
+# ---------------------------------------
+# region COLONNE CALCOLATE
+# ---------------------------------------
+
+# Calcolo day_close_pct
+if "Close" in df.columns and "OPEN" in df.columns:
+    df["day_close_pct"] = (df["Close"] - df["OPEN"]) / df["OPEN"] * 100
+
+# endregion
+
 # -------------------------------------------------
 # region SIDEBAR FILTRI
 # -------------------------------------------------
@@ -165,8 +175,6 @@ max_gapper_day = col_g2.number_input(
     help= "numero massimo di gapper in giornata"
 )
 
-
-
 # -------------------------------------------------
 # APPLY FILTERS
 # -------------------------------------------------
@@ -190,10 +198,11 @@ filtered = filtered[
     (filtered["Market Cap"] <= mc_max * 1_000_000)
 ]
 
-# endregion
+filtered["is_red"] = filtered["Chiusura"] == "RED"
+filtered["is_green"] = filtered["Chiusura"] == "GREEN"
 
 # -------------------------------------------------
-# region MULTI-GAPPER
+# FILTRO MULTI-GAPPER
 # creazione dataset gapper
 # -------------------------------------------------
 
@@ -211,16 +220,95 @@ multi_gapper_days = gapper_per_day[
     (gapper_per_day["n_gapper_day"] <= max_gapper_day)
 ]
 
-
-# -------------------------------------------------
-# DATASET MULTI-GAPPER (solo giornate valide)
-# -------------------------------------------------
-filtered_mg = filtered[
+filtered = filtered[
     filtered["Date"].isin(multi_gapper_days["Date"])
 ].copy()
 
 
 # endregion
+
+
+# -------------------------------------------------
+# region KPI
+# creazione dei kpi
+# -------------------------------------------------
+
+total = len(filtered)
+gap_mean = filtered["GAP"].mean() if total else 0
+gap_median = filtered["GAP"].median() if total else 0
+red_close = (filtered["Chiusura"] == "RED").mean() * 100 if total else 0
+num_days_mg = filtered["Date"].nunique()
+
+# -------------------------------------------------
+# Numero medio gapper per giornata multi-gap
+# -------------------------------------------------
+
+gapper_per_day_mg = (
+    filtered
+    .groupby("Date")
+    .size()          # numero gapper in quel giorno
+)
+
+avg_gapper_per_day = (
+    gapper_per_day_mg.mean()
+    if not gapper_per_day_mg.empty else 0
+)
+
+# Medie delle percentuali già presenti nel dataset
+gap_red       = filtered.loc[filtered["is_red"], "GAP"].mean()
+gap_green     = filtered.loc[filtered["is_green"], "GAP"].mean()
+
+open_pmh_red  = filtered.loc[filtered["is_red"], "%Open_PMH"].mean()
+open_pmh_green= filtered.loc[filtered["is_green"], "%Open_PMH"].mean()
+
+spinta_red    = filtered.loc[filtered["is_red"], "%OH"].mean()
+spinta_green  = filtered.loc[filtered["is_green"], "%OH"].mean()
+
+low_red       = filtered.loc[filtered["is_red"], "%OL"].mean()
+low_green     = filtered.loc[filtered["is_green"], "%OL"].mean()
+
+# Medie break PM (già in percentuale, senza moltiplicare per 100)
+pmbreak_red   = filtered.loc[filtered["is_red"], "break"].mean()
+pmbreak_green = filtered.loc[filtered["is_green"], "break"].mean()
+
+
+# ---- ORARIO HIGH: MEDIA, MEDIANA, FILTRI RED/GREEN ----
+
+def orario_to_minuti(ora_str):
+    """Converte '9:31' -> minuti totali (es. 571)"""
+    try:
+        h, m = map(int, ora_str.split(":"))
+        return h * 60 + m
+    except:
+        return np.nan
+
+def minuti_to_orario(minuti):
+    """Converte minuti -> stringa 'HH:MM'"""
+    if np.isnan(minuti):
+        return "-"
+    h = int(minuti // 60)
+    m = int(round(minuti % 60))
+    return f"{h:02d}:{m:02d}"
+
+# Filtra solo valori validi
+orari_validi = df["Orario High"].dropna().apply(orario_to_minuti).dropna()
+
+# Media e mediana globali
+media_minuti = orari_validi.mean() if not orari_validi.empty else np.nan
+mediana_minuti = orari_validi.median() if not orari_validi.empty else np.nan
+
+media_orario_high = minuti_to_orario(media_minuti)
+mediana_orario_high = minuti_to_orario(mediana_minuti)
+
+# --- Filtri per chiusure RED / GREEN ---
+red = df[df["Chiusura"] == "RED"]["Orario High"].dropna().apply(orario_to_minuti)
+green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_minuti)
+
+mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
+mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
+
+# endregion
+
 
 # -------------------------------
 # region KPI CARD 
@@ -266,128 +354,6 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
 
 # endregion
 
-# -------------------------------------------------
-# region KPI
-# creazione dei kpi
-# -------------------------------------------------
-
-total = len(filtered_mg)
-gap_mean = filtered_mg["GAP"].mean() if total else 0
-gap_median = filtered_mg["GAP"].median() if total else 0
-red_close = (filtered_mg["Chiusura"] == "RED").mean() * 100 if total else 0
-num_days_mg = filtered_mg["Date"].nunique()
-
-# -------------------------------------------------
-# Numero medio gapper per giornata multi-gap
-# -------------------------------------------------
-
-gapper_per_day_mg = (
-    filtered_mg
-    .groupby("Date")
-    .size()          # numero gapper in quel giorno
-)
-
-avg_gapper_per_day = (
-    gapper_per_day_mg.mean()
-    if not gapper_per_day_mg.empty else 0
-)
-
-# --- Medie per red e green per GAP (aggiunte) ---
-gap_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "GAP"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-gap_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "GAP"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-# Medie per red e green per OPENvsPMH
-open_pmh_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "%Open_PMH"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-open_pmh_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "%Open_PMH"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-
-# Medie per red e green per PMbreak
-pmbreak_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "break"].mean()*100
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-pmbreak_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "break"].mean()*100
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-
-# Medie per red e green per Spinta
-spinta_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "%OH"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-spinta_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "%OH"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-
-# Medie per red e green per minimo 
-
-low_red = (
-    filtered.loc[filtered["Chiusura"] == "RED", "%OL"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "RED"].empty
-    else 0
-)
-low_green = (
-    filtered.loc[filtered["Chiusura"] == "GREEN", "%OL"].mean()
-    if not filtered.loc[filtered["Chiusura"] == "GREEN"].empty
-    else 0
-)
-
-# ---- ORARIO HIGH: MEDIA, MEDIANA, FILTRI RED/GREEN ----
-
-def orario_to_minuti(ora_str):
-    """Converte '9:31' -> minuti totali (es. 571)"""
-    try:
-        h, m = map(int, ora_str.split(":"))
-        return h * 60 + m
-    except:
-        return np.nan
-
-def minuti_to_orario(minuti):
-    """Converte minuti -> stringa 'HH:MM'"""
-    if np.isnan(minuti):
-        return "-"
-    h = int(minuti // 60)
-    m = int(round(minuti % 60))
-    return f"{h:02d}:{m:02d}"
-
-# Filtra solo valori validi
-orari_validi = df["Orario High"].dropna().apply(orario_to_minuti).dropna()
-
-# Media e mediana globali
-media_minuti = orari_validi.mean() if not orari_validi.empty else np.nan
-mediana_minuti = orari_validi.median() if not orari_validi.empty else np.nan
-
-media_orario_high = minuti_to_orario(media_minuti)
-mediana_orario_high = minuti_to_orario(mediana_minuti)
-
-# --- Filtri per chiusure RED / GREEN ---
-red = df[df["Chiusura"] == "RED"]["Orario High"].dropna().apply(orario_to_minuti)
-green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_minuti)
-
-mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
-mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
-
-# endregion
 
 # -------------------------------------------------
 # region TABELLA GIORNALIERA MULTI-GAP
