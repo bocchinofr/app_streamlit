@@ -710,8 +710,12 @@ fig.update_layout(
     height=400
 )
 
-st.plotly_chart(fig, use_container_width=True)
 
+st.write(green_df.columns)
+
+
+
+st.plotly_chart(fig, use_container_width=True)
 
 
 # -------------------------------------
