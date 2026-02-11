@@ -744,7 +744,7 @@ kpi_list = [
 ]
 
 # 2️⃣ Creo 2 colonne
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 # 3️⃣ Ciclo e metto le card nelle colonne
 for i, kpi in enumerate(kpi_list):
