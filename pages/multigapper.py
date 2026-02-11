@@ -674,7 +674,7 @@ st.markdown(top_html, unsafe_allow_html=True)
 # GRAFICO CONFRONTO
 # -------------------------------
 
-st.write(green_df.columns)
+st.write(stats_green.columns)
 
 
 import plotly.graph_objects as go
@@ -682,8 +682,8 @@ import plotly.graph_objects as go
 metrics = ["%OH", "%OL", "day_close_pct"]
 labels  = ["High %", "Low %", "Close %"]
 
-green_means = [green_df[m].mean() for m in metrics]
-red_means   = [red_df[m].mean() for m in metrics]
+green_means = [stats_green[m].mean() for m in metrics]
+red_means   = [stats_red[m].mean() for m in metrics]
 
 fig = go.Figure()
 
@@ -711,10 +711,6 @@ fig.update_layout(
     yaxis_title="% da Open",
     height=400
 )
-
-
-
-
 
 st.plotly_chart(fig, use_container_width=True)
 
