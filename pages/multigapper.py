@@ -520,7 +520,7 @@ id_cols = [
     "oh_15m", "oh_30m", "oh_60m",
     "ol_15m", "ol_30m", "ol_60m",
     "break_pmh_15m", "break_pmh_30m",
-    "Chiusura"
+    "Chiusura", "%OH","%OL","day_close_pct"
 ]
 
 identity_df = filtered_mg[id_cols]
@@ -674,7 +674,7 @@ st.markdown(top_html, unsafe_allow_html=True)
 # GRAFICO CONFRONTO
 # -------------------------------
 
-st.write(stats_green.columns)
+st.write(green_df.columns)
 
 
 import plotly.graph_objects as go
@@ -682,8 +682,8 @@ import plotly.graph_objects as go
 metrics = ["%OH", "%OL", "day_close_pct"]
 labels  = ["High %", "Low %", "Close %"]
 
-green_means = [stats_green[m].mean() for m in metrics]
-red_means   = [stats_red[m].mean() for m in metrics]
+green_means = [green_df[m].mean() for m in metrics]
+red_means   = [red_df[m].mean() for m in metrics]
 
 fig = go.Figure()
 
