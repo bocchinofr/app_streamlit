@@ -512,6 +512,14 @@ def ci_box(df, label):
     st.plotly_chart(fig, use_container_width=True)
 
 
+# Grafici intraday per tutti i record
+ci_box(filtered, "Tutti")
+
+# Grafici intraday separati per RED e GREEN
+ci_box(filtered[filtered["Chiusura"] == "RED"], "RED")
+ci_box(filtered[filtered["Chiusura"] == "GREEN"], "GREEN")
+
+
 # endregion
 
 
