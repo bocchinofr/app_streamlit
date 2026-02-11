@@ -674,109 +674,58 @@ st.markdown(top_html, unsafe_allow_html=True)
 # GRAFICO CONFRONTO
 # -------------------------------
 
-import streamlit as st
 import plotly.graph_objects as go
-import numpy as np
 
-# --- Blocco 2: KPI Generali e confronto RED/GREEN ---
-st.subheader("📊 Confronto KPI RED vs GREEN")
+st.subheader("📊 Struttura Giornaliera – Totale vs Green vs Red")
 
-# Lista dei KPI principali da confrontare
-kpi_list = [
-    ("GAP", "%", "GAP medio"),
-    ("pm_dollar_vol", "M$", "Dollar Volume PM medio"),
-    ("%Open_PMH", "%", "%Open_PMH medio"),
-    ("oh_15m", "%", "OH 15m medio"),
-    ("oh_30m", "%", "OH 30m medio"),
-    ("oh_60m", "%", "OH 60m medio"),
-    ("ol_15m", "%", "OL 15m medio"),
-    ("ol_30m", "%", "OL 30m medio"),
-    ("ol_60m", "%", "OL 60m medio"),
-    ("break_pmh_15m", "", "Break 15m"),
-    ("break_pmh_30m", "", "Break 30m"),
+metrics = [
+    "High_mean",
+    "High_median",
+    "Low_mean",
+    "Low_median",
+    "Close_mean",
+    "Open_vs_PMH"
 ]
 
-# Calcolo valori totali
-total_values = {}
-for col, suf, label in kpi_list:
-    if col == "pm_dollar_vol":
-        total_values[col] = identity_df[col].mean() / 1_000_000  # converti in M$
-    else:
-        total_values[col] = identity_df[col].mean()
-
-# Calcolo valori RED/GREEN
-red_values = {}
-green_values = {}
-for col, suf, label in kpi_list:
-    if col == "pm_dollar_vol":
-        red_values[col] = red_df[col].mean() / 1_000_000
-        green_values[col] = green_df[col].mean() / 1_000_000
-    else:
-        red_values[col] = red_df[col].mean()
-        green_values[col] = green_df[col].mean()
-
-# --- Griglia confronto KPI ---
-for col, suf, label in kpi_list:
-    st.markdown(f"""
-    <div style="display:flex; gap:10px; margin-bottom:5px;">
-        <div style="flex:1; background:#E74C3C33; padding:8px; border-radius:5px; text-align:center;">
-            <strong>RED</strong><br>{red_values[col]:.1f}{suf}
-        </div>
-        <div style="flex:1; background:#ccc2; padding:8px; border-radius:5px; text-align:center;">
-            <strong>TOTALE</strong><br>{total_values[col]:.1f}{suf}
-        </div>
-        <div style="flex:1; background:#2ECC7133; padding:8px; border-radius:5px; text-align:center;">
-            <strong>GREEN</strong><br>{green_values[col]:.1f}{suf}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# --- Grafico confronto OH / OL / Close ---
-metrics = ["oh_15m", "oh_30m", "oh_60m", "ol_15m", "ol_30m", "ol_60m", "day_close_pct"]
-labels = ["OH 15", "OH 30", "OH 60", "OL 15", "OL 30", "OL 60", "Close %"]
-
-green_means = [green_df.get(m, np.nan).mean() for m in metrics]
-red_means   = [red_df.get(m, np.nan).mean() for m in metrics]
-total_means = [identity_df.get(m, np.nan).mean() for m in metrics]
+labels = [
+    "High Medio",
+    "High Mediana",
+    "Low Medio",
+    "Low Mediana",
+    "%Close Medio",
+    "%Open vs PMH"
+]
 
 fig = go.Figure()
 
-fig.add_trace(go.Bar(
+fig.add_bar(
+    name="Totale",
     x=labels,
-    y=green_means,
-    name="GREEN",
-    marker_color="#2ECC71",
-    text=[f"{v:.1f}%" for v in green_means],
-    textposition="outside"
-))
+    y=[stats_total[m] for m in metrics],
+)
 
-fig.add_trace(go.Bar(
+fig.add_bar(
+    name="Green",
     x=labels,
-    y=red_means,
-    name="RED",
-    marker_color="#E74C3C",
-    text=[f"{v:.1f}%" for v in red_means],
-    textposition="outside"
-))
+    y=[stats_green[m] for m in metrics],
+)
 
-fig.add_trace(go.Scatter(
+fig.add_bar(
+    name="Red",
     x=labels,
-    y=total_means,
-    mode="lines+markers+text",
-    name="TOTALE",
-    line=dict(color="#888", dash="dash"),
-    text=[f"{v:.1f}%" for v in total_means],
-    textposition="top center"
-))
+    y=[stats_red[m] for m in metrics],
+)
 
 fig.update_layout(
     barmode="group",
-    title="Confronto performance giornaliera",
-    yaxis_title="% da Open",
-    height=450
+    height=400,
+    xaxis_title="Metriche",
+    yaxis_title="Percentuale (%)",
+    margin=dict(l=20, r=20, t=20, b=20),
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 # -------------------------------------
