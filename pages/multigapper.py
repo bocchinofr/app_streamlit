@@ -724,6 +724,23 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
+# -------------------------------------
+# RIGA DIFFERENZIALE NUMERICO 
+# -------------------------------------
+
+delta_high = stats_green["High_mean"] - stats_red["High_mean"]
+delta_close = stats_green["Close_mean"] - stats_red["Close_mean"]
+delta_low = stats_green["Low_mean"] - stats_red["Low_mean"]
+
+st.markdown(f"""
+**Differenze Green vs Red**
+
+- Δ High medio: {delta_high:.2f}%
+- Δ Low medio: {delta_low:.2f}%
+- Δ %Close medio: {delta_close:.2f}%
+""")
+
+# -------------------------------------
 
 
 st.subheader("📊 KPI principali")
