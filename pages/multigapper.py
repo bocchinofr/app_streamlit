@@ -726,18 +726,6 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 st.subheader("📊 KPI principali")
 
 # Top box (totale, chiusure RED, GAP medio)
