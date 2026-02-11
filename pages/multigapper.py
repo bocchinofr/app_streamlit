@@ -748,7 +748,7 @@ col1, col2, col3 = st.columns(3)
 
 # 3️⃣ Ciclo e metto le card nelle colonne
 for i, kpi in enumerate(kpi_list):
-    col = col1 if i % 3 == 0 else col3  # alterna le colonne
+    col = columns[i % 3]  # ora alterna tra col1, col2, col3
     with col:
         kpi_card_textual(
             title=kpi["title"],
