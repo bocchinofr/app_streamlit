@@ -674,6 +674,8 @@ st.markdown(top_html, unsafe_allow_html=True)
 # GRAFICO CONFRONTO
 # -------------------------------
 
+st.write(green_df.columns)
+
 
 import plotly.graph_objects as go
 
@@ -711,7 +713,6 @@ fig.update_layout(
 )
 
 
-st.write(green_df.columns)
 
 
 
