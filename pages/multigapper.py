@@ -348,6 +348,7 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
         {delta_html}
     </div>
     """
+    st.markdown(html, unsafe_allow_html=True)
 
 
 def kpi_card_stat(title, total_mean, total_median, red_mean, red_median, green_mean, green_median, suffix="%"):
@@ -507,6 +508,32 @@ with col2:
 # region KPI LISTA
 # ------------------------------------
 
+# 1️⃣ Lista KPI
+kpi_list = [
+    {"title": "GAP Medio", "total": gap_mean, "red": gap_red, "green": gap_green, "suffix": "%"},
+    {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
+    {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
+    {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
+    {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
+    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
+]
+
+# 2️⃣ Creo 2 colonne
+col1, col2, col3 = st.columns(3)
+columns = [col1, col2, col3]  # mettiamo le colonne in una lista per ciclarle facilmente
+
+# 3️⃣ Ciclo e metto le card nelle colonne
+for i, kpi in enumerate(kpi_list):
+    col = columns[i % 3]  # ora alterna tra col1, col2, col3
+    with col:
+        kpi_card_textual(
+            title=kpi["title"],
+            total=kpi["total"],
+            red=kpi["red"],
+            green=kpi["green"],
+            suffix=kpi.get("suffix"),
+            show_delta=kpi.get("show_delta", True)  # <- importante
+        )
 
 
 # ----------
