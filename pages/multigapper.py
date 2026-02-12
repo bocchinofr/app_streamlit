@@ -351,27 +351,60 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     st.markdown(html, unsafe_allow_html=True)
 
 
-def kpi_card_stat(title, total_mean, total_median, red_mean, red_median, green_mean, green_median, suffix="%"):
-    # Formattazione valori
-    def fmt(x):
-        try:
-            return f"{x:.1f}"
-        except (ValueError, TypeError):
-            return str(x)
-
+def kpi_box_stat_table(kpi):
+    """Crea un box KPI con mini-tabella Media / Mediana usando valori già calcolati"""
+    
+    title = kpi["title"]
+    total = kpi["total"]
+    red = kpi["red"]
+    green = kpi["green"]
+    suffix = kpi.get("suffix", "")
+    
+    # opzionale: calcolo mediana se presente in kpi oppure lasciamo None
+    total_med = kpi.get("total_med", None)
+    red_med = kpi.get("red_med", None)
+    green_med = kpi.get("green_med", None)
+    
+    # se non passata, usa lo stesso valore come placeholder
+    total_med = total_med if total_med is not None else total
+    red_med = red_med if red_med is not None else red
+    green_med = green_med if green_med is not None else green
+    
     html = f"""
     <div class="kpi-card">
         <div class="kpi-header">
             <div class="kpi-title">{title}</div>
-            <div class="kpi-total">Totale: {fmt(total_mean)}{suffix} / Mediana: {fmt(total_median)}{suffix}</div>
         </div>
-        <div class="kpi-split">
-            <div class="red">Red: {fmt(red_mean)}{suffix} / Mediana: {fmt(red_median)}{suffix}</div>
-            <div class="green">Green: {fmt(green_mean)}{suffix} / Mediana: {fmt(green_median)}{suffix}</div>
+        <div class="kpi-table-container">
+            <table class="kpi-inner-table">
+                <thead>
+                    <tr>
+                        <th>Statistica</th>
+                        <th>Totale</th>
+                        <th>RED</th>
+                        <th>GREEN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Media</td>
+                        <td>{total:.2f}{suffix}</td>
+                        <td>{red:.2f}{suffix}</td>
+                        <td>{green:.2f}{suffix}</td>
+                    </tr>
+                    <tr>
+                        <td>Mediana</td>
+                        <td>{total_med:.2f}{suffix}</td>
+                        <td>{red_med:.2f}{suffix}</td>
+                        <td>{green_med:.2f}{suffix}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     """
     st.markdown(html, unsafe_allow_html=True)
+
 
 
 
@@ -538,60 +571,13 @@ for i, kpi in enumerate(kpi_list):
 
 # ----------
 
-# Lista delle colonne da mostrare
-metrics = {
-    "GAP": "GAP",
-    "%Open_PMH": "Open / PMH",
-    "break": "Break",
-    "%OH": "Spinta",
-    "%OL": "Minimo"
-    #"media_orario_high": "Orario High"
-}
-
-# Creiamo la lista dei KPI calcolando media e mediana per Totale / Red / Green
-kpi_list = []
-for col, label in metrics.items():
-    total_mean = filtered[col].mean()
-    total_median = filtered[col].median()
-    
-    red_df = filtered[filtered["Chiusura"] == "RED"]
-    green_df = filtered[filtered["Chiusura"] == "GREEN"]
-
-    red_mean = red_df[col].mean()
-    red_median = red_df[col].median()
-
-    green_mean = green_df[col].mean()
-    green_median = green_df[col].median()
-
-    kpi_list.append({
-        "title": label,
-        "total_mean": total_mean,
-        "total_median": total_median,
-        "red_mean": red_mean,
-        "red_median": red_median,
-        "green_mean": green_mean,
-        "green_median": green_median,
-        "suffix": "%" if col != "orario_high" else ""
-    })
-
-
-# Creiamo 3 colonne affiancate
 col1, col2, col3 = st.columns(3)
 columns = [col1, col2, col3]
 
 for i, kpi in enumerate(kpi_list):
     col = columns[i % 3]
     with col:
-        kpi_card_stat(
-            title=kpi["title"],
-            total_mean=kpi["total_mean"],
-            total_median=kpi["total_median"],
-            red_mean=kpi["red_mean"],
-            red_median=kpi["red_median"],
-            green_mean=kpi["green_mean"],
-            green_median=kpi["green_median"],
-            suffix=kpi.get("suffix", "%")
-        )
+        kpi_box_stat_table(kpi)
 
 
 # endregion
