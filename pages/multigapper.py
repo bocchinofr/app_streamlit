@@ -329,7 +329,7 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     # formattazione valori
     def fmt(x):
         try:
-            return f"{x:.1f}"
+            return f"{x:.0f}"
         except (ValueError, TypeError):
             return str(x)
 
