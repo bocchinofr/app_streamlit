@@ -441,10 +441,6 @@ top_html = f"""
       <div class='top-kpi-label'>Chiusure RED</div>
     </div>
     <div class='top-kpi'>
-      <div class='top-kpi-value'>{gap_mean:.0f}%</div>
-      <div class='top-kpi-label'>GAP medio</div>
-    </div>
-    <div class='top-kpi'>
       <div class='top-kpi-value'>{gap_median:.0f}%</div>
       <div class='top-kpi-label'>GAP mediana</div>
     </div>
