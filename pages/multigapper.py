@@ -540,12 +540,12 @@ for i, kpi in enumerate(kpi_list):
 
 # Lista delle colonne da mostrare
 metrics = {
-    "GAP": "GAP",
-    "%Open_PMH": "Open / PMH",
-    "break": "Break",
-    "%OH": "Spinta",
-    "%OL": "Minimo",
-    "media_orario_high": "Orario High"
+    "GAP": "GAP"
+    #"%Open_PMH": "Open / PMH",
+    #"break": "Break",
+    #"%OH": "Spinta",
+    #"%OL": "Minimo",
+    #"media_orario_high": "Orario High"
 }
 
 # Creiamo la lista dei KPI calcolando media e mediana per Totale / Red / Green
