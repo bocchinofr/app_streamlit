@@ -437,18 +437,6 @@ top_html = f"""
       <div class='top-kpi-label'>Totale record</div>
     </div>
     <div class='top-kpi'>
-      <div class='top-kpi-value'>{num_days_mg}</div>
-      <div class='top-kpi-label'>Numero giornate</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_gapper_per_day:.1f}</div>
-      <div class='top-kpi-label'>Numero gapper per day</div>
-    </div>
-    <div class='top-kpi'>
-      <div class='top-kpi-value'>{avg_pct_red_day:.0f}%</div>
-      <div class='top-kpi-label'>Chiusure RED per day</div>
-    </div>
-    <div class='top-kpi'>
       <div class='top-kpi-value'>{red_close:.0f}%</div>
       <div class='top-kpi-label'>Chiusure RED</div>
     </div>
@@ -459,6 +447,18 @@ top_html = f"""
     <div class='top-kpi'>
       <div class='top-kpi-value'>{gap_median:.0f}%</div>
       <div class='top-kpi-label'>GAP mediana</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{num_days_mg}</div>
+      <div class='top-kpi-label'>Numero giornate</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_gapper_per_day:.1f}</div>
+      <div class='top-kpi-label'>Numero gapper per day</div>
+    </div>
+    <div class='top-kpi'>
+      <div class='top-kpi-value'>{avg_pct_red_day:.0f}%</div>
+      <div class='top-kpi-label'>Chiusure RED per day</div>
     </div>
   </div>
 </div>
