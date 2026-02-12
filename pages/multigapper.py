@@ -373,6 +373,15 @@ def kpi_box_statual(kpi):
     red_med = kpi.get("red_med", red)
     green_med = kpi.get("green_med", green)
     
+    # Calcolo delta per la barra
+    delta = red_med - green_med
+    if invert_negative:
+        delta = -delta
+
+    # Percentuale della barra (valori assoluti)
+    delta_pct = min(abs(delta), 100)  # puoi scalare se vuoi oltre 100%
+    bar_color = "#E74C3C" if delta > 0 else "#3498DB"  # rosso se RED>GREEN, blu se GREEN>RED
+
     html = f"""
     <div class="kpi-card">
         <div class="kpi-title">{title}</div>
@@ -388,10 +397,12 @@ def kpi_box_statual(kpi):
             <div class="kpi-val red">{fmt(red_med)}{suffix}</div>
             <div class="kpi-val green">{fmt(green_med)}{suffix}</div>
         </div>
+        <div class="kpi-delta-bar-container">
+            <div class="kpi-delta-bar" style="width:{delta_pct}%; background-color:{bar_color}; height:8px; margin-top:4px;"></div>
+        </div>
     </div>
     """
     st.markdown(html, unsafe_allow_html=True)
-
 
 
 
