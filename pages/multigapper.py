@@ -540,8 +540,8 @@ for i, kpi in enumerate(kpi_list):
 
 # Lista delle colonne da mostrare
 metrics = {
-    "GAP": "GAP"
-    #"%Open_PMH": "Open / PMH",
+    "GAP": "GAP",
+    "%Open_PMH": "Open / PMH"
     #"break": "Break",
     #"%OH": "Spinta",
     #"%OL": "Minimo",
