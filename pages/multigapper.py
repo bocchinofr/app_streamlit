@@ -351,7 +351,7 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     st.markdown(html, unsafe_allow_html=True)
 
 
-def kpi_box_statual(kpi):
+def kpi_box_statual(kpi, invert_negative=False)):
     """Crea un box KPI in stile mini-tabella senza bordi, con Media e Mediana"""
     
     # formattazione valori
