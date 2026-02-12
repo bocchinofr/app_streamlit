@@ -152,7 +152,6 @@ col_o1, col_o2 = st.sidebar.columns(2)
 open_min = col_o1.number_input("Open MIN", 0.0, 100.0, 1.0, step=0.1)
 open_max = col_o2.number_input("Open MAX", 0.0, 100.0, 100.0, step=0.1)
 
-st.sidebar.markdown("---")
 st.sidebar.subheader("📊 Multi-gapper day")
 
 col_g1, col_g2 = st.sidebar.columns(2)
