@@ -354,6 +354,14 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
 def kpi_box_statual(kpi):
     """Crea un box KPI in stile mini-tabella senza bordi, con Media e Mediana"""
     
+    # formattazione valori
+    def fmt(x):
+        try:
+            return f"{x:.0f}"
+        except (ValueError, TypeError):
+            return str(x)
+
+
     title = kpi["title"]
     total = kpi["total"]
     red = kpi["red"]
@@ -370,15 +378,15 @@ def kpi_box_statual(kpi):
         <div class="kpi-title">{title}</div>
         <div class="kpi-row">
             <div class="kpi-stat">M</div>
-            <div class="kpi-val">{total:.0f}{suffix}</div>
-            <div class="kpi-val red">{red:.0f}{suffix}</div>
-            <div class="kpi-val green">{green:.0f}{suffix}</div>
+            <div class="kpi-val">{fmt(total)}{suffix}</div>
+            <div class="kpi-val red">{fmt(red)}{suffix}</div>
+            <div class="kpi-val green">{fmt(green)}{suffix}</div>
         </div>
         <div class="kpi-row">
             <div class="kpi-stat">m</div>
-            <div class="kpi-val">{total_med:.0f}{suffix}</div>
-            <div class="kpi-val red">{red_med:.0f}{suffix}</div>
-            <div class="kpi-val green">{green_med:.0f}{suffix}</div>
+            <div class="kpi-val">{fmt(total_med)}{suffix}</div>
+            <div class="kpi-val red">{fmt(red_med)}{suffix}</div>
+            <div class="kpi-val green">{fmt(green_med)}{suffix}</div>
         </div>
     </div>
     """
@@ -528,7 +536,7 @@ kpi_list = [
     {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
     {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
     {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
-    #{"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
+    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
 ]
 
 # 2️⃣ Creo 2 colonne
