@@ -373,10 +373,19 @@ def kpi_box_statual(kpi, invert_negative=False):
     red_med = kpi.get("red_med", red)
     green_med = kpi.get("green_med", green)
     
-    # Calcolo delta per la barra
-    delta = red_med - green_med
-    if invert_negative:
-        delta = -delta
+    # Calcolo proporzioni barra
+    if red_med == green_med:
+        # differenza zero → metà rossa metà verde
+        red_pct = 50
+        green_pct = 50
+    else:
+        delta = red_med - green_med
+        if invert_negative:
+            delta = -delta
+        # scala proporzionale su 100%
+        total_abs = abs(red_med) + abs(green_med)  # puoi anche mettere max(abs(red_med), abs(green_med)) se vuoi
+        red_pct = max(min(50 + delta / total_abs * 50, 100), 0)  # centrato su 50%
+        green_pct = 100 - red_pct
 
     # Percentuale della barra (valori assoluti)
     delta_pct = min(abs(delta), 100)  # puoi scalare se vuoi oltre 100%
@@ -397,8 +406,9 @@ def kpi_box_statual(kpi, invert_negative=False):
             <div class="kpi-val red">{fmt(red_med)}{suffix}</div>
             <div class="kpi-val green">{fmt(green_med)}{suffix}</div>
         </div>
-        <div class="kpi-delta-bar-container">
-            <div class="kpi-delta-bar" style="width:{delta_pct}%; background-color:{bar_color}; height:8px; margin-top:4px;"></div>
+        <div class="kpi-delta-bar-container" style="width:100%; background-color:#eee; height:8px; border-radius:4px; margin-top:4px; display:flex;">
+            <div style="width:{red_pct}%; background-color:#E74C3C;"></div>
+            <div style="width:{green_pct}%; background-color:#3498DB;"></div>
         </div>
     </div>
     """
