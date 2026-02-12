@@ -369,7 +369,7 @@ def kpi_box_statual(kpi):
     <div class="kpi-card">
         <div class="kpi-title">{title}</div>
         <div class="kpi-row">
-            <div class="kpi-stat">media()</div>
+            <div class="kpi-stat">mediana</div>
             <div class="kpi-val">{total:.0f}{suffix}</div>
             <div class="kpi-val red">{red:.0f}{suffix}</div>
             <div class="kpi-val green">{green:.0f}{suffix}</div>
