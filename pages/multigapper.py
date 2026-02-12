@@ -542,9 +542,9 @@ for i, kpi in enumerate(kpi_list):
 metrics = {
     "GAP": "GAP",
     "%Open_PMH": "Open / PMH",
-    "break": "Break"
-    #"%OH": "Spinta",
-    #"%OL": "Minimo",
+    "break": "Break",
+    "%OH": "Spinta",
+    "%OL": "Minimo"
     #"media_orario_high": "Orario High"
 }
 
