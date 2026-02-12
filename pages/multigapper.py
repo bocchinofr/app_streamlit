@@ -545,7 +545,7 @@ metrics = {
     "break": "Break",
     "%OH": "Spinta",
     "%OL": "Minimo",
-    "orario_high": "Orario High"
+    "media_orario_high": "Orario High"
 }
 
 # Creiamo la lista dei KPI calcolando media e mediana per Totale / Red / Green
