@@ -406,7 +406,7 @@ def kpi_box_statual(kpi, invert_negative=False):
             <div class="kpi-val red">{fmt(red_med)}{suffix}</div>
             <div class="kpi-val green">{fmt(green_med)}{suffix}</div>
         </div>
-        <div class="kpi-delta-bar-container" style="width:100%; background-color:#eee; height:8px; border-radius:4px; margin-top:4px; display:flex;">
+        <div class="kpi-delta-bar-container" style="width:100%; background-color:#eee; height:5px; border-radius:4px; margin-top:4px; display:flex;">
             <div style="width:{red_pct}%; background-color:#E74C3C;"></div>
             <div style="width:{green_pct}%; background-color:#3498DB;"></div>
         </div>
