@@ -351,8 +351,8 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     st.markdown(html, unsafe_allow_html=True)
 
 
-def kpi_box_stat_table(kpi):
-    """Crea un box KPI con mini-tabella Media / Mediana usando valori già calcolati"""
+def kpi_box_statual(kpi):
+    """Crea un box KPI in stile mini-tabella senza bordi, con Media e Mediana"""
     
     title = kpi["title"]
     total = kpi["total"]
@@ -360,50 +360,30 @@ def kpi_box_stat_table(kpi):
     green = kpi["green"]
     suffix = kpi.get("suffix", "")
     
-    # opzionale: calcolo mediana se presente in kpi oppure lasciamo None
-    total_med = kpi.get("total_med", None)
-    red_med = kpi.get("red_med", None)
-    green_med = kpi.get("green_med", None)
-    
-    # se non passata, usa lo stesso valore come placeholder
-    total_med = total_med if total_med is not None else total
-    red_med = red_med if red_med is not None else red
-    green_med = green_med if green_med is not None else green
+    # mediana: se presente, usa; altrimenti usa lo stesso valore (placeholder)
+    total_med = kpi.get("total_med", total)
+    red_med = kpi.get("red_med", red)
+    green_med = kpi.get("green_med", green)
     
     html = f"""
     <div class="kpi-card">
-        <div class="kpi-header">
-            <div class="kpi-title">{title}</div>
+        <div class="kpi-title">{title}</div>
+        <div class="kpi-row">
+            <div class="kpi-stat">media</div>
+            <div class="kpi-val">{total:.2f}{suffix}</div>
+            <div class="kpi-val red">{red:.2f}{suffix}</div>
+            <div class="kpi-val green">{green:.2f}{suffix}</div>
         </div>
-        <div class="kpi-table-container">
-            <table class="kpi-inner-table">
-                <thead>
-                    <tr>
-                        <th>Statistica</th>
-                        <th>Totale</th>
-                        <th>RED</th>
-                        <th>GREEN</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Media</td>
-                        <td>{total:.2f}{suffix}</td>
-                        <td>{red:.2f}{suffix}</td>
-                        <td>{green:.2f}{suffix}</td>
-                    </tr>
-                    <tr>
-                        <td>Mediana</td>
-                        <td>{total_med:.2f}{suffix}</td>
-                        <td>{red_med:.2f}{suffix}</td>
-                        <td>{green_med:.2f}{suffix}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="kpi-row">
+            <div class="kpi-stat">mediana</div>
+            <div class="kpi-val">{total_med:.2f}{suffix}</div>
+            <div class="kpi-val red">{red_med:.2f}{suffix}</div>
+            <div class="kpi-val green">{green_med:.2f}{suffix}</div>
         </div>
     </div>
     """
     st.markdown(html, unsafe_allow_html=True)
+
 
 
 
@@ -577,7 +557,8 @@ columns = [col1, col2, col3]
 for i, kpi in enumerate(kpi_list):
     col = columns[i % 3]
     with col:
-        kpi_box_stat_table(kpi)
+        kpi_box_statual(kpi)
+
 
 
 # endregion
