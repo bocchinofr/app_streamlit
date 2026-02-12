@@ -427,9 +427,7 @@ stats_red   = structure_stats(red_df)
 # region TOP BOX
 # ----------------------------------------------------------------
 
-#st.subheader("📊 KPI principali")
-
-top_html = f"""
+box_left = f"""
 <div class='kpi-top-box'>
   <div class='kpi-top'>
     <div class='top-kpi'>
@@ -444,6 +442,13 @@ top_html = f"""
       <div class='top-kpi-value'>{gap_median:.0f}%</div>
       <div class='top-kpi-label'>GAP mediana</div>
     </div>
+  </div>
+</div>
+"""
+
+box_right = f"""
+<div class='kpi-top-box'>
+  <div class='kpi-top'>
     <div class='top-kpi'>
       <div class='top-kpi-value'>{num_days_mg}</div>
       <div class='top-kpi-label'>Numero giornate</div>
@@ -460,10 +465,17 @@ top_html = f"""
 </div>
 """
 
+
 st.subheader("📊 KPI principali")
 
-# Top box (totale, chiusure RED, GAP medio)
-st.markdown(top_html, unsafe_allow_html=True)
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown(box_left, unsafe_allow_html=True)
+
+with col2:
+    st.markdown(box_right, unsafe_allow_html=True)
+
 
 # endregion
 
