@@ -350,47 +350,28 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     """
 
 
-def stat_box(df, column, label):
-    if df.empty:
-        st.write(f"Nessun dato per {label}")
-        return
+def kpi_card_stat(title, total_mean, total_median, red_mean, red_median, green_mean, green_median, suffix="%"):
+    # Formattazione valori
+    def fmt(x):
+        try:
+            return f"{x:.1f}"
+        except (ValueError, TypeError):
+            return str(x)
 
-    total_mean = df[column].mean()
-    total_median = df[column].median()
-
-    red_df = df[df["Chiusura"] == "RED"]
-    green_df = df[df["Chiusura"] == "GREEN"]
-
-    red_mean = red_df[column].mean()
-    red_median = red_df[column].median()
-
-    green_mean = green_df[column].mean()
-    green_median = green_df[column].median()
-
-    box_html = f"""
-    <div class="stat-box">
-        <div class="stat-title">{label}</div>
-        
-        <div class="stat-grid">
-            <div></div>
-            <div class="stat-header">Totale</div>
-            <div class="stat-header red">RED</div>
-            <div class="stat-header green">GREEN</div>
-
-            <div class="stat-row-label">Media</div>
-            <div class="stat-value">{total_mean:.2f}%</div>
-            <div class="stat-value red">{red_mean:.2f}%</div>
-            <div class="stat-value green">{green_mean:.2f}%</div>
-
-            <div class="stat-row-label">Mediana</div>
-            <div class="stat-value">{total_median:.2f}%</div>
-            <div class="stat-value red">{red_median:.2f}%</div>
-            <div class="stat-value green">{green_median:.2f}%</div>
+    html = f"""
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <div class="kpi-title">{title}</div>
+            <div class="kpi-total">Totale: {fmt(total_mean)}{suffix} / Mediana: {fmt(total_median)}{suffix}</div>
+        </div>
+        <div class="kpi-split">
+            <div class="red">Red: {fmt(red_mean)}{suffix} / Mediana: {fmt(red_median)}{suffix}</div>
+            <div class="green">Green: {fmt(green_mean)}{suffix} / Mediana: {fmt(green_median)}{suffix}</div>
         </div>
     </div>
     """
+    st.markdown(html, unsafe_allow_html=True)
 
-    st.markdown(box_html, unsafe_allow_html=True)
 
 
 # endregion
@@ -551,6 +532,64 @@ for i, kpi in enumerate(kpi_list):
             green=kpi["green"],
             suffix=kpi.get("suffix"),
             show_delta=kpi.get("show_delta", True)  # <- importante
+        )
+
+
+# ----------
+
+# Lista delle colonne da mostrare
+metrics = {
+    "GAP": "GAP",
+    "%Open_PMH": "Open / PMH",
+    "break": "Break",
+    "%OH": "Spinta",
+    "%OL": "Minimo",
+    "orario_high": "Orario High"
+}
+
+# Creiamo la lista dei KPI calcolando media e mediana per Totale / Red / Green
+kpi_list = []
+for col, label in metrics.items():
+    total_mean = filtered[col].mean()
+    total_median = filtered[col].median()
+    
+    red_df = filtered[filtered["Chiusura"] == "RED"]
+    green_df = filtered[filtered["Chiusura"] == "GREEN"]
+
+    red_mean = red_df[col].mean()
+    red_median = red_df[col].median()
+
+    green_mean = green_df[col].mean()
+    green_median = green_df[col].median()
+
+    kpi_list.append({
+        "title": label,
+        "total_mean": total_mean,
+        "total_median": total_median,
+        "red_mean": red_mean,
+        "red_median": red_median,
+        "green_mean": green_mean,
+        "green_median": green_median,
+        "suffix": "%" if col != "orario_high" else ""
+    })
+
+
+# Creiamo 3 colonne affiancate
+col1, col2, col3 = st.columns(3)
+columns = [col1, col2, col3]
+
+for i, kpi in enumerate(kpi_list):
+    col = columns[i % 3]
+    with col:
+        kpi_card_stat(
+            title=kpi["title"],
+            total_mean=kpi["total_mean"],
+            total_median=kpi["total_median"],
+            red_mean=kpi["red_mean"],
+            red_median=kpi["red_median"],
+            green_mean=kpi["green_mean"],
+            green_median=kpi["green_median"],
+            suffix=kpi.get("suffix", "%")
         )
 
 
