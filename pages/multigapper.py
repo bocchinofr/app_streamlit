@@ -370,15 +370,15 @@ def kpi_box_statual(kpi):
         <div class="kpi-title">{title}</div>
         <div class="kpi-row">
             <div class="kpi-stat">media</div>
-            <div class="kpi-val">{total:.2f}{suffix}</div>
-            <div class="kpi-val red">{red:.2f}{suffix}</div>
-            <div class="kpi-val green">{green:.2f}{suffix}</div>
+            <div class="kpi-val">{total:.0f}{suffix}</div>
+            <div class="kpi-val red">{red:.0f}{suffix}</div>
+            <div class="kpi-val green">{green:.0f}{suffix}</div>
         </div>
         <div class="kpi-row">
             <div class="kpi-stat">mediana</div>
-            <div class="kpi-val">{total_med:.2f}{suffix}</div>
-            <div class="kpi-val red">{red_med:.2f}{suffix}</div>
-            <div class="kpi-val green">{green_med:.2f}{suffix}</div>
+            <div class="kpi-val">{total_med:.0f}{suffix}</div>
+            <div class="kpi-val red">{red_med:.0f}{suffix}</div>
+            <div class="kpi-val green">{green_med:.0f}{suffix}</div>
         </div>
     </div>
     """
