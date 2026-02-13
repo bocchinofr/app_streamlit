@@ -430,13 +430,13 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                 <div style="font-size:16px; font-weight:600; color:#E74C3C;">
                     {fmt(red)}{suffix}
                     <span style="font-size:12px; opacity:0.7; font-variant-numeric: tabular-nums;">
-                        - {fmt(red_med)}{suffix}
+                        / {fmt(red_med)}{suffix}
                     </span>
                 </div>
                 <div style="font-size:16px; font-weight:600; color:#2ECC71;">
                     {fmt(green)}{suffix}
                     <span style="font-size:12px; opacity:0.7; font-variant-numeric: tabular-nums;">
-                        - {fmt(green_med)}{suffix}
+                        / {fmt(green_med)}{suffix}
                     </span>
                 </div>
             </div>
