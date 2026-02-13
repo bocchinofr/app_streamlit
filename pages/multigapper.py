@@ -398,13 +398,10 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     # =========================
     html = f"""
     <div class="kpi-card">
-
         <div style="text-align:center; font-weight:600; margin-bottom:10px;">
             {title}
         </div>
-
         <div style="display:flex; justify-content:space-between; align-items:center;">
-
             <!-- COLONNA SINISTRA -->
             <div style="text-align:left;">
                 <div style="font-size:20px; font-weight:600;">
@@ -414,7 +411,6 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                     {fmt(total_med)}{suffix}
                 </div>
             </div>
-
             <!-- COLONNA DESTRA -->
             <div style="text-align:right;">
                 <div style="font-size:16px; font-weight:600; color:#E74C3C;">
@@ -423,7 +419,6 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                         - {fmt(red_med)}{suffix}
                     </span>
                 </div>
-
                 <div style="font-size:16px; font-weight:600; color:#2ECC71;">
                     {fmt(green)}{suffix}
                     <span style="font-size:12px; opacity:0.7;">
@@ -431,9 +426,7 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                     </span>
                 </div>
             </div>
-
         </div>
-
         <!-- BARRA -->
         <div style="width:100%; height:8px; margin-top:10px;">
             {f'''
@@ -443,7 +436,6 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
             </div>
             ''' if show_bar else '<div style="height:8px;"></div>'}
         </div>
-
     </div>
     """
 
