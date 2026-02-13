@@ -434,7 +434,6 @@ def kpi_box_statual(kpi, invert_negative=False):
     st.markdown(html, unsafe_allow_html=True)
 
 
-
 # endregion
 
 
