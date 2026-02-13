@@ -401,7 +401,7 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     if show_bar:
         bar_html = (
             f'<div style="position:relative; width:100%; height:8px; '
-            'background:#444; border-radius:4px; display:flex; overflow:hidden;">'
+            'background:#eee; border-radius:4px; display:flex; overflow:hidden;">'
             
             # barra rossa
             f'<div style="width:{red_pct}%; background:#E74C3C;"></div>'
@@ -624,11 +624,11 @@ for i, kpi in enumerate(kpi_list):
 
 # ----------
 
-col1, col2, col3 = st.columns(3)
-columns = [col1, col2, col3]
+col1, col2, col3, col4 = st.columns(4)
+columns = [col1, col2, col3, col4]
 
 for i, kpi in enumerate(kpi_list):
-    col = columns[i % 3]
+    col = columns[i % 4]
     with col:
         kpi_box_statual(kpi)
 
