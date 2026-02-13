@@ -393,42 +393,6 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                 red_pct = 50
                 green_pct = 50
 
-    # =========================
-    # HTML
-    # =========================
-    html = f"""
-    <div class="kpi-card">
-        <div style="text-align:center; font-weight:600; margin-bottom:10px;">
-            {title}
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <!-- COLONNA SINISTRA -->
-            <div style="text-align:left;">
-                <div style="font-size:20px; font-weight:600;">
-                    {fmt(total)}{suffix}
-                </div>
-                <div style="font-size:13px; opacity:0.7;">
-                    {fmt(total_med)}{suffix}
-                </div>
-            </div>
-            <!-- COLONNA DESTRA -->
-            <div style="text-align:right;">
-                <div style="font-size:16px; font-weight:600; color:#E74C3C;">
-                    {fmt(red)}{suffix}
-                    <span style="font-size:12px; opacity:0.7;">
-                        - {fmt(red_med)}{suffix}
-                    </span>
-                </div>
-                <div style="font-size:16px; font-weight:600; color:#2ECC71;">
-                    {fmt(green)}{suffix}
-                    <span style="font-size:12px; opacity:0.7;">
-                        - {fmt(green_med)}{suffix}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    """
 
     # =========================
     # COSTRUZIONE BARRA HTML
@@ -444,6 +408,44 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     else:
         bar_html = '<div style="height:8px;"></div>'
 
+    html = f"""
+    <div class="kpi-card">
+        <div style="text-align:center; font-weight:600; margin-bottom:10px;">
+            {title}
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="text-align:left;">
+                <div style="font-size:20px; font-weight:600;">
+                    {fmt(total)}{suffix}
+                </div>
+                <div style="font-size:13px; opacity:0.7;">
+                    {fmt(total_med)}{suffix}
+                </div>
+            </div>
+
+            <div style="text-align:right;">
+                <div style="font-size:16px; font-weight:600; color:#E74C3C;">
+                    {fmt(red)}{suffix}
+                    <span style="font-size:12px; opacity:0.7;">
+                        - {fmt(red_med)}{suffix}
+                    </span>
+                </div>
+
+                <div style="font-size:16px; font-weight:600; color:#2ECC71;">
+                    {fmt(green)}{suffix}
+                    <span style="font-size:12px; opacity:0.7;">
+                        - {fmt(green_med)}{suffix}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div style="width:100%; margin-top:10px;">
+            {bar_html}
+        </div>
+    </div>
+    """
 
     st.markdown(html, unsafe_allow_html=True)
 
