@@ -351,8 +351,10 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     st.markdown(html, unsafe_allow_html=True)
 
 
-def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
+def kpi_box_statual(kpi, invert_negative=False):
     """KPI box layout verticale con Media/Mediana e confronto Red vs Green"""
+
+    show_bar = kpi.get("show_bar", True)
 
     def fmt(x):
         try:
@@ -375,23 +377,32 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     # =========================
     red_pct = 50
     green_pct = 50
+    delta = 0
 
     if show_bar:
-        if red_med == green_med:
-            red_pct = 50
-            green_pct = 50
-        else:
-            delta = red_med - green_med
-            if invert_negative:
-                delta = -delta
+        try:
+            red_val = float(red_med)
+            green_val = float(green_med)
 
-            total_abs = abs(red_med) + abs(green_med)
-            if total_abs != 0:
-                red_pct = max(min(50 + (delta / total_abs) * 50, 100), 0)
-                green_pct = 100 - red_pct
-            else:
+            if red_val == green_val:
                 red_pct = 50
                 green_pct = 50
+            else:
+                delta = red_val - green_val
+                if invert_negative:
+                    delta = -delta
+
+                total_abs = abs(red_val) + abs(green_val)
+                if total_abs != 0:
+                    red_pct = max(min(50 + (delta / total_abs) * 50, 100), 0)
+                    green_pct = 100 - red_pct
+                else:
+                    red_pct = 50
+                    green_pct = 50
+
+        except (ValueError, TypeError):
+            # valori non numerici (es. orari)
+            show_bar = False
 
 
     # =========================
@@ -601,7 +612,7 @@ kpi_list = [
     {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
     {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
     {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
-    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_delta": False}
+    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_bar": False}
 ]
 
 # 2️⃣ Creo 2 colonne
