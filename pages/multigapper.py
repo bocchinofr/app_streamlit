@@ -190,6 +190,7 @@ if len(date_range) == 2:
     start, end = date_range
     filtered = filtered[(filtered["Date"] >= start) & (filtered["Date"] <= end)]
 
+filtered["Market Cap"] = pd.to_numeric(filtered["Market Cap"], errors="coerce")
 filtered = filtered[
     (filtered["Market Cap"] >= mc_min * 1_000_000) &
     (filtered["Market Cap"] <= mc_max * 1_000_000)
