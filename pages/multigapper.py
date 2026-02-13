@@ -399,14 +399,15 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     # =========================
 
     if show_bar:
-        bar_html = f"""
-        <div style="width:100%; height:8px; background:#eee; border-radius:4px; display:flex; overflow:hidden;">
-            <div style="width:{red_pct}%; background:#E74C3C;"></div>
-            <div style="width:{green_pct}%; background:#2ECC71;"></div>
-        </div>
-        """
+        bar_html = (
+            f'<div style="width:100%; height:8px; background:#eee; border-radius:4px; display:flex; overflow:hidden;">'
+            f'<div style="width:{red_pct}%; background:#E74C3C;"></div>'
+            f'<div style="width:{green_pct}%; background:#2ECC71;"></div>'
+            f'</div>'
+        )
     else:
         bar_html = '<div style="height:8px;"></div>'
+
 
 
     html = f"""
