@@ -625,8 +625,7 @@ kpi_list = [
     build_kpi("Spinta media", spinta_mean, spinta_med, spinta_red, spinta_red_med,
               spinta_green, spinta_green_med),
     build_kpi("Minimo medio", minimo_mean, minimo_med, low_red, low_red_med, low_green, low_green_med),
-    build_kpi("Orario High medio", media_orario_high, mediana_orario_high, mediaorario_red, medianaorario_red,
-              mediaorario_green, medianaorario_green, suffix="", show_bar=False)
+    #build_kpi("Orario High medio", media_orario_high, mediana_orario_high, mediaorario_red, medianaorario_red,mediaorario_green, medianaorario_green, suffix="", show_bar=False)
 ]
 
 
