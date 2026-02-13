@@ -373,19 +373,25 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     # =========================
     # Calcolo barra
     # =========================
-    if red_med == green_med:
-        delta_pct = 0
-    else:
-        delta = red_med - green_med
-        if invert_negative:
-            delta = -delta
+    red_pct = 50
+    green_pct = 50
 
-        total_abs = abs(red_med) + abs(green_med)
-        if total_abs != 0:
-            delta_pct = min(abs(delta) / total_abs * 100, 100)
+    if show_bar:
+        if red_med == green_med:
+            red_pct = 50
+            green_pct = 50
         else:
-            delta_pct = 0
+            delta = red_med - green_med
+            if invert_negative:
+                delta = -delta
 
+            total_abs = abs(red_med) + abs(green_med)
+            if total_abs != 0:
+                red_pct = max(min(50 + (delta / total_abs) * 50, 100), 0)
+                green_pct = 100 - red_pct
+            else:
+                red_pct = 50
+                green_pct = 50
 
 
     # =========================
@@ -393,38 +399,14 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     # =========================
 
     if show_bar:
-
-        if delta > 0:
-            # RED domina → barra a sinistra
-            bar_html = (
-                '<div style="position:relative; width:100%; height:10px; background:#999; border-radius:6px;">'
-                '<div style="position:absolute; left:50%; top:0; bottom:0; width:1px; background:#999;"></div>'
-                f'<div style="position:absolute; right:50%; width:{delta_pct/2}%; '
-                'top:0; bottom:0; background:#E74C3C;"></div>'
-                '</div>'
-            )
-
-        elif delta < 0:
-            # GREEN domina → barra a destra
-            bar_html = (
-                '<div style="position:relative; width:100%; height:10px; background:#eee; border-radius:6px;">'
-                '<div style="position:absolute; left:50%; top:0; bottom:0; width:1px; background:#999;"></div>'
-                f'<div style="position:absolute; left:50%; width:{delta_pct/2}%; '
-                'top:0; bottom:0; background:#2ECC71;"></div>'
-                '</div>'
-            )
-
-        else:
-            # equilibrio → solo asse centrale
-            bar_html = (
-                '<div style="position:relative; width:100%; height:10px; background:#eee; border-radius:6px;">'
-                '<div style="position:absolute; left:50%; top:0; bottom:0; width:1px; background:#999;"></div>'
-                '</div>'
-            )
-
+        bar_html = (
+            f'<div style="width:100%; height:8px; background:#eee; border-radius:4px; display:flex; overflow:hidden;">'
+            f'<div style="width:{red_pct}%; background:#E74C3C;"></div>'
+            f'<div style="width:{green_pct}%; background:#2ECC71;"></div>'
+            f'</div>'
+        )
     else:
-        bar_html = '<div style="height:10px;"></div>'
-
+        bar_html = '<div style="height:8px;"></div>'
 
     # ===========
     #    HTML
