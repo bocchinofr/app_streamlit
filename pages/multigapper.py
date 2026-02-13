@@ -408,7 +408,9 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     else:
         bar_html = '<div style="height:8px;"></div>'
 
-
+    # ===========
+    #    HTML
+    # ===========
 
     html = f"""
     <div class="kpi-card">
@@ -439,6 +441,7 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                 </div>
             </div>
         </div>
+        <div style="border-top:1px solid rgba(0,0,0,0.08); margin:8px 0 6px 0;"></div>
         <div style="width:100%; margin-top:10px;">
             {bar_html}
         </div>
