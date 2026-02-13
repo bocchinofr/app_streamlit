@@ -411,7 +411,7 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
             
             # linea centrale (zero axis)
             '<div style="position:absolute; left:50%; top:0; bottom:0; '
-            'width:3px; background:rgba(245, 217, 39, 1);"></div>'
+            'width:3px; background:rgba(255, 255, 255, 1);"></div>'
             
             '</div>'
         )
