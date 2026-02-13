@@ -623,8 +623,7 @@ def build_kpi(title, total, total_med, red, red_med, green, green_med, suffix="%
 kpi_list = [
     build_kpi("GAP Medio", gap_mean, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
     build_kpi("Open / PMH medio", openpmh_mean, openpmh_med, open_pmh_red, open_pmh_red_med, open_pmh_green, open_pmh_green_med),
-    #i valori mediani non sono significativi per il break essendo dati binari
-    build_kpi("Break medio", pm_break_mean, pmbreak_red, pmbreak_green),
+    build_kpi("Break medio", pm_break_mean, pm_break_median, pmbreak_red, pmbreak_red_med, pmbreak_green, pmbreak_green_med),
     build_kpi("Spinta media", spinta_mean, spinta_med, spinta_red, spinta_red_med, spinta_green, spinta_green_med),
     build_kpi("Minimo medio", minimo_mean, minimo_med, low_red, low_red_med, low_green, low_green_med),
     build_kpi("Orario High medio", orario_high, orario_high_med, orario_red, orario_red_med, orario_green, orario_green_med, suffix="", show_bar=False)
