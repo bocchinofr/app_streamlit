@@ -314,43 +314,6 @@ mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
 # crea il layout per le card kpi
 # -------------------------------
 
-def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
-    # delta solo se numerico e show_delta=True
-    try:
-        delta = float(red) - float(green) if show_delta else 0
-        delta_sign = "+" if delta > 0 else ""
-        # usa solo le classi CSS già presenti
-        delta_cls = "green" if delta < 0 else "red"
-    except (ValueError, TypeError):
-        delta_html = '<div class="kpi-delta">&nbsp;</div>'
-        delta = None
-        delta_cls = "red"
-
-    # formattazione valori
-    def fmt(x):
-        try:
-            return f"{x:.0f}"
-        except (ValueError, TypeError):
-            return str(x)
-
-    delta_html = f'<div class="kpi-delta {delta_cls}">Δ {delta_sign}{fmt(delta)}{suffix}</div>' if show_delta and delta is not None else '<div class="kpi-delta">&nbsp;</div>'
-
-    html = f"""
-    <div class="kpi-card">
-        <div class="kpi-header">
-            <div class="kpi-title">{title}</div>
-            <div class="kpi-total">{fmt(total)}{suffix}</div>
-        </div>
-        <div class="kpi-split">
-            <div class="red">Red: {fmt(red)}{suffix}</div>
-            <div class="green">Green: {fmt(green)}{suffix}</div>
-        </div>
-        {delta_html}
-    </div>
-    """
-    st.markdown(html, unsafe_allow_html=True)
-
-
 def kpi_box_statual(kpi, invert_negative=False):
     """KPI box layout verticale con Media/Mediana e confronto Red vs Green"""
 
@@ -614,24 +577,6 @@ kpi_list = [
     {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
     {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_bar": False}
 ]
-
-# 2️⃣ Creo 2 colonne
-col1, col2, col3 = st.columns(3)
-columns = [col1, col2, col3]  # mettiamo le colonne in una lista per ciclarle facilmente
-
-# 3️⃣ Ciclo e metto le card nelle colonne
-for i, kpi in enumerate(kpi_list):
-    col = columns[i % 3]  # ora alterna tra col1, col2, col3
-    with col:
-        kpi_card_textual(
-            title=kpi["title"],
-            total=kpi["total"],
-            red=kpi["red"],
-            green=kpi["green"],
-            suffix=kpi.get("suffix"),
-            show_delta=kpi.get("show_delta", True)  # <- importante
-        )
-
 
 # ----------
 
