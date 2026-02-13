@@ -401,7 +401,7 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
     if show_bar:
         bar_html = (
             f'<div style="position:relative; width:100%; height:8px; '
-            'background:#eee; border-radius:4px; display:flex; overflow:hidden;">'
+            'background:#444; border-radius:4px; display:flex; overflow:hidden;">'
             
             # barra rossa
             f'<div style="width:{red_pct}%; background:#E74C3C;"></div>'
