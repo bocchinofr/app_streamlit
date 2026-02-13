@@ -266,8 +266,8 @@ spinta_med   = filtered['%OH'].median()
 minimo_mean  = filtered['%OL'].mean()
 minimo_med   = filtered['%OL'].median()
 
-openpmh_mean  = filtered['Open_PMH'].mean()
-openpmh_med   = filtered['Open_PMH'].median()
+openpmh_mean  = filtered['%Open_PMH'].mean()
+openpmh_med   = filtered['%Open_PMH'].median()
 
 # Medie delle percentuali già presenti nel dataset
 gap_red       = filtered.loc[filtered["is_red"], "GAP"].mean()
