@@ -953,11 +953,11 @@ if "break" in filtered_sorted.columns:
 
 def to_millions(x):
     try:
-        x = str(x).replace(".", "").replace(",", ".")
         x = float(x)
         return f"{x/1_000_000:.1f} M"
     except:
         return "-"
+
 
 if "Shares Out." in filtered_sorted.columns:
     filtered_sorted["Shares Out."] = filtered_sorted["Shares Out."].apply(to_millions)
