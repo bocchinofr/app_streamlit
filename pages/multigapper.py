@@ -433,20 +433,20 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                     {fmt(total)}{suffix}
                 </div>
                 <div style="font-size:18px; opacity:0.7; font-variant-numeric: tabular-nums;">
-                    median {fmt(total_med)}{suffix}
+                    {fmt(total_med)}{suffix}
                 </div>
             </div>
             <div style="text-align:right;">
                 <div style="font-size:18px; font-weight:600; color:#E74C3C;">
                     {fmt(red)}{suffix}
                     <span style="font-size:14px; opacity:0.7; font-variant-numeric: tabular-nums;">
-                        || median {fmt(red_med)}{suffix}
+                        || {fmt(red_med)}{suffix}
                     </span>
                 </div>
                 <div style="font-size:18px; font-weight:600; color:#2ECC71;">
                     {fmt(green)}{suffix}
                     <span style="font-size:14px; opacity:0.7; font-variant-numeric: tabular-nums;">
-                        || median {fmt(green_med)}{suffix}
+                        || {fmt(green_med)}{suffix}
                     </span>
                 </div>
             </div>
