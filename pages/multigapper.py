@@ -397,7 +397,7 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
         if delta > 0:
             # RED domina → barra a sinistra
             bar_html = (
-                '<div style="position:relative; width:100%; height:10px; background:#eee; border-radius:6px;">'
+                '<div style="position:relative; width:100%; height:10px; background:#999; border-radius:6px;">'
                 '<div style="position:absolute; left:50%; top:0; bottom:0; width:1px; background:#999;"></div>'
                 f'<div style="position:absolute; right:50%; width:{delta_pct/2}%; '
                 'top:0; bottom:0; background:#E74C3C;"></div>'
