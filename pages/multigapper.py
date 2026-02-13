@@ -351,69 +351,103 @@ def kpi_card_textual(title, total, red, green, suffix, show_delta=True):
     st.markdown(html, unsafe_allow_html=True)
 
 
-def kpi_box_statual(kpi, invert_negative=False):
-    """Crea un box KPI in stile mini-tabella senza bordi, con Media e Mediana"""
-    
-    # formattazione valori
+def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
+    """KPI box layout verticale con Media/Mediana e confronto Red vs Green"""
+
     def fmt(x):
         try:
             return f"{x:.0f}"
         except (ValueError, TypeError):
             return str(x)
 
-
     title = kpi["title"]
     total = kpi["total"]
     red = kpi["red"]
     green = kpi["green"]
     suffix = kpi.get("suffix", "")
-    
-    # mediana: se presente, usa; altrimenti usa lo stesso valore (placeholder)
+
     total_med = kpi.get("total_med", total)
     red_med = kpi.get("red_med", red)
     green_med = kpi.get("green_med", green)
-    
-    # Calcolo proporzioni barra
-    if red_med == green_med:
-        # differenza zero → metà rossa metà verde
-        red_pct = 50
-        green_pct = 50
-    else:
-        delta = red_med - green_med
-        if invert_negative:
-            delta = -delta
-        # scala proporzionale su 100%
-        total_abs = abs(red_med) + abs(green_med)  # puoi anche mettere max(abs(red_med), abs(green_med)) se vuoi
-        red_pct = max(min(50 + delta / total_abs * 50, 100), 0)  # centrato su 50%
-        green_pct = 100 - red_pct
 
-    # Percentuale della barra (valori assoluti)
-    delta_pct = min(abs(delta), 100)  # puoi scalare se vuoi oltre 100%
-    bar_color = "#E74C3C" if delta > 0 else "#3498DB"  # rosso se RED>GREEN, blu se GREEN>RED
+    # =========================
+    # Calcolo barra
+    # =========================
+    red_pct = 50
+    green_pct = 50
 
+    if show_bar:
+        if red_med == green_med:
+            red_pct = 50
+            green_pct = 50
+        else:
+            delta = red_med - green_med
+            if invert_negative:
+                delta = -delta
+
+            total_abs = abs(red_med) + abs(green_med)
+            if total_abs != 0:
+                red_pct = max(min(50 + (delta / total_abs) * 50, 100), 0)
+                green_pct = 100 - red_pct
+            else:
+                red_pct = 50
+                green_pct = 50
+
+    # =========================
+    # HTML
+    # =========================
     html = f"""
     <div class="kpi-card">
-        <div class="kpi-title">{title}</div>
-        <div class="kpi-row">
-            <div class="kpi-stat">M</div>
-            <div class="kpi-val">{fmt(total)}{suffix}</div>
-            <div class="kpi-val red">{fmt(red)}{suffix}</div>
-            <div class="kpi-val green">{fmt(green)}{suffix}</div>
+
+        <div style="text-align:center; font-weight:600; margin-bottom:10px;">
+            {title}
         </div>
-        <div class="kpi-row">
-            <div class="kpi-stat">m</div>
-            <div class="kpi-val">{fmt(total_med)}{suffix}</div>
-            <div class="kpi-val red">{fmt(red_med)}{suffix}</div>
-            <div class="kpi-val green">{fmt(green_med)}{suffix}</div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+
+            <!-- COLONNA SINISTRA -->
+            <div style="text-align:left;">
+                <div style="font-size:20px; font-weight:600;">
+                    {fmt(total)}{suffix}
+                </div>
+                <div style="font-size:13px; opacity:0.7;">
+                    {fmt(total_med)}{suffix}
+                </div>
+            </div>
+
+            <!-- COLONNA DESTRA -->
+            <div style="text-align:right;">
+                <div style="font-size:16px; font-weight:600; color:#E74C3C;">
+                    {fmt(red)}{suffix}
+                    <span style="font-size:12px; opacity:0.7;">
+                        - {fmt(red_med)}{suffix}
+                    </span>
+                </div>
+
+                <div style="font-size:16px; font-weight:600; color:#2ECC71;">
+                    {fmt(green)}{suffix}
+                    <span style="font-size:12px; opacity:0.7;">
+                        - {fmt(green_med)}{suffix}
+                    </span>
+                </div>
+            </div>
+
         </div>
-        <div class="kpi-delta-bar-container" style="width:100%; background-color:#eee; height:5px; border-radius:4px; margin-top:4px; display:flex;">
-            <div style="width:{red_pct}%; background-color:#E74C3C;"></div>
-            <div style="width:{green_pct}%; background-color:#3498DB;"></div>
+
+        <!-- BARRA -->
+        <div style="width:100%; height:8px; margin-top:10px;">
+            {f'''
+            <div style="width:100%; height:8px; background:#eee; border-radius:4px; display:flex; overflow:hidden;">
+                <div style="width:{red_pct}%; background:#E74C3C;"></div>
+                <div style="width:{green_pct}%; background:#2ECC71;"></div>
+            </div>
+            ''' if show_bar else '<div style="height:8px;"></div>'}
         </div>
+
     </div>
     """
-    st.markdown(html, unsafe_allow_html=True)
 
+    st.markdown(html, unsafe_allow_html=True)
 
 
 
