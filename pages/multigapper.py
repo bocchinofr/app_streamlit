@@ -405,8 +405,11 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
             <div style="width:{green_pct}%; background:#2ECC71;"></div>
         </div>
         """
+        st.markdown(html, unsafe_allow_html=True)
+
     else:
         bar_html = '<div style="height:8px;"></div>'
+
 
     html = f"""
     <div class="kpi-card">
