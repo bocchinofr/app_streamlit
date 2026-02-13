@@ -143,8 +143,8 @@ mc_min = col_mc1.number_input("MC Min ($M)", 0, 2000, 0, step=10)
 mc_max = col_mc2.number_input("MC Max ($M)", 0, 2000, 500, step=10)
 
 col_f1, col_f2 = st.sidebar.columns(2)
-float_min = col_f1.number_input("Float MIN", 0, 1_000_000_000, 0, step=100_000)
-float_max = col_f2.number_input("Float MAX", 0, 1_000_000_000, 50_000_000, step=100_000)
+float_min = col_f1.number_input("Float MIN ($M)", 0, 1000, 0, step=5)
+float_max = col_f2.number_input("Float MAX ($M)", 0, 1000, 50, step=5)
 
 min_open_pmh = st.sidebar.number_input("%Open_PMH minimo", -100, 100, -100)
 
@@ -182,8 +182,6 @@ filtered = df.copy()
 filtered = filtered[
     (filtered["GAP"] >= min_gap) &
     (filtered["%Open_PMH"] >= min_open_pmh) &
-    (filtered["Float"] >= float_min) &
-    (filtered["Float"] <= float_max) &
     (filtered["OPEN"] >= open_min) &
     (filtered["OPEN"] <= open_max)
 ]
@@ -195,6 +193,11 @@ if len(date_range) == 2:
 filtered = filtered[
     (filtered["Market Cap"] >= mc_min * 1_000_000) &
     (filtered["Market Cap"] <= mc_max * 1_000_000)
+]
+
+filtered = filtered[
+    (filtered["Float"] >= float_min * 1_000_000) &
+    (filtered["Float"] <= float_max * 1_000_000)
 ]
 
 filtered["is_red"] = filtered["Chiusura"] == "RED"
