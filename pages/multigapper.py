@@ -361,9 +361,10 @@ def kpi_box_statual(kpi, invert_negative=False):
     green = kpi["green"]
     suffix = kpi.get("suffix", "")
 
-    total_med = kpi.get("total_med", total)
-    red_med = kpi.get("red_med", red)
-    green_med = kpi.get("green_med", green)
+    total_med = total if kpi.get("total_med") is None else kpi.get("total_med")
+    red_med   = red   if kpi.get("red_med")   is None else kpi.get("red_med")
+    green_med = green if kpi.get("green_med") is None else kpi.get("green_med")
+
 
     # =========================
     # Calcolo barra
