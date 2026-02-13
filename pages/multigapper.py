@@ -233,9 +233,9 @@ filtered = filtered[
 # -------------------------------------------------
 
 total = len(filtered)
-gap_mean = filtered["GAP"].mean() if total else 0
-gap_median = filtered["GAP"].median() if total else 0
+
 red_close = (filtered["Chiusura"] == "RED").mean() * 100 if total else 0
+
 num_days_mg = filtered["Date"].nunique()
 
 # -------------------------------------------------
@@ -253,18 +253,34 @@ avg_gapper_per_day = (
     if not gapper_per_day_mg.empty else 0
 )
 
+
+gap_mean   = filtered["GAP"].mean() if total else 0
+gap_median = filtered["GAP"].median() if total else 0
+
+pm_break_mean   = filtered['break'].mean()*100
+pm_break_median = filtered['break'].median()*100
+
 # Medie delle percentuali già presenti nel dataset
 gap_red       = filtered.loc[filtered["is_red"], "GAP"].mean()
+gap_red_med   = filtered.loc[filtered["is_red"], "GAP"].median()
 gap_green     = filtered.loc[filtered["is_green"], "GAP"].mean()
+gap_green_med = filtered.loc[filtered["is_green"], "GAP"].median()
 
-open_pmh_red  = filtered.loc[filtered["is_red"], "%Open_PMH"].mean()
-open_pmh_green= filtered.loc[filtered["is_green"], "%Open_PMH"].mean()
+open_pmh_red     = filtered.loc[filtered["is_red"], "%Open_PMH"].mean()
+open_pmh_red_med = filtered.loc[filtered["is_red"], "%Open_PMH"].median()
+open_pmh_green   = filtered.loc[filtered["is_green"], "%Open_PMH"].mean()
+open_pmh_red_med = filtered.loc[filtered["is_green"], "%Open_PMH"].median()
 
-spinta_red    = filtered.loc[filtered["is_red"], "%OH"].mean()
-spinta_green  = filtered.loc[filtered["is_green"], "%OH"].mean()
+spinta_red        = filtered.loc[filtered["is_red"], "%OH"].mean()
+spinta_red_med    = filtered.loc[filtered["is_red"], "%OH"].median()
+spinta_green      = filtered.loc[filtered["is_green"], "%OH"].mean()
+spinta_green_med  = filtered.loc[filtered["is_green"], "%OH"].median()
 
 low_red       = filtered.loc[filtered["is_red"], "%OL"].mean()
+low_red_med   = filtered.loc[filtered["is_red"], "%OL"].median()
 low_green     = filtered.loc[filtered["is_green"], "%OL"].mean()
+low_green_med = filtered.loc[filtered["is_green"], "%OL"].median()
+
 
 # Medie break PM (già in percentuale, senza moltiplicare per 100)
 pmbreak_red   = filtered.loc[filtered["is_red"], "break"].mean()
@@ -569,7 +585,7 @@ with col2:
 
 # 1️⃣ Lista KPI
 kpi_list = [
-    {"title": "GAP Medio", "total": gap_mean, "red": gap_red, "green": gap_green, "suffix": "%"},
+    {"title": "GAP Medio", "total": gap_mean, "total_med": gap_median, "red": gap_red, "red_med": gap_red_med, "green": gap_green, "green_med": gap_green_med, "suffix": "%"},
     {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
     {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
     {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
