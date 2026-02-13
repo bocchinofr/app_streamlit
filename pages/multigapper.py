@@ -283,8 +283,8 @@ low_green_med = filtered.loc[filtered["is_green"], "%OL"].median()
 
 
 # Medie break PM (già in percentuale, senza moltiplicare per 100)
-pmbreak_red   = filtered.loc[filtered["is_red"], "break"].mean()
-pmbreak_green = filtered.loc[filtered["is_green"], "break"].mean()
+pmbreak_red   = filtered.loc[filtered["is_red"], "break"].mean()*100
+pmbreak_green = filtered.loc[filtered["is_green"], "break"].mean()*100
 
 
 # ---- ORARIO HIGH: MEDIA, MEDIANA, FILTRI RED/GREEN ----
