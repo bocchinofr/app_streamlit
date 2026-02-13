@@ -260,16 +260,23 @@ gap_median = filtered["GAP"].median() if total else 0
 pm_break_mean   = filtered['break'].mean()*100
 pm_break_median = filtered['break'].median()*100
 
+spinta_mean  = filtered['%OH'].mean()
+spinta_med   = filtered['%OH'].median()
+
+minimo_mean  = filtered['%OL'].mean()
+minimo_med   = filtered['%OL'].median()
+
+
 # Medie delle percentuali già presenti nel dataset
 gap_red       = filtered.loc[filtered["is_red"], "GAP"].mean()
 gap_red_med   = filtered.loc[filtered["is_red"], "GAP"].median()
 gap_green     = filtered.loc[filtered["is_green"], "GAP"].mean()
 gap_green_med = filtered.loc[filtered["is_green"], "GAP"].median()
 
-open_pmh_red     = filtered.loc[filtered["is_red"], "%Open_PMH"].mean()
-open_pmh_red_med = filtered.loc[filtered["is_red"], "%Open_PMH"].median()
-open_pmh_green   = filtered.loc[filtered["is_green"], "%Open_PMH"].mean()
-open_pmh_red_med = filtered.loc[filtered["is_green"], "%Open_PMH"].median()
+open_pmh_red       = filtered.loc[filtered["is_red"], "%Open_PMH"].mean()
+open_pmh_red_med   = filtered.loc[filtered["is_red"], "%Open_PMH"].median()
+open_pmh_green     = filtered.loc[filtered["is_green"], "%Open_PMH"].mean()
+open_pmh_green_med = filtered.loc[filtered["is_green"], "%Open_PMH"].median()
 
 spinta_red        = filtered.loc[filtered["is_red"], "%OH"].mean()
 spinta_red_med    = filtered.loc[filtered["is_red"], "%OH"].median()
@@ -283,8 +290,11 @@ low_green_med = filtered.loc[filtered["is_green"], "%OL"].median()
 
 
 # Medie break PM (già in percentuale, senza moltiplicare per 100)
-pmbreak_red   = filtered.loc[filtered["is_red"], "break"].mean()*100
-pmbreak_green = filtered.loc[filtered["is_green"], "break"].mean()*100
+pmbreak_red       = filtered.loc[filtered["is_red"], "break"].mean()*100
+pmbreak_red_med   = filtered.loc[filtered["is_red"], "break"].median()*100
+pmbreak_green     = filtered.loc[filtered["is_green"], "break"].mean()*100
+pmbreak_green_med = filtered.loc[filtered["is_green"], "break"].median()*100
+
 
 
 # ---- ORARIO HIGH: MEDIA, MEDIANA, FILTRI RED/GREEN ----
@@ -583,15 +593,42 @@ with col2:
 # region KPI LISTA
 # ------------------------------------
 
-# 1️⃣ Lista KPI
+# ===========================
+# Funzione builder KPI
+# ===========================
+def build_kpi(title, total, total_med, red, red_med, green, green_med, suffix="%", show_bar=True):
+    """
+    Restituisce un dizionario KPI uniforme, pronto per la dashboard.
+    """
+    return {
+        "title": title,
+        "total": total,
+        "total_med": total_med,
+        "red": red,
+        "red_med": red_med,
+        "green": green,
+        "green_med": green_med,
+        "suffix": suffix,
+        "show_bar": show_bar
+    }
+
+
+# ===========================
+# Lista KPI
+# ===========================
 kpi_list = [
-    {"title": "GAP Medio", "total": gap_mean, "total_med": gap_median, "red": gap_red, "red_med": gap_red_med, "green": gap_green, "green_med": gap_green_med, "suffix": "%"},
-    {"title": "Open / PMH medio", "total": filtered['%Open_PMH'].mean(), "red": open_pmh_red, "green": open_pmh_green, "suffix": "%"},
-    {"title": "Break medio", "total": filtered['break'].mean()*100, "red": pmbreak_red, "green": pmbreak_green, "suffix": "%"},
-    {"title": "Spinta media", "total": filtered['%OH'].mean(), "red": spinta_red, "green": spinta_green, "suffix": "%"},
-    {"title": "Minimo medio", "total": filtered['%OL'].mean(), "red": low_red, "green": low_green, "suffix": "%"},
-    {"title": "Orario High medio", "total": media_orario_high, "red": mediaorario_red, "green": mediaorario_green, "suffix": "", "show_bar": False}
+    build_kpi("GAP Medio", gap_mean, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
+    build_kpi("Open / PMH medio", filtered["%Open_PMH"].mean(), filtered["%Open_PMH"].median(),
+              open_pmh_red, open_pmh_red_med, open_pmh_green, open_pmh_green_med),
+    build_kpi("Break medio", pm_break_mean, pm_break_median, pmbreak_red, pmbreak_red_med,
+              pmbreak_green, pmbreak_green_med),
+    build_kpi("Spinta media", spinta_mean, spinta_med, spinta_red, spinta_red_med,
+              spinta_green, spinta_green_med),
+    build_kpi("Minimo medio", minimo_mean, minimo_med, low_red, low_red_med, low_green, low_green_med),
+    build_kpi("Orario High medio", media_orario_high, mediana_orario_high, mediaorario_red, medianaorario_red,
+              mediaorario_green, medianaorario_green, suffix="", show_bar=False)
 ]
+
 
 # ----------
 
