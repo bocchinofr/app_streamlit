@@ -427,17 +427,23 @@ def kpi_box_statual(kpi, invert_negative=False, show_bar=True):
                 </div>
             </div>
         </div>
-        <!-- BARRA -->
-        <div style="width:100%; height:8px; margin-top:10px;">
-            {f'''
-            <div style="width:100%; height:8px; background:#eee; border-radius:4px; display:flex; overflow:hidden;">
-                <div style="width:{red_pct}%; background:#E74C3C;"></div>
-                <div style="width:{green_pct}%; background:#2ECC71;"></div>
-            </div>
-            ''' if show_bar else '<div style="height:8px;"></div>'}
-        </div>
     </div>
     """
+
+    # =========================
+    # COSTRUZIONE BARRA HTML
+    # =========================
+
+    if show_bar:
+        bar_html = f"""
+        <div style="width:100%; height:8px; background:#eee; border-radius:4px; display:flex; overflow:hidden;">
+            <div style="width:{red_pct}%; background:#E74C3C;"></div>
+            <div style="width:{green_pct}%; background:#2ECC71;"></div>
+        </div>
+        """
+    else:
+        bar_html = '<div style="height:8px;"></div>'
+
 
     st.markdown(html, unsafe_allow_html=True)
 
