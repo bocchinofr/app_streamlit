@@ -266,6 +266,8 @@ spinta_med   = filtered['%OH'].median()
 minimo_mean  = filtered['%OL'].mean()
 minimo_med   = filtered['%OL'].median()
 
+openpmh_mean  = filtered['Open_PMH'].mean()
+openpmh_med   = filtered['Open_PMH'].median()
 
 # Medie delle percentuali già presenti nel dataset
 gap_red       = filtered.loc[filtered["is_red"], "GAP"].mean()
@@ -322,15 +324,17 @@ orari_validi = df["Orario High"].dropna().apply(orario_to_minuti).dropna()
 media_minuti = orari_validi.mean() if not orari_validi.empty else np.nan
 mediana_minuti = orari_validi.median() if not orari_validi.empty else np.nan
 
-media_orario_high = minuti_to_orario(media_minuti)
-mediana_orario_high = minuti_to_orario(mediana_minuti)
+orario_high = minuti_to_orario(media_minuti)
+orario_high_med = minuti_to_orario(mediana_minuti)
 
 # --- Filtri per chiusure RED / GREEN ---
 red = df[df["Chiusura"] == "RED"]["Orario High"].dropna().apply(orario_to_minuti)
 green = df[df["Chiusura"] == "GREEN"]["Orario High"].dropna().apply(orario_to_minuti)
 
-mediaorario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
-mediaorario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
+orario_red = minuti_to_orario(red.mean()) if not red.empty else "-"
+orario_red_med = minuti_to_orario(red.median()) if not red.empty else "-"
+orario_green = minuti_to_orario(green.mean()) if not green.empty else "-"
+orario_green_med = minuti_to_orario(green.median()) if not green.empty else "-"
 
 # endregion
 
@@ -618,14 +622,11 @@ def build_kpi(title, total, total_med, red, red_med, green, green_med, suffix="%
 # ===========================
 kpi_list = [
     build_kpi("GAP Medio", gap_mean, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
-    build_kpi("Open / PMH medio", filtered["%Open_PMH"].mean(), filtered["%Open_PMH"].median(),
-              open_pmh_red, open_pmh_red_med, open_pmh_green, open_pmh_green_med),
-    build_kpi("Break medio", pm_break_mean, pm_break_median, pmbreak_red, pmbreak_red_med,
-              pmbreak_green, pmbreak_green_med),
-    build_kpi("Spinta media", spinta_mean, spinta_med, spinta_red, spinta_red_med,
-              spinta_green, spinta_green_med),
+    build_kpi("Open / PMH medio", openpmh_mean, openpmh_med, open_pmh_red, open_pmh_red_med, open_pmh_green, open_pmh_green_med),
+    build_kpi("Break medio", pm_break_mean, pm_break_median, pmbreak_red, pmbreak_red_med, pmbreak_green, pmbreak_green_med),
+    build_kpi("Spinta media", spinta_mean, spinta_med, spinta_red, spinta_red_med, spinta_green, spinta_green_med),
     build_kpi("Minimo medio", minimo_mean, minimo_med, low_red, low_red_med, low_green, low_green_med),
-    #build_kpi("Orario High medio", media_orario_high, mediana_orario_high, mediaorario_red, medianaorario_red,mediaorario_green, medianaorario_green, suffix="", show_bar=False)
+    build_kpi("Orario High medio", orario_high, orario_high_med, orario_red, orario_red_med, orario_green, orario_green_med, suffix="", show_bar=False)
 ]
 
 
