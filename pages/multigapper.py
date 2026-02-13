@@ -136,11 +136,11 @@ if "Close" in df.columns and "OPEN" in df.columns:
 st.sidebar.header("🔍 Filtri")
 
 date_range = st.sidebar.date_input("Intervallo date", [])
-min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 40)
+min_gap = st.sidebar.number_input("GAP minimo (%)", 0, 1000, 50)
 
 col_mc1, col_mc2 = st.sidebar.columns(2)
 mc_min = col_mc1.number_input("MC Min ($M)", 0, 2000, 0, step=10)
-mc_max = col_mc2.number_input("MC Max ($M)", 0, 2000, 2000, step=10)
+mc_max = col_mc2.number_input("MC Max ($M)", 0, 2000, 500, step=10)
 
 col_f1, col_f2 = st.sidebar.columns(2)
 float_min = col_f1.number_input("Float MIN", 0, 1_000_000_000, 0, step=100_000)
@@ -160,7 +160,7 @@ min_gapper_day = col_g1.number_input(
     "Gapper MIN",
     min_value=1,
     max_value=20,
-    value=3,
+    value=1,
     step=1,
     help= "numero minimo di gapper in giornata"
 )
