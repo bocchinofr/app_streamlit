@@ -920,6 +920,8 @@ display_columns = [
     "break"
 ]
 
+filtered["Date"] = pd.to_datetime(filtered["Date"], errors="coerce")
+
 filtered_sorted = filtered.sort_values("Date", ascending=False).reset_index(drop=True)
 
 filtered_sorted = filtered_sorted[
