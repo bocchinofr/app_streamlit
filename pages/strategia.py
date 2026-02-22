@@ -124,21 +124,35 @@ min_gap = st.sidebar.number_input(
 
 col_float_min, col_float_max = st.sidebar.columns(2)
 
-min_float = col_float_min.number_input(
-    "Shs float min",
-    value=0,
+# ====== SHARES FLOAT (IN MILIONI) ======
+
+default_float_min_M = 0
+default_float_max_M = 200  # 200M come default
+
+col_float_min, col_float_max = st.sidebar.columns(2)
+
+float_min_M = col_float_min.number_input(
+    "Float Min (M)",
+    value=default_float_min_M,
+    step=10,
     min_value=0,
-    max_value=1000000000,
-    help="Short float minimo"
+    max_value=1000,
+    format="%.0f",
+    help="Valore minimo di Shares Float in Milioni"
 )
 
-max_float = col_float_max.number_input(
-    "Shs float max",
-    value=200000000,
+float_max_M = col_float_max.number_input(
+    "Float Max (M)",
+    value=default_float_max_M,
+    step=10,
     min_value=0,
-    max_value=1000000000,
-    help="Short float massimo"
+    max_value=1000,
+    format="%.0f",
+    help="Valore massimo di Shares Float in Milioni"
 )
+
+min_float = float_min_M * 1_000_000
+max_float = float_max_M * 1_000_000
 
 with st.sidebar.expander("parametri strategia"):
 
