@@ -12,6 +12,8 @@ col1, col2 = st.columns([3, 1])
 
 with col1:
     st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday</h1>", unsafe_allow_html=True)
+    st.text("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar. \nSolo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
+
 
 with col2:
     mode = st.radio(
@@ -48,7 +50,6 @@ def load_data():
 
 df = load_data()
 
-st.text("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar. \nSolo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
 
 #================================
 # region FILTRI LATERALI 
