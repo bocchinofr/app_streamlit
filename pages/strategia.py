@@ -878,7 +878,6 @@ df_equity["Size"] = df_equity.apply(
 # ---- ASSEMBLA DATAFRAME ----
 df_equity["Equity"] = equity_values
 df_equity["Drawdown_%"] = drawdowns
-df_equity["Size"] = sizes
 
 
 # ---- VALORI ----
