@@ -123,8 +123,6 @@ min_gap = st.sidebar.number_input(
     step=5.0
 )
 
-col_float_min, col_float_max = st.sidebar.columns(2)
-
 # ====== SHARES FLOAT (IN MILIONI) ======
 
 default_float_min_M = 0
@@ -409,6 +407,48 @@ filtered.loc[filtered["SL"] == 1, "TP"] = 0
 
 filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
 
+# ========================================
+# CALCOLO PNL PER TRADE (CENTRALIZZATO)
+# ========================================
+
+def calculate_trade_pnl(df, initial_capital=10000, risk_pct=1):
+
+    df = df.copy()
+    df["PnL_$"] = 0.0
+    df["R_multiple"] = 0.0
+
+    for idx, row in df.iterrows():
+
+        if row["attivazione"] != 1:
+            continue
+
+        risk_amount = initial_capital * (risk_pct / 100)
+        stop_dist = abs(row["SL_price"] - row["Entry_price"])
+
+        if stop_dist == 0:
+            continue
+
+        size = risk_amount / stop_dist
+
+        if row["TP"] == 1:
+            pnl = (row["Entry_price"] - row["TP_price"]) * size
+        elif row["SL"] == 1:
+            pnl = (row["Entry_price"] - row["SL_price"]) * size
+        elif row["BEprofit"] == 1:
+            pnl = (row["Entry_price"] - row["BE_price"]) * size
+        else:
+            val = row["TP_90m%"]
+            pnl = 0
+            if pd.notna(val):
+                pnl = (-val / 100) * row["Entry_price"] * size
+
+        df.at[idx, "PnL_$"] = pnl
+        df.at[idx, "R_multiple"] = pnl / risk_amount if risk_amount != 0 else 0
+
+    return df
+
+filtered = calculate_trade_pnl(filtered, initial_capital=10000, risk_pct=1)
+
 
 # Calcolo BEprofit
 filtered["BEprofit"] = (
@@ -441,17 +481,12 @@ tp_90m_green_avg = "-" if np.isnan(tp_90m_green_avg) else int(tp_90m_green_avg)
 tp_90m_red_avg   = "-" if np.isnan(tp_90m_red_avg) else int(tp_90m_red_avg)
 
 
-# Calcolo RR
-RR = round((filtered["Entry_price"].iloc[0] - filtered["TP_price"].iloc[0]) / 
-                 (filtered["SL_price"].iloc[0] - filtered["Entry_price"].iloc[0]), 2)
-
-RR_be= round((filtered["Entry_price"].iloc[0] - filtered["BE_price"].iloc[0]) / 
-                    (filtered["SL_price"].iloc[0] - filtered["Entry_price"].iloc[0]), 2)
-
-
 # endregion
 
-# region ---- KPI BOX ----
+# =====================================
+# region KPI BOX
+# =====================================
+
 total = len(filtered)
 attivazioni = filtered["attivazione"].sum()
 numero_SL = filtered["SL"].sum()
@@ -469,6 +504,21 @@ close_90m_green = ((filtered["attivazione"] == 1) &
              (filtered["BEprofit"] == 0) &
              (filtered["TP_90m%"] < 0)
             ).sum()
+
+# Solo trade attivati
+trades = filtered[filtered["attivazione"] == 1]
+
+wins = trades[trades["PnL_$"] > 0]["PnL_$"]
+losses = trades[trades["PnL_$"] < 0]["PnL_$"]
+
+avg_win = wins.mean() if len(wins) > 0 else 0
+avg_loss = abs(losses.mean()) if len(losses) > 0 else 0
+
+winrate = len(wins) / len(trades) if len(trades) > 0 else 0
+lossrate = 1 - winrate
+
+RR_real = avg_win / avg_loss if avg_loss > 0 else 0
+expectancy = (winrate * avg_win) - (lossrate * avg_loss)
 
 st.markdown(
     """
@@ -548,13 +598,28 @@ st.markdown(f"""
         <div style="{title_style}">media prezzo 90m</div>
         <div style="{value_style}">{tp_90m_green_avg}%</div>
     </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Winrate</div>
+        <div style="{value_style}">{winrate*100:.1f}%</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">RR Real</div>
+        <div style="{value_style}">{RR_real:.2f}</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Expectancy</div>
+        <div style="{value_style}">{expectancy:.2f}$</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
 
 # endregion
 
-# region ---- FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA ----
+#==========================================================
+# region FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA 
+# =========================================================
+
 
 
 def show_kpi_section(df, title, box_color):
@@ -753,7 +818,9 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 
 # endregion
 
-# region ---- TABELLA ----
+#===========================
+# region TABELLA 
+#===========================
 
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m",
@@ -803,7 +870,9 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 
 # endregion
 
-# region === EQUITY & DRAWDOWN SIMULATION ===
+# =======================================
+# region EQUITY & DRAWDOWN SIMULATION 
+# =======================================
 
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
@@ -826,46 +895,20 @@ for col in ["TP", "SL", "BEprofit", "TP_90m%", "Entry_price", "SL_price", "TP_pr
 
 # endregion
 
-# region ---- CALCOLO EQUITY REALE ----
+# region EQUITY
+
 capital = initial_capital
 equity_values = []
 drawdowns = []
-profits = []
-sizes = []
 
-for i, row in df_equity.iterrows():
-    # rischio in $
-    risk_amount = initial_capital * (risk_pct / 100)
+for pnl in df_equity["PnL_$"]:
 
-    # calcolo quantità (short)
-    stop_dist = abs(row["SL_price"] - row["Entry_price"])
-    if stop_dist == 0:
-        continue
-    size = risk_amount / stop_dist
-    sizes.append(size)
-
-    # calcolo profit/loss in base al tipo di trade
-    if row["TP"] == 1:
-        pnl = (row["Entry_price"] - row["TP_price"]) * size  # short profit
-    elif row["SL"] == 1:
-        pnl = (row["Entry_price"] - row["SL_price"]) * size  # short loss (negativo)
-    elif row["BEprofit"] == 1:
-        pnl = (row["Entry_price"] - row["BE_price"]) * size  # break-even piccolo guadagno
-    else:
-        val = row["TP_90m%"]
-        pnl = 0
-        if pd.notna(val):
-            pnl = (-val / 100) * row["Entry_price"] * size  # short: negativo = gain
-
-    # aggiorna capitale
     capital += pnl
-
-    # registra equity e drawdown
     equity_values.append(capital)
+
     peak = max(equity_values)
     drawdown = (capital - peak) / peak * 100
     drawdowns.append(drawdown)
-    profits.append(pnl)
 
 # ---- ASSEMBLA DATAFRAME ----
 df_equity["PnL_$"] = profits
