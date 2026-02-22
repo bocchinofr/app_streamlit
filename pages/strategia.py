@@ -156,11 +156,7 @@ with st.sidebar.expander("parametri strategia"):
     param_sl = st.number_input("%SL", value=30.0)
     param_tp = st.number_input("%TP", value=-15.0)
     param_entry = st.number_input("%entry", value=15.0)
-    param_BE = st.number_input(
-        "%BEparam",
-        value=0.0,
-        help="Percentuale da aggiungere al prezzo di TP"
-    )
+
 
 
 filtered = df.copy()
@@ -405,8 +401,6 @@ else:
 # Coerenza finale
 filtered.loc[filtered["SL"] == 1, "TP"] = 0
 
-filtered["BE_price"] = filtered["TP_price"] * (1 + param_BE/100)
-
 # ========================================
 # CALCOLO PNL PER TRADE (CENTRALIZZATO)
 # ========================================
@@ -434,8 +428,6 @@ def calculate_trade_pnl(df, initial_capital=10000, risk_pct=1):
             pnl = (row["Entry_price"] - row["TP_price"]) * size
         elif row["SL"] == 1:
             pnl = (row["Entry_price"] - row["SL_price"]) * size
-        elif row["BEprofit"] == 1:
-            pnl = (row["Entry_price"] - row["BE_price"]) * size
         else:
             val = row["TP_90m%"]
             pnl = 0
@@ -450,13 +442,6 @@ def calculate_trade_pnl(df, initial_capital=10000, risk_pct=1):
 filtered = calculate_trade_pnl(filtered, initial_capital=10000, risk_pct=1)
 
 
-# Calcolo BEprofit
-filtered["BEprofit"] = (
-    (filtered["attivazione"] == 1) &
-    (filtered["SL"] == 0) &
-    (filtered["TP"] == 0) &
-    (filtered["Low_90m"] <= filtered["TP_price"] * (1 + param_BE/100))
-).astype(int)
 
 
 # Calcolo TP_90m
@@ -464,14 +449,12 @@ mask_green = (
     (filtered["attivazione"] == 1) & 
     (filtered["SL"] == 0) & 
     (filtered["TP"] == 0) & 
-    (filtered["BEprofit"] == 0) &
     (filtered["TP_90m%"] < 0)
 )
 mask_red = (
     (filtered["attivazione"] == 1) & 
     (filtered["SL"] == 0) & 
     (filtered["TP"] == 0) & 
-    (filtered["BEprofit"] == 0) &
     (filtered["TP_90m%"] >= 0)
 )
 tp_90m_green_avg = round(filtered.loc[mask_green, "TP_90m%"].mean(), 0)
@@ -491,17 +474,14 @@ total = len(filtered)
 attivazioni = filtered["attivazione"].sum()
 numero_SL = filtered["SL"].sum()
 numero_TP = filtered["TP"].sum()
-BE_profit = filtered["BEprofit"].sum()
 close_90m_red = ((filtered["attivazione"] == 1) & 
              (filtered["SL"] == 0) & 
              (filtered["TP"] == 0) & 
-             (filtered["BEprofit"] == 0) &
              (filtered["TP_90m%"] >= 0)
             ).sum()
 close_90m_green = ((filtered["attivazione"] == 1) & 
              (filtered["SL"] == 0) & 
              (filtered["TP"] == 0) & 
-             (filtered["BEprofit"] == 0) &
              (filtered["TP_90m%"] < 0)
             ).sum()
 
@@ -626,7 +606,7 @@ def show_kpi_section(df, title, box_color):
     """
     Mostra una sezione di KPI in un expander Streamlit usando box uniformi con display:grid.
     
-    df: DataFrame già filtrato (es. SL=1, TP=1, BEprofit=1)
+    df: DataFrame già filtrato (es. SL=1, TP=1)
     title: stringa per il titolo della sezione
     box_color: colore dei box (es. "#5E2B2B" per SL, verde per TP, giallo chiaro per BE)
     """
@@ -813,9 +793,6 @@ show_kpi_section(sl_df, "🔴 Stop Loss", "#5E2B2B")
 tp_df = filtered[filtered["TP"] == 1].copy()
 show_kpi_section(tp_df, "🟢 Take Profit", "#035506")
 
-be_df = filtered[filtered["BEprofit"] == 1].copy()
-show_kpi_section(be_df, "🟡 Break Even", "#705B15")
-
 # endregion
 
 #===========================
@@ -825,7 +802,7 @@ show_kpi_section(be_df, "🟡 Break Even", "#705B15")
 # Colonne da mostrare in tabella
 cols_to_show = ["Date", "Ticker", "Gap%", "High_60m", "Low_60m",
                 "High_90m", "Low_90m", "Close_90m", "Entry_price", "SL_price", "TP_price",
-                "TP_90m%", "attivazione", "SL", "TP", "BEprofit"]
+                "TP_90m%", "attivazione", "SL", "TP"]
 
 
 # Funzione per righe alternate
@@ -840,8 +817,6 @@ def highlight_cells(val, col_name):
         return "background-color: #8B2A06; color:white; font-weight:bold;"
     elif col_name == "TP" and val == 1:
         return "background-color: #024902; color:white; font-weight:bold;"
-    elif col_name == "BEprofit" and val == 1:
-        return "background-color: #243624; font-weight:bold;" 
 
     else:
         return ""
@@ -851,7 +826,7 @@ format_dict = {}
 for col in cols_to_show:
     if col == "Gap%":
         format_dict[col] = "{:.0f}"
-    elif col in ["attivazione", "SL", "TP", "BEprofit"]:
+    elif col in ["attivazione", "SL", "TP"]:
         format_dict[col] = "{:.0f}"
     elif filtered[col].dtype in ['float64', 'int64']:
         format_dict[col] = "{:.2f}"
@@ -888,7 +863,7 @@ df_equity = filtered.copy()
 df_equity = df_equity[df_equity["attivazione"] == 1].copy()
 
 # Evitiamo errori su colonne mancanti
-for col in ["TP", "SL", "BEprofit", "TP_90m%", "Entry_price", "SL_price", "TP_price", "BE_price"]:
+for col in ["TP", "SL", "TP_90m%", "Entry_price", "SL_price", "TP_price"]:
     if col not in df_equity.columns:
         st.warning(f"Manca la colonna '{col}' nel dataframe.")
         st.stop()
@@ -965,8 +940,6 @@ with kpi3:
 def get_result_icon(row):
     if row["TP"] == 1:
         return "🟢"
-    elif row["BEprofit"] == 1:
-        return "🟩"
     elif row["SL"] == 1:
         return "🔴"
     else:
