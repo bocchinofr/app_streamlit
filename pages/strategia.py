@@ -275,6 +275,11 @@ def get_entry_bucket(row):
 
 filtered["entry_bucket"] = filtered.apply(get_entry_bucket, axis=1)
 
+filtered["TP_90m%"] = np.nan
+filtered["TP"] = 0
+filtered["SL"] = 0
+filtered["Outcome"] = None
+
 if mode == "90 minuti":
     timeframes_90m = [
         (1, "High_1m", "Low_1m"),
@@ -285,10 +290,6 @@ if mode == "90 minuti":
         (60, "High_60m", "Low_60m"),
         (90, "High_90m", "Low_90m")
     ]
-
-    filtered["TP"] = 0
-    filtered["SL"] = 0
-    filtered["Outcome"] = None
 
     for idx, row in filtered.iterrows():
         if row["attivazione"] != 1 or row["entry_bucket"] is None:
@@ -343,10 +344,6 @@ else:
         (240, "High_240m", "Low_240m"),
         ("close", "High", "Low")
     ]
-
-    filtered["TP"] = 0
-    filtered["SL"] = 0
-    filtered["Outcome"] = None
 
     for idx, row in filtered.iterrows():
         if row["attivazione"] != 1 or row["entry_bucket"] is None:
