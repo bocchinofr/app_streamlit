@@ -134,7 +134,7 @@ col_float_min, col_float_max = st.sidebar.columns(2)
 float_min_M = col_float_min.number_input(
     "Float Min (M)",
     value=default_float_min_M,
-    step=10,
+    step=50,
     min_value=0,
     max_value=1000,
     help="Valore minimo di Shares Float in Milioni"
@@ -143,7 +143,7 @@ float_min_M = col_float_min.number_input(
 float_max_M = col_float_max.number_input(
     "Float Max (M)",
     value=default_float_max_M,
-    step=10,
+    step=50,
     min_value=0,
     max_value=1000,
     help="Valore massimo di Shares Float in Milioni"
