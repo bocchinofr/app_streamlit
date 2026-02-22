@@ -861,21 +861,20 @@ equity_values = []
 drawdowns = []
 
 for pnl in df_equity["PnL_$"]:
-
     capital += pnl
     equity_values.append(capital)
-
     peak = max(equity_values)
     drawdown = (capital - peak) / peak * 100
     drawdowns.append(drawdown)
 
+# Calcolo Size (dimensione del trade)
 df_equity["Size"] = df_equity.apply(
     lambda row: (initial_capital * (risk_pct/100)) / abs(row["SL_price"] - row["Entry_price"])
                 if row["SL_price"] != row["Entry_price"] else 0,
     axis=1
 )
 
-# ---- ASSEMBLA DATAFRAME ----
+# Assembla dataframe finale con Equity e Drawdown
 df_equity["Equity"] = equity_values
 df_equity["Drawdown_%"] = drawdowns
 
