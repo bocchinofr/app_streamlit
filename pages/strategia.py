@@ -548,13 +548,6 @@ st.markdown(f"""
 </div>
 <!-- SECONDA RIGA: 3 BOX -->
 <div style="display:flex; gap:15px; margin-bottom:20px;">
-    <div style="{base_box_style}; display:flex; justify-content:center; gap:20px;">
-        <!-- Primo mini-box RR -->
-        <div style="display:flex; flex-direction:column; align-items:center;">
-            <div style="{title_style}">RR</div>
-            <div style="font-size:40px; font-weight:bold;">{RR}</div>
-        </div>
-    </div>
     <!-- Box con colore testo personalizzato -->
     <div style="{base_box_style} color:#EE4419;">
         <div style="{title_style}">Close trade RED</div>
