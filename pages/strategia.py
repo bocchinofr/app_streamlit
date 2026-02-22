@@ -911,7 +911,7 @@ with kpi4:
     st.markdown(kpi_box("Trade Attivati", f"{trade_count}", "white"), unsafe_allow_html=True)
 
 with kpi1:
-    st.markdown(kpi_box("RR_real", f"{RR:.2f}","white"), unsafe_allow_html=True)
+    st.markdown(kpi_box("RR_real", f"{RR_real:.2f}","white"), unsafe_allow_html=True)
 
 with kpi2:
     profit_color = "#00FF00" if profit >= 0 else "#FF6347"
