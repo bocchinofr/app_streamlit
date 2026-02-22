@@ -114,7 +114,13 @@ max_open = col_max_open.number_input(
     help="prezzo minimo di Open"
 )
 
-min_gap = st.sidebar.number_input("Gap% minimo", value=50.0)
+min_gap = st.sidebar.number_input(
+    "Gap% minimo",
+    value=50.0,
+    min_value=0.0,
+    max_value=500.0,
+    step=5.0
+)
 
 col_float_min, col_float_max = st.sidebar.columns(2)
 
