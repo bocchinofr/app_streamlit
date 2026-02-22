@@ -137,7 +137,6 @@ float_min_M = col_float_min.number_input(
     step=10,
     min_value=0,
     max_value=1000,
-    format="%.0f",
     help="Valore minimo di Shares Float in Milioni"
 )
 
@@ -147,7 +146,6 @@ float_max_M = col_float_max.number_input(
     step=10,
     min_value=0,
     max_value=1000,
-    format="%.0f",
     help="Valore massimo di Shares Float in Milioni"
 )
 
