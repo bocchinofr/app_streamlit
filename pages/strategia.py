@@ -602,7 +602,7 @@ st.markdown(f"""
         <div style="{value_style}; color:{profit_color};">{profit:.2f}$</div>
     </div>
     <div style="{base_box_style} color:#EE4419;">
-        <div style="{title_style}">Profit</div>
+        <div style="{title_style}">MaxDrowdown</div>
         <div style="{value_style}">{max_drawdown:.0f}$</div>
     </div>
 </div>
