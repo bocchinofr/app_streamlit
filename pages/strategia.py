@@ -12,7 +12,7 @@ st.text("La strategia prevede un solo ingresso SHORT in base ai parametri defini
 
 
 # Titolo
-col1, col2 = st.columns([2])
+col1, col2 = st.columns([3, 1])
 
 with col1:
     st.markdown("### ⚙️ Parametri Simulazione")
