@@ -593,10 +593,6 @@ st.markdown(f"""
         <div style="{title_style}">Expectancy</div>
         <div style="{value_style}">{expectancy:.2f}$</div>
     </div>
-    <div style="{base_box_style} color:#2EDB2E">
-        <div style="{title_style}">Profit</div>
-        <div style="{value_style}">{Profit:.2f}$</div>
-    </div>
 </div>
 """, unsafe_allow_html=True)
 
