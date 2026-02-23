@@ -518,10 +518,6 @@ lossrate = 1 - winrate
 RR_real = avg_win / avg_loss if avg_loss > 0 else 0
 expectancy = (winrate * avg_win) - (lossrate * avg_loss)
 
-#profit_color = "#00FF00" if profit >= 0 else "#FF6347"
-#st.markdown(kpi_box("Profit", f"{profit:.2f}$", profit_color), unsafe_allow_html=True)
-profit = ultima_equity - initial_capital
-
 
 st.markdown(
     """
