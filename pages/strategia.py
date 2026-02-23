@@ -520,6 +520,7 @@ expectancy = (winrate * avg_win) - (lossrate * avg_loss)
 
 profit = trades["PnL_$"].sum()
 trade_count = len(trades)
+max_drawdown = trades["PnL_$"].cumsum().min()
 
 st.markdown(
     """
@@ -599,6 +600,10 @@ st.markdown(f"""
     <div style="{base_box_style}">
         <div style="{title_style}">Profit</div>
         <div style="{value_style}; color:{profit_color};">{profit:.2f}$</div>
+    </div>
+    <div style="{base_box_style} color:#EE4419;">
+        <div style="{title_style}">Profit</div>
+        <div style="{value_style}">{max_drawdown:.0f}$</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
