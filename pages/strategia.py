@@ -7,12 +7,29 @@ import matplotlib.pyplot as plt
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Strategia Intraday", layout="wide")
 
+st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday</h1>", unsafe_allow_html=True)
+st.text("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar. \nSolo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
+
+
 # Titolo
-col1, col2 = st.columns([3, 1])
+col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.markdown("<h1 style='margin-bottom:0px;'>Strategia Intraday</h1>", unsafe_allow_html=True)
-    st.text("La strategia prevede un solo ingresso SHORT in base ai parametri definiti in sidebar. \nSolo una volta raggiunto il livello di entry sarà attivata l'operazione e saranno verificati TP e SL")
+    st.markdown("### ⚙️ Parametri Simulazione")
+
+    col1, col2 = st.columns(2)
+
+    initial_capital = col1.number_input(
+        "💰 Capitale iniziale",
+        value=3000.0,
+        step=100.0
+    )
+
+    risk_pct = col2.number_input(
+        "📉 % Rischio per trade",
+        value=2.0,
+        step=0.5
+    )
 
 
 with col2:
@@ -439,21 +456,6 @@ def calculate_trade_pnl(df, initial_capital=10000, risk_pct=1):
 
     return df
 
-st.markdown("### ⚙️ Parametri Simulazione")
-
-col1, col2 = st.columns(2)
-
-initial_capital = col1.number_input(
-    "💰 Capitale iniziale",
-    value=3000.0,
-    step=100.0
-)
-
-risk_pct = col2.number_input(
-    "📉 % Rischio per trade",
-    value=2.0,
-    step=0.5
-)
 
 # CALCOLO PNL
 filtered = calculate_trade_pnl(
