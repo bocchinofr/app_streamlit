@@ -518,6 +518,9 @@ lossrate = 1 - winrate
 RR_real = avg_win / avg_loss if avg_loss > 0 else 0
 expectancy = (winrate * avg_win) - (lossrate * avg_loss)
 
+profit_color = "#00FF00" if profit >= 0 else "#FF6347"
+st.markdown(kpi_box("Profit", f"{profit:.2f}$", profit_color), unsafe_allow_html=True)
+
 st.markdown(
     """
     <style>
@@ -591,6 +594,10 @@ st.markdown(f"""
     <div style="{base_box_style}">
         <div style="{title_style}">Expectancy</div>
         <div style="{value_style}">{expectancy:.2f}$</div>
+    </div>
+    <div style="{base_box_style} color:#2EDB2E">
+        <div style="{title_style}">Profit</div>
+        <div style="{value_style}">{Profit:.2f}$</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
