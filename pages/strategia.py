@@ -439,6 +439,28 @@ def calculate_trade_pnl(df, initial_capital=10000, risk_pct=1):
 
     return df
 
+st.markdown("### ⚙️ Parametri Simulazione")
+
+col1, col2 = st.columns(2)
+
+initial_capital = col1.number_input(
+    "💰 Capitale iniziale",
+    value=3000.0,
+    step=100.0
+)
+
+risk_pct = col2.number_input(
+    "📉 % Rischio per trade",
+    value=2.0,
+    step=0.5
+)
+
+# CALCOLO PNL
+filtered = calculate_trade_pnl(
+    filtered,
+    initial_capital=initial_capital,
+    risk_pct=risk_pct
+)
 
 # Calcolo TP_90m
 mask_green = (
@@ -831,17 +853,6 @@ st.caption(f"Mostrando {len(filtered)} record filtrati su {len(df)} totali.")
 
 st.markdown("### 📈 Simulazione Equity & Drawdown")
 
-# ---- INPUT PARAMETRI ----
-col1, col2 = st.columns(2)
-initial_capital = col1.number_input("💰 Capitale iniziale", value=3000.0, step=100.0)
-risk_pct = col2.number_input("📉 % Rischio per trade", value=2.0, step=0.5)
-
-# 🔁 Ricalcolo PnL con parametri dinamici
-filtered = calculate_trade_pnl(
-    filtered,
-    initial_capital=initial_capital,
-    risk_pct=risk_pct
-)
 
 # ---- COSTRUZIONE DATAFRAME ----
 df_equity = filtered.copy()
