@@ -567,9 +567,6 @@ st.markdown(f"""
         <div style="{title_style}">Numero TP</div>
         <div style="{value_style}">{numero_TP}</div>
     </div>
-</div>
-<!-- SECONDA RIGA: 3 BOX -->
-<div style="display:flex; gap:15px; margin-bottom:20px;">
     <!-- Box con colore testo personalizzato -->
     <div style="{base_box_style} color:#EE4419;">
         <div style="{title_style}">Close trade RED</div>
@@ -580,6 +577,9 @@ st.markdown(f"""
         <div style="{title_style}">Close trade GREEN</div>
         <div style="{value_style}">{close_90m_green}</div>
     </div>
+</div>
+<!-- SECONDA RIGA: 3 BOX -->
+<div style="display:flex; gap:15px; margin-bottom:20px;">
     <div style="{base_box_style};">
         <div style="{title_style}">media prezzo 90m</div>
         <div style="{value_style}">{tp_90m_green_avg}%</div>
