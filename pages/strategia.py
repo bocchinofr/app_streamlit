@@ -518,6 +518,8 @@ lossrate = 1 - winrate
 RR_real = avg_win / avg_loss if avg_loss > 0 else 0
 expectancy = (winrate * avg_win) - (lossrate * avg_loss)
 
+profit = trades["PnL_$"].sum()
+trade_count = len(trades)
 
 st.markdown(
     """
@@ -544,6 +546,7 @@ base_box_style = """
 # Stile del titolo e del valore
 title_style = "font-size:18px; opacity:0.8;"
 value_style = "font-size:30px; font-weight:bold;"
+profit_color = "#00FF00" if profit >= 0 else "#FF6347"
 
 st.markdown(f"""
 <!-- PRIMA RIGA: 4 BOX -->
@@ -592,6 +595,10 @@ st.markdown(f"""
     <div style="{base_box_style}">
         <div style="{title_style}">Expectancy</div>
         <div style="{value_style}">{expectancy:.2f}$</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Profit</div>
+        <div style="{value_style}; color:{profit_color};">{profit:.2f}$</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -894,11 +901,6 @@ df_equity["Equity"] = equity_values
 df_equity["Drawdown_%"] = drawdowns
 
 
-# ---- VALORI ----
-ultima_equity = equity_values[-1] if equity_values else initial_capital
-profit = ultima_equity - initial_capital
-trade_count = len(df_equity)
-
 # ---- STILE BASE KPI ----
 def kpi_box(title, value, color="#FFD700"):
     return f"""
@@ -917,20 +919,6 @@ def kpi_box(title, value, color="#FFD700"):
         <span style="color:{color}; font-size:20px; font-weight:700;">{value}</span>
     </div>
     """
-
-# ---- BOX KPI ----
-
-kpi4, kpi1, kpi2= st.columns(3)
-
-with kpi4:
-    st.markdown(kpi_box("Trade Attivati", f"{trade_count}", "white"), unsafe_allow_html=True)
-
-with kpi1:
-    st.markdown(kpi_box("RR_real", f"{RR_real:.2f}","white"), unsafe_allow_html=True)
-
-with kpi2:
-    profit_color = "#00FF00" if profit >= 0 else "#FF6347"
-    st.markdown(kpi_box("Profit", f"{profit:.2f}$", profit_color), unsafe_allow_html=True)
 
 
 
