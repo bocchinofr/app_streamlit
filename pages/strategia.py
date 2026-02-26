@@ -520,7 +520,21 @@ expectancy = (winrate * avg_win) - (lossrate * avg_loss)
 
 profit = trades["PnL_$"].sum()
 trade_count = len(trades)
-max_drawdown = trades["PnL_$"].cumsum().min()
+
+# Equity cumulata
+equity = trades["PnL_$"].cumsum()
+
+# Massimo progressivo
+running_max = equity.cummax()
+
+# Drawdown assoluto
+drawdown = equity - running_max
+
+# Max drawdown assoluto ($)
+max_drawdown = drawdown.min()
+
+drawdown_pct = (equity - running_max) / running_max * 100
+max_drawdown_pct = drawdown_pct.min()
 
 st.markdown(
     """
