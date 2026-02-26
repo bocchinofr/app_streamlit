@@ -392,7 +392,7 @@ else:
         elif filtered.at[idx, "SL"] == 1:
             exit_price = sl_price
         else:
-            exit_price = row["Close_90m"]
+            exit_price = row["Close"]
 
         filtered.at[idx, "TP_90m%"] = (exit_price - entry) / entry * 100
 
