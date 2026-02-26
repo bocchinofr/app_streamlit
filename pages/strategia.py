@@ -615,9 +615,12 @@ st.markdown(f"""
         <div style="{title_style}">Profit</div>
         <div style="{value_style}; color:{profit_color};">{profit:.2f}$</div>
     </div>
-    <div style="{base_box_style} color:#EE4419;">
-        <div style="{title_style}">MaxDrowdown</div>
-        <div style="{value_style}">{max_drawdown:.0f}$</div>
+    <div style="{base_box_style};">
+        <div style="{title_style}" 
+            title="Media della variazione percentuale a 90 minuti calcolata sui trade attivati che non hanno colpito né TP né SL. Rappresenta la posizione media del prezzo dopo 90 minuti dall’ingresso.">
+            media prezzo 90m
+        </div>
+        <div style="{value_style}">{tp_90m_green_avg}%</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
