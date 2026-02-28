@@ -655,14 +655,14 @@ kpi_list = [
 
 # ----------
 
-col1 = st.columns(1)
-columns = [col1]
+
+
+
+columns = st.columns(1)
 
 for i, kpi in enumerate(kpi_list):
-    col = columns[i % 1]
-    with col:
+    with columns[i % 1]:
         kpi_box_statual(kpi)
-
 
 # endregion
 
