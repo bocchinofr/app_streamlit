@@ -578,6 +578,22 @@ st.markdown(f"""
         <div style="{title_style}">Winrate</div>
         <div style="{value_style}">{winrate*100:.1f}%</div>
     </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">RR Real</div>
+        <div style="{value_style}">{RR_real:.2f}</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Expectancy</div>
+        <div style="{value_style}">{expectancy:.2f}$</div>
+    </div>
+    <div style="{base_box_style}">
+        <div style="{title_style}">Profit</div>
+        <div style="{value_style}; color:{profit_color};">{profit:.2f}$</div>
+    </div>
+    <div style="{base_box_style} color:#EE4419;">
+        <div style="{title_style}">Max Drawdown</div>
+        <div style="{value_style}">{max_drawdown:.0f}$</div>
+    </div>
 </div>
 <!-- SECONDA RIGA: 3 BOX -->
 <div style="display:flex; gap:15px; margin-bottom:20px;">
@@ -602,22 +618,6 @@ st.markdown(f"""
     <div style="{base_box_style};">
         <div style="{title_style}">media prezzo 90m</div>
         <div style="{value_style}">{tp_90m_green_avg}%</div>
-    </div>
-    <div style="{base_box_style}">
-        <div style="{title_style}">RR Real</div>
-        <div style="{value_style}">{RR_real:.2f}</div>
-    </div>
-    <div style="{base_box_style}">
-        <div style="{title_style}">Expectancy</div>
-        <div style="{value_style}">{expectancy:.2f}$</div>
-    </div>
-    <div style="{base_box_style}">
-        <div style="{title_style}">Profit</div>
-        <div style="{value_style}; color:{profit_color};">{profit:.2f}$</div>
-    </div>
-    <div style="{base_box_style} color:#EE4419;">
-        <div style="{title_style}">Max Drawdown</div>
-        <div style="{value_style}">{max_drawdown:.0f}$</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
