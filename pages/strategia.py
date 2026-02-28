@@ -10,6 +10,13 @@ from ui_kpi import build_kpi, kpi_box_statual
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Strategia Intraday", layout="wide")
 
+# Carica il CSS
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("theme.css")
+
 # Titolo
 col1, col2 = st.columns([3, 1])
 
