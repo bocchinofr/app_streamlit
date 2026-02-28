@@ -1,5 +1,27 @@
 import streamlit as st
 
+# ===========================
+# Funzione builder KPI flessibile
+# ===========================
+def build_kpi(title, total, red, green, 
+              total_med=None, red_med=None, green_med=None, 
+              suffix="%", show_bar=True):
+    """
+    Restituisce un dizionario KPI uniforme, pronto per la dashboard.
+    Mediane opzionali: se None, verranno mostrate vuote.
+    """
+    return {
+        "title": title,
+        "total": total,
+        "total_med": total_med,
+        "red": red,
+        "red_med": red_med,
+        "green": green,
+        "green_med": green_med,
+        "suffix": suffix,
+        "show_bar": show_bar
+    }
+
 # -------------------------------
 # region KPI CARD 
 # crea il layout per le card kpi

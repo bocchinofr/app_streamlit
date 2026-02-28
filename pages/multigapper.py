@@ -474,33 +474,7 @@ with col2:
 # region KPI LISTA
 # ------------------------------------
 
-# ===========================
-# Funzione builder KPI flessibile
-# ===========================
-def build_kpi(title, total, red, green, 
-              total_med=None, red_med=None, green_med=None, 
-              suffix="%", show_bar=True):
-    """
-    Restituisce un dizionario KPI uniforme, pronto per la dashboard.
-    Mediane opzionali: se None, verranno mostrate vuote.
-    """
-    return {
-        "title": title,
-        "total": total,
-        "total_med": total_med,
-        "red": red,
-        "red_med": red_med,
-        "green": green,
-        "green_med": green_med,
-        "suffix": suffix,
-        "show_bar": show_bar
-    }
 
-
-
-# ===========================
-# Lista KPI
-# ===========================
 kpi_list = [
     build_kpi("GAP Medio", gap_mean, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
     build_kpi("Open / PMH medio", openpmh_mean, openpmh_med, open_pmh_red, open_pmh_red_med, open_pmh_green, open_pmh_green_med),
