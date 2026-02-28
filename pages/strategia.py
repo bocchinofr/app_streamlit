@@ -653,11 +653,11 @@ gap_green = df_green["Gap%"].mean()
 gap_green_med = df_green["Gap%"].median()
 
 mc_mean = df_all["Market Cap"].mean()/1000000
-mc_median = df_all["Market Cap"].median()
-mc_red = df_red["Market Cap"].mean()
-mc_red_med = df_red["Market Cap"].median()
-mc_green = df_green["Market Cap"].mean()
-mc_green_med = df_green["Market Cap"].median()
+mc_median = df_all["Market Cap"].median()/1000000
+mc_red = df_red["Market Cap"].mean()/1000000
+mc_red_med = df_red["Market Cap"].median()/1000000
+mc_green = df_green["Market Cap"].mean()/1000000
+mc_green_med = df_green["Market Cap"].median()/1000000
 
 shs_mean = df_all["Shs Float"].mean()
 shs_median = df_all["Shs Float"].median()
