@@ -645,24 +645,48 @@ gap_red_med = df_red["Gap%"].median()
 gap_green = df_green["Gap%"].mean()
 gap_green_med = df_green["Gap%"].median()
 
+mc_mean = df_all["Market Cap"].mean()
+mc_median = df_all["Market Cap%"].median()
+mc_red = df_red["Market Cap%"].mean()
+mc_red_med = df_red["Market Cap%"].median()
+mc_green = df_green["Market Cap%"].mean()
+mc_green_med = df_green["Market Cap%"].median()
+
+shs_mean = df_all["Shs Float"].mean()
+shs_median = df_all["Shs Float"].median()
+shs_red = df_red["Shs Float"].mean()
+shs_red_med = df_red["Shs Float"].median()
+shs_green = df_green["Shs Float"].mean()
+shs_green_med = df_green["Shs Float"].median()
+
+vol_mean = df_all["Volume"].mean()
+vol_median = df_all["Volume"].median()
+vol_red = df_red["Volume"].mean()
+vol_red_med = df_red["Volume"].median()
+vol_green = df_green["Volume"].mean()
+vol_green_med = df_green["Volume"].median()
+
 
 
 
 kpi_list = [
     build_kpi("GAP Medio", gap_mean_total, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
+    build_kpi("Market Cap", mc_mean, mc_median, mc_red, mc_red_med, mc_green, mc_green_med),
+    build_kpi("Shs Float", shs_mean, shs_median, shs_red, shs_red_med, shs_green, shs_green_med),
+    build_kpi("GAP Medio", vol_mean, vol_median, vol_red, vol_red_med, vol_green, vol_green_med),
 ]
 
 
 # ----------
 
-
-
-
-columns = st.columns(1)
+col1, col2, col3, col4 = st.columns(4)
+columns = [col1, col2, col3, col4]
 
 for i, kpi in enumerate(kpi_list):
-    with columns[i % 1]:
+    col = columns[i % 4]
+    with col:
         kpi_box_statual(kpi)
+
 
 # endregion
 
