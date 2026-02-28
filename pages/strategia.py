@@ -633,14 +633,23 @@ st.markdown(f"""
 # region NUOVI KPI PER STOP O PROFIT
 #====================================================
 
-gap_mean = df["Gap%"].mean() if "Gap%" in df.columns else None
-gap_median = df["Gap%"].median() if "Gap%" in df.columns else None
+df_all = filtered.copy()
+df_red = df_all[df_all["PnL_$"] < 0].copy()
+df_green = df_all[df_all["PnL_$"] > 0].copy()
+
+
+gap_mean_total = df_all["Gap%"].mean()
+gap_median = df_all["Gap%"].median()
+gap_red = df_red["Gap%"].mean()
+gap_red_med = df_red["Gap%"].median()
+gap_green = df_green["Gap%"].mean()
+gap_green_med = df_green["Gap%"].median()
 
 
 
 
 kpi_list = [
-    build_kpi("GAP Medio", gap_mean, gap_median)
+    build_kpi("GAP Medio", gap_mean, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
 ]
 
 
