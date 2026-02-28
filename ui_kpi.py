@@ -1,3 +1,5 @@
+import stramlit as st
+
 # -------------------------------
 # region KPI CARD 
 # crea il layout per le card kpi
