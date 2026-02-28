@@ -3,6 +3,9 @@ import pandas as pd
 from dateutil import parser
 import numpy as np
 import matplotlib.pyplot as plt
+from ui_kpi import kpi_box_statual
+from ui_kpi import build_kpi, kpi_box_statual
+
 
 # ---- CONFIGURAZIONE ----
 st.set_page_config(page_title="Strategia Intraday", layout="wide")
@@ -624,6 +627,36 @@ st.markdown(f"""
 
 
 # endregion
+
+
+#====================================================
+# region NUOVI KPI PER STOP O PROFIT
+#====================================================
+
+gap_mean = df["Gap%"].mean() if "Gap%" in df.columns else None
+gap_median = df["Gap%"].median() if "Gap%" in df.columns else None
+
+
+
+
+kpi_list = [
+    build_kpi("GAP Medio", gap_mean, gap_median)
+]
+
+
+# ----------
+
+col1, col2, col3, col4 = st.columns(4)
+columns = [col1, col2, col3, col4]
+
+for i, kpi in enumerate(kpi_list):
+    col = columns[i % 4]
+    with col:
+        kpi_box_statual(kpi)
+
+
+# endregion
+
 
 #==========================================================
 # region FUNZIONE UNIFICATA PER LE SEZIONI A SCOMPARSA 
