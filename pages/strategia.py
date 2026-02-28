@@ -655,11 +655,11 @@ kpi_list = [
 
 # ----------
 
-col1, col2, col3, col4 = st.columns(4)
-columns = [col1, col2, col3, col4]
+col1 = st.columns(1)
+columns = [col1]
 
 for i, kpi in enumerate(kpi_list):
-    col = columns[i % 4]
+    col = columns[i % 1]
     with col:
         kpi_box_statual(kpi)
 
