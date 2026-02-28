@@ -649,7 +649,7 @@ gap_green_med = df_green["Gap%"].median()
 
 
 kpi_list = [
-    build_kpi("GAP Medio", gap_mean, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
+    build_kpi("GAP Medio", gap_mean_total, gap_median, gap_red, gap_red_med, gap_green, gap_green_med),
 ]
 
 
