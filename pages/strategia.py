@@ -659,12 +659,12 @@ mc_red_med = df_red["Market Cap"].median()/1000000
 mc_green = df_green["Market Cap"].mean()/1000000
 mc_green_med = df_green["Market Cap"].median()/1000000
 
-shs_mean = df_all["Shs Float"].mean()
-shs_median = df_all["Shs Float"].median()
-shs_red = df_red["Shs Float"].mean()
-shs_red_med = df_red["Shs Float"].median()
-shs_green = df_green["Shs Float"].mean()
-shs_green_med = df_green["Shs Float"].median()
+shs_mean = df_all["Shs Float"].mean()/1000
+shs_median = df_all["Shs Float"].median()/1000
+shs_red = df_red["Shs Float"].mean()/1000
+shs_red_med = df_red["Shs Float"].median()/1000
+shs_green = df_green["Shs Float"].mean()/1000
+shs_green_med = df_green["Shs Float"].median()/1000
 
 vol_mean = df_all["Volume"].mean()
 vol_median = df_all["Volume"].median()
@@ -679,7 +679,7 @@ vol_green_med = df_green["Volume"].median()
 kpi_list = [
     build_kpi("GAP Medio", total=gap_mean_total, red=gap_red, green=gap_green, total_med=gap_median, red_med=gap_red_med, green_med=gap_green_med),
     build_kpi("Market Cap", total=mc_mean, red=mc_red, green=mc_green, total_med=mc_median, red_med=mc_red_med, green_med=mc_green_med, suffix="M"),
-    build_kpi("Shs Float", total=shs_mean, red=shs_red, green=shs_green, total_med=shs_median, red_med=shs_red_med, green_med=shs_green_med, suffix=""),
+    build_kpi("Shs Float", total=shs_mean, red=shs_red, green=shs_green, total_med=shs_median, red_med=shs_red_med, green_med=shs_green_med, suffix="K"),
     build_kpi("Volume", total=vol_mean, red=vol_red, green=vol_green, total_med=vol_median, red_med=vol_red_med, green_med=vol_green_med, suffix="")
 ]
 
