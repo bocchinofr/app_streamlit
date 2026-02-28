@@ -4,6 +4,7 @@ import numpy as np
 from dateutil import parser
 import yfinance as yf
 from ui_kpi import kpi_box_statual
+from ui_kpi import build_kpi, kpi_box_statual
 
 # -------------------------------------------------
 # CONFIG
