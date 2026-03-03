@@ -673,6 +673,16 @@ vol_red_med = df_red["Volume"].median()/1000000
 vol_green = df_green["Volume"].mean()/1000000
 vol_green_med = df_green["Volume"].median()/1000000
 
+df_all["high%"] = ((df_all["High"] - df_all["Open"]) / df_all["Open"]) * 100
+df_red["high%"] = ((df_red["High"] - df_red["Open"]) / df_red["Open"]) * 100
+df_green["high%"] = ((df_green["High"] - df_green["Open"]) / df_green["Open"]) * 100
+
+high_red = df_red["high%"].mean()
+high_red_med = df_red["high%"].median()
+high_green = df_green["high%"].mean()
+high_green_med = df_green["high%"].median()
+high_mean = df_all["high%"].mean()
+high_median = df_all["high%"].median()
 
 
 
