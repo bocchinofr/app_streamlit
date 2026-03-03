@@ -659,6 +659,11 @@ def seconds_to_hhmm(seconds):
     seconds = int(seconds)
     return f"{seconds//3600:02d}:{(seconds%3600)//60:02d}"
 
+df_all["Vol5_vs_PM_%"] = (df_all["Volume_5m"] / df_all["VolumePM"].replace(0, np.nan)) * 100
+df_all["Vol30_vs_PM_%"] = (df_all["Volume_30m"] / df_all["VolumePM"].replace(0, np.nan)) * 100
+df_all["Vol5_vs_Total_%"] = (df_all["Volume_5m"] / df_all["Volume"].replace(0, np.nan)) * 100
+df_all["Vol30_vs_Total_%"] = (df_all["Volume_30m"] / df_all["Volume"].replace(0, np.nan)) * 100
+
 df_red = df_all[df_all["PnL_$"] < 0].copy()
 df_green = df_all[df_all["PnL_$"] > 0].copy()
 
@@ -746,6 +751,44 @@ for i, kpi in enumerate(kpi_list):
     with col:
         kpi_box_statual(kpi)
 
+volume_profile = pd.DataFrame({
+    "Timeframe": ["5m", "30m"],
+    "Vs_PM_%": [
+        df_all["Vol5_vs_PM_%"].mean(),
+        df_all["Vol30_vs_PM_%"].mean()
+    ]
+})
+import plotly.express as px
+
+fig = px.bar(
+    volume_profile,
+    x="Timeframe",
+    y="Vs_PM_%",
+    title="Volume RTH vs Volume PM (%)"
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+volume_profile_rg = pd.DataFrame({
+    "Timeframe": ["5m", "30m"],
+    "Loss": [
+        df_red["Vol5_vs_PM_%"].mean(),
+        df_red["Vol30_vs_PM_%"].mean()
+    ],
+    "Profit": [
+        df_green["Vol5_vs_PM_%"].mean(),
+        df_green["Vol30_vs_PM_%"].mean()
+    ]
+})
+fig = px.bar(
+    volume_profile_rg,
+    x="Timeframe",
+    y=["Loss", "Profit"],
+    barmode="group",
+    title="Volume RTH vs PM – Loss vs Profit"
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 # endregion
 
@@ -880,7 +923,6 @@ def show_kpi_section(df, title, box_color):
         # --- Lista dei box ---
         boxes = [
             {"label": "Shs Out medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
-            {"label": "VolPM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
             {"label": "Vol 30m medio", "value": volume30_mean_str, "sub": f"Mediana: {volume30_median_str}"},
             {"label": "Vol5m/PM", "value": vol5_vs_PM_mean_str, "sub": f"Mediana: {vol5_vs_PM_median_str}"},
             {"label": "Vol30m/PM", "value": vol30_vs_PM_mean_str, "sub": f"Mediana: {vol30_vs_PM_median_str}"}
