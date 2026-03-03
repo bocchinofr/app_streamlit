@@ -771,13 +771,11 @@ col_kpi, col_graph = st.columns([1,2])
 # --- KPI piccoli nella colonna di sinistra ---
 with col_kpi:
     st.markdown("### Volume KPIs")
-    st.metric("5m Loss", f"{loss_vol[0]:.0f}%")
-    st.metric("5m Profit", f"{profit_vol[0]:.0f}%")
-    st.metric("30m Loss", f"{loss_vol[1]:.0f}%")
-    st.metric("30m Profit", f"{profit_vol[1]:.0f}%")
-    st.metric("60m Loss", f"{loss_vol[2]:.0f}%")
-    st.metric("60m Profit", f"{profit_vol[2]:.0f}%")
-    st.metric("Total Avg", f"{total_vol[2]:.0f}%")  # esempio media 60m
+    for label, value in [("5m Loss", loss_vol[0]), ("5m Profit", profit_vol[0]),
+                         ("30m Loss", loss_vol[1]), ("30m Profit", profit_vol[1]),
+                         ("60m Loss", loss_vol[2]), ("60m Profit", profit_vol[2]),
+                         ("Total Avg", total_vol[2])]:
+        st.markdown(f'<div style="font-size:14px; font-weight:600; margin-bottom:4px;">{label}: {value:.0f}%</div>', unsafe_allow_html=True)
 
 # --- Grafico nella colonna di destra ---
 with col_graph:
