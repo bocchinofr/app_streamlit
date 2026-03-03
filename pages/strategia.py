@@ -761,9 +761,9 @@ delta_60 = vol60_profit - vol60_loss
 
 col1, col2, col3 = st.columns(3)
 
-col1.metric("60m Profit", f"{vol60_profit:.1f}%")
-col2.metric("60m Loss", f"{vol60_loss:.1f}%")
-col3.metric("Delta", f"{delta_60:.1f}%")
+col1.metric("60m Profit", f"{vol60_profit:.0f}%")
+col2.metric("60m Loss", f"{vol60_loss:.0f}%")
+col3.metric("Delta", f"{delta_60:.0f}%")
 
 
 volume_profile_all = pd.DataFrame({
