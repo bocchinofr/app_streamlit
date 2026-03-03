@@ -766,7 +766,7 @@ loss_vol  = [df_red["Vol5_vs_PM_%"].mean(), df_red["Vol30_vs_PM_%"].mean(), df_r
 profit_vol= [df_green["Vol5_vs_PM_%"].mean(), df_green["Vol30_vs_PM_%"].mean(), df_green["Vol60_vs_PM_%"].mean()]
 
 # --- Layout a due colonne: KPI e Grafico ---
-col_kpi, col_graph = st.columns([1,2])
+col_kpi, col_graph = st.columns([1,3])
 
 # --- KPI piccoli nella colonna di sinistra ---
 with col_kpi:
