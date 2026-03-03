@@ -649,6 +649,9 @@ if "TimeHigh" in df_all.columns:
         lambda x: x.hour*3600 + x.minute*60 if pd.notnull(x) else None
     )
 
+if all(col in df_all.columns for col in ["Open", "HighPM"]):
+    df_all["Open_vs_PMH_%"] = ((df_all["Open"] - df_all["HighPM"]) / df_all["HighPM"]) * 100
+
 # funzione conversione orari
 def seconds_to_hhmm(seconds):
     if pd.isna(seconds):
@@ -706,6 +709,13 @@ time_red_med = df_red["TimeHigh_sec"].median()
 time_green = df_green["TimeHigh_sec"].mean()
 time_green_med = df_green["TimeHigh_sec"].median()
 
+ovp_mean = df_all["Open_vs_PMH_%"].mean()
+ovp_median = df_all["Open_vs_PMH_%"].median()
+ovp_red = df_red["Open_vs_PMH_%"].mean()
+ovp_red_med = df_red["Open_vs_PMH_%"].median()
+ovp_green = df_green["Open_vs_PMH_%"].mean()
+ovp_green_med = df_green["Open_vs_PMH_%"].median()
+
 
 kpi_list = [
     build_kpi("GAP Medio", total=gap_mean_total, red=gap_red, green=gap_green, total_med=gap_median, red_med=gap_red_med, green_med=gap_green_med),
@@ -714,6 +724,8 @@ kpi_list = [
     build_kpi("Volume", total=vol_mean, red=vol_red, green=vol_green, total_med=vol_median, red_med=vol_red_med, green_med=vol_green_med, suffix=" M"),
     build_kpi("High%", total=high_mean, red=high_red, green=high_green, total_med=high_median, red_med=high_red_med, green_med=high_green_med),
     build_kpi("Time High Medio", total=seconds_to_hhmm(time_mean_total), red=seconds_to_hhmm(time_red), green=seconds_to_hhmm(time_green), total_med=seconds_to_hhmm(time_median_total), red_med=seconds_to_hhmm(time_red_med), green_med=seconds_to_hhmm(time_green_med), suffix="", show_bar=False)
+    build_kpi("Open vs PMH %", total=ovp_mean, red=ovp_red, green=ovp_green, total_med=ovp_median, red_med=ovp_red_med, green_med=ovp_green_med, suffix="%", show_bar=True
+)
 ]
 
 
