@@ -860,12 +860,7 @@ def show_kpi_section(df, title, box_color):
 
         # --- Lista dei box ---
         boxes = [
-            {"label": "Gap% medio", "value": gap_mean_str, "sub": f"Mediana: {gap_median_str}"},
-            {"label": "MC medio", "value": mc_mean_str, "sub": f"Mediana: {mc_median_str}"},
-            {"label": "Shs Float medio", "value": shs_float_mean_str, "sub": f"Mediana: {shs_float_median_str}"},
             {"label": "Shs Out medio", "value": shs_out_mean_str, "sub": f"Mediana: {shs_out_median_str}"},
-            {"label": "Spinta medio", "value": high_mean_str, "sub": f"Mediana: {high_median_str}"},
-            {"label": "TimeHigh medio", "value": time_mean_formatted},
             {"label": "Open/PMH medio", "value": openVSpmh_mean_str, "sub": f"Mediana: {openVSpmh_median_str}"},
             {"label": "Vol medio", "value": volume_mean_str, "sub": f"Mediana: {volume_median_str}"},
             {"label": "VolPM medio", "value": volumePM_mean_str, "sub": f"Mediana: {volumePM_median_str}"},
