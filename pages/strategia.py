@@ -773,40 +773,42 @@ total_vol = [df_all["Vol5_vs_PM_%"].mean(), df_all["Vol30_vs_PM_%"].mean(), df_a
 loss_vol  = [df_red["Vol5_vs_PM_%"].mean(), df_red["Vol30_vs_PM_%"].mean(), df_red["Vol60_vs_PM_%"].mean()]
 profit_vol= [df_green["Vol5_vs_PM_%"].mean(), df_green["Vol30_vs_PM_%"].mean(), df_green["Vol60_vs_PM_%"].mean()]
 
-# --- Layout a due colonne: KPI e Grafico ---
-col_kpi, col_graph = st.columns([1,3])
+with st.expander("Dettaglio Volume (clicca per espandere)"):
 
-# --- KPI piccoli nella colonna di sinistra ---
-with col_kpi:
-    for label, value in [("5m Loss", loss_vol[0]), ("5m Profit", profit_vol[0]),
-                         ("30m Loss", loss_vol[1]), ("30m Profit", profit_vol[1]),
-                         ("60m Loss", loss_vol[2]), ("60m Profit", profit_vol[2]),
-                         ("Total Avg", total_vol[2])]:
-        st.markdown(f'<div style="font-size:16px; font-weight:600; margin-bottom:4px;">{label}: {value:.0f}%</div>', unsafe_allow_html=True)
+    # --- Layout a due colonne: KPI e Grafico ---
+    col_kpi, col_graph = st.columns([1,3])
 
-# --- Grafico nella colonna di destra ---
-with col_graph:
-    fig = go.Figure()
-    # Linea Total/Media tratteggiata blu
-    fig.add_trace(go.Scatter(x=timeframes, y=total_vol, mode='lines+markers', name='Total', line=dict(color='blue', width=2)))
-    # Linea Loss rossa
-    fig.add_trace(go.Scatter(x=timeframes, y=loss_vol, mode='lines+markers', name='Loss', line=dict(color='red', width=2)))
-    # Linea Profit verde
-    fig.add_trace(go.Scatter(x=timeframes, y=profit_vol, mode='lines+markers', name='Profit', line=dict(color='green', width=2)))
+    # --- KPI piccoli nella colonna di sinistra ---
+    with col_kpi:
+        for label, value in [("5m Loss", loss_vol[0]), ("5m Profit", profit_vol[0]),
+                            ("30m Loss", loss_vol[1]), ("30m Profit", profit_vol[1]),
+                            ("60m Loss", loss_vol[2]), ("60m Profit", profit_vol[2]),
+                            ("Total Avg", total_vol[2])]:
+            st.markdown(f'<div style="font-size:16px; font-weight:600; margin-bottom:4px;">{label}: {value:.0f}%</div>', unsafe_allow_html=True)
 
-    # Layout grafico
-    fig.update_layout(
-        height=350,
-        yaxis_title="Volume vs PM (%)",
-        xaxis_title="Timeframe",
-        legend_title="Category",
-        margin=dict(l=20, r=20, t=20, b=20)
-    )
-    
-    # Linea di riferimento 100%
-    fig.add_hline(y=100, line_dash="dot", line_color="gray")
+    # --- Grafico nella colonna di destra ---
+    with col_graph:
+        fig = go.Figure()
+        # Linea Total/Media tratteggiata blu
+        fig.add_trace(go.Scatter(x=timeframes, y=total_vol, mode='lines+markers', name='Total', line=dict(color='blue', width=2)))
+        # Linea Loss rossa
+        fig.add_trace(go.Scatter(x=timeframes, y=loss_vol, mode='lines+markers', name='Loss', line=dict(color='red', width=2)))
+        # Linea Profit verde
+        fig.add_trace(go.Scatter(x=timeframes, y=profit_vol, mode='lines+markers', name='Profit', line=dict(color='green', width=2)))
 
-    st.plotly_chart(fig, use_container_width=True)
+        # Layout grafico
+        fig.update_layout(
+            height=350,
+            yaxis_title="Volume vs PM (%)",
+            xaxis_title="Timeframe",
+            legend_title="Category",
+            margin=dict(l=20, r=20, t=20, b=20)
+        )
+        
+        # Linea di riferimento 100%
+        fig.add_hline(y=100, line_dash="dot", line_color="gray")
+
+        st.plotly_chart(fig, use_container_width=True)
 
 
 # endregion
