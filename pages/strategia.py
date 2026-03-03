@@ -690,6 +690,13 @@ shs_red_med = df_red["Shs Float"].median()/1000
 shs_green = df_green["Shs Float"].mean()/1000
 shs_green_med = df_green["Shs Float"].median()/1000
 
+shout_mean = df_all["Shares Outstanding"].mean()/1000
+shout_median = df_all["Shares Outstanding"].median()/1000
+shout_red = df_red["Shares Outstanding"].mean()/1000
+shout_red_med = df_red["Shares Outstanding"].median()/1000
+shout_green = df_green["Shares Outstanding"].mean()/1000
+shout_green_med = df_green["Shares Outstanding"].median()/1000
+
 vol_mean = df_all["Volume"].mean()/1000000
 vol_median = df_all["Volume"].median()/1000000
 vol_red = df_red["Volume"].mean()/1000000
@@ -738,7 +745,8 @@ kpi_list = [
     build_kpi("High%", total=high_mean, red=high_red, green=high_green, total_med=high_median, red_med=high_red_med, green_med=high_green_med),
     build_kpi("Time High Medio", total=seconds_to_hhmm(time_mean_total), red=seconds_to_hhmm(time_red), green=seconds_to_hhmm(time_green), total_med=seconds_to_hhmm(time_median_total), red_med=seconds_to_hhmm(time_red_med), green_med=seconds_to_hhmm(time_green_med), suffix="", show_bar=False),
     build_kpi("Open vs PMH %", total=ovp_mean, red=ovp_red, green=ovp_green, total_med=ovp_median, red_med=ovp_red_med, green_med=ovp_green_med, suffix="%", show_bar=True),
-    build_kpi("Volume PM", total=volpm_mean, red=volpm_red, green=volpm_green, total_med=volpm_median, red_med=volpm_red_med, green_med=volpm_green_med, suffix=" M", show_bar=True)
+    build_kpi("Volume PM", total=volpm_mean, red=volpm_red, green=volpm_green, total_med=volpm_median, red_med=volpm_red_med, green_med=volpm_green_med, suffix=" M", show_bar=True),
+build_kpi("Shs Out",total=shout_mean,red=shout_red,green=shout_green,total_med=shout_median,red_med=shout_red_med,green_med=shout_green_med,suffix=" k",show_bar=True)
 ]
 
 
