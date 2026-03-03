@@ -641,6 +641,21 @@ st.markdown(f"""
 #====================================================
 
 df_all = filtered.copy()
+
+
+if "TimeHigh" in df_all.columns:
+    df_all["TimeHigh"] = pd.to_datetime(df_all["TimeHigh"], errors="coerce")
+    df_all["TimeHigh_sec"] = df_all["TimeHigh"].apply(
+        lambda x: x.hour*3600 + x.minute*60 if pd.notnull(x) else None
+    )
+
+# funzione conversione orari
+def seconds_to_hhmm(seconds):
+    if pd.isna(seconds):
+        return "-"
+    seconds = int(seconds)
+    return f"{seconds//3600:02d}:{(seconds%3600)//60:02d}"
+
 df_red = df_all[df_all["PnL_$"] < 0].copy()
 df_green = df_all[df_all["PnL_$"] > 0].copy()
 
@@ -684,6 +699,12 @@ high_green_med = df_green["high%"].median()
 high_mean = df_all["high%"].mean()
 high_median = df_all["high%"].median()
 
+time_mean_total = df_all["TimeHigh_sec"].mean()
+time_median_total = df_all["TimeHigh_sec"].median()
+time_red = df_red["TimeHigh_sec"].mean()
+time_red_med = df_red["TimeHigh_sec"].median()
+time_green = df_green["TimeHigh_sec"].mean()
+time_green_med = df_green["TimeHigh_sec"].median()
 
 
 kpi_list = [
@@ -691,7 +712,8 @@ kpi_list = [
     build_kpi("Market Cap", total=mc_mean, red=mc_red, green=mc_green, total_med=mc_median, red_med=mc_red_med, green_med=mc_green_med, suffix=" M"),
     build_kpi("Shs Float", total=shs_mean, red=shs_red, green=shs_green, total_med=shs_median, red_med=shs_red_med, green_med=shs_green_med, suffix=" K"),
     build_kpi("Volume", total=vol_mean, red=vol_red, green=vol_green, total_med=vol_median, red_med=vol_red_med, green_med=vol_green_med, suffix=" M"),
-    build_kpi("Spinta High%", total=high_mean, red=high_red, green=high_green, total_med=high_median, red_med=high_red_med, green_med=high_green_med)
+    build_kpi("High%", total=high_mean, red=high_red, green=high_green, total_med=high_median, red_med=high_red_med, green_med=high_green_med)
+    build_kpi("Time High Medio", total=seconds_to_hhmm(time_mean_total), red=seconds_to_hhmm(time_red), green=seconds_to_hhmm(time_green), total_med=seconds_to_hhmm(time_median_total), red_med=seconds_to_hhmm(time_red_med), green_med=seconds_to_hhmm(time_green_med), suffix="", show_bar=False)
 ]
 
 
