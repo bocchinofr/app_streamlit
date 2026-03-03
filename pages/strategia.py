@@ -752,6 +752,20 @@ for i, kpi in enumerate(kpi_list):
     with col:
         kpi_box_statual(kpi)
 
+st.markdown("---")
+st.subheader("Volume Behaviour vs PreMarket")
+
+vol60_profit = df_green["Vol60_vs_PM_%"].mean()
+vol60_loss = df_red["Vol60_vs_PM_%"].mean()
+delta_60 = vol60_profit - vol60_loss
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric("60m Profit", f"{vol60_profit:.1f}%")
+col2.metric("60m Loss", f"{vol60_loss:.1f}%")
+col3.metric("Delta", f"{delta_60:.1f}%")
+
+
 volume_profile_all = pd.DataFrame({
     "Timeframe": ["5m", "30m", "60m"],
     "Total": [
@@ -770,22 +784,32 @@ volume_profile_all = pd.DataFrame({
         df_green["Vol60_vs_PM_%"].mean()
     ]
 })
+
 import plotly.express as px
 
-fig = px.bar(
+fig = px.line(
     volume_profile_all,
     x="Timeframe",
     y=["Total", "Loss", "Profit"],
-    barmode="group",
-    title="RTH Volume vs PreMarket Volume (%)"
+    markers=True
 )
 
 fig.update_layout(
+    height=350,
     yaxis_title="Volume vs PM (%)",
-    legend_title="Category"
+    legend_title="Category",
+    margin=dict(l=20, r=20, t=20, b=20)
+)
+
+# Linea di riferimento 100%
+fig.add_hline(
+    y=100,
+    line_dash="dash",
+    line_color="gray"
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 # endregion
 
