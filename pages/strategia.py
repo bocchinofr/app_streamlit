@@ -568,6 +568,9 @@ base_box_style = """
     text-align:center;
 """
 
+st.markdown("---------------------")
+
+
 # Stile del titolo e del valore
 title_style = "font-size:18px; opacity:0.8;"
 value_style = "font-size:30px; font-weight:bold;"
