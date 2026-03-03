@@ -723,9 +723,8 @@ kpi_list = [
     build_kpi("Shs Float", total=shs_mean, red=shs_red, green=shs_green, total_med=shs_median, red_med=shs_red_med, green_med=shs_green_med, suffix=" K"),
     build_kpi("Volume", total=vol_mean, red=vol_red, green=vol_green, total_med=vol_median, red_med=vol_red_med, green_med=vol_green_med, suffix=" M"),
     build_kpi("High%", total=high_mean, red=high_red, green=high_green, total_med=high_median, red_med=high_red_med, green_med=high_green_med),
-    build_kpi("Time High Medio", total=seconds_to_hhmm(time_mean_total), red=seconds_to_hhmm(time_red), green=seconds_to_hhmm(time_green), total_med=seconds_to_hhmm(time_median_total), red_med=seconds_to_hhmm(time_red_med), green_med=seconds_to_hhmm(time_green_med), suffix="", show_bar=False)
-    build_kpi("Open vs PMH %", total=ovp_mean, red=ovp_red, green=ovp_green, total_med=ovp_median, red_med=ovp_red_med, green_med=ovp_green_med, suffix="%", show_bar=True
-)
+    build_kpi("Time High Medio", total=seconds_to_hhmm(time_mean_total), red=seconds_to_hhmm(time_red), green=seconds_to_hhmm(time_green), total_med=seconds_to_hhmm(time_median_total), red_med=seconds_to_hhmm(time_red_med), green_med=seconds_to_hhmm(time_green_med), suffix="", show_bar=False),
+    build_kpi("Open vs PMH %", total=ovp_mean, red=ovp_red, green=ovp_green, total_med=ovp_median, red_med=ovp_red_med, green_med=ovp_green_med, suffix="%", show_bar=True)
 ]
 
 
