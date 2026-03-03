@@ -770,7 +770,6 @@ col_kpi, col_graph = st.columns([1,2])
 
 # --- KPI piccoli nella colonna di sinistra ---
 with col_kpi:
-    st.markdown("### Volume KPIs")
     for label, value in [("5m Loss", loss_vol[0]), ("5m Profit", profit_vol[0]),
                          ("30m Loss", loss_vol[1]), ("30m Profit", profit_vol[1]),
                          ("60m Loss", loss_vol[2]), ("60m Profit", profit_vol[2]),
