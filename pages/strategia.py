@@ -755,60 +755,53 @@ for i, kpi in enumerate(kpi_list):
 st.markdown("---")
 st.subheader("Volume Behaviour vs PreMarket")
 
-vol60_profit = df_green["Vol60_vs_PM_%"].mean()
-vol60_loss = df_red["Vol60_vs_PM_%"].mean()
-delta_60 = vol60_profit - vol60_loss
 
-col1, col2, col3 = st.columns(3)
+import plotly.graph_objects as go
 
-col1.metric("60m Profit", f"{vol60_profit:.0f}%")
-col2.metric("60m Loss", f"{vol60_loss:.0f}%")
-col3.metric("Delta", f"{delta_60:.0f}%")
+# --- Prepariamo i dati ---
+timeframes = ["5m", "30m", "60m"]
 
+total_vol = [df_all["Vol5_vs_PM_%"].mean(), df_all["Vol30_vs_PM_%"].mean(), df_all["Vol60_vs_PM_%"].mean()]
+loss_vol  = [df_red["Vol5_vs_PM_%"].mean(), df_red["Vol30_vs_PM_%"].mean(), df_red["Vol60_vs_PM_%"].mean()]
+profit_vol= [df_green["Vol5_vs_PM_%"].mean(), df_green["Vol30_vs_PM_%"].mean(), df_green["Vol60_vs_PM_%"].mean()]
 
-volume_profile_all = pd.DataFrame({
-    "Timeframe": ["5m", "30m", "60m"],
-    "Total": [
-        df_all["Vol5_vs_PM_%"].mean(),
-        df_all["Vol30_vs_PM_%"].mean(),
-        df_all["Vol60_vs_PM_%"].mean()
-    ],
-    "Loss": [
-        df_red["Vol5_vs_PM_%"].mean(),
-        df_red["Vol30_vs_PM_%"].mean(),
-        df_red["Vol60_vs_PM_%"].mean()
-    ],
-    "Profit": [
-        df_green["Vol5_vs_PM_%"].mean(),
-        df_green["Vol30_vs_PM_%"].mean(),
-        df_green["Vol60_vs_PM_%"].mean()
-    ]
-})
+# --- Layout a due colonne: KPI e Grafico ---
+col_kpi, col_graph = st.columns([1,2])
 
-import plotly.express as px
+# --- KPI piccoli nella colonna di sinistra ---
+with col_kpi:
+    st.markdown("### Volume KPIs")
+    st.metric("5m Loss", f"{loss_vol[0]:.1f}%")
+    st.metric("5m Profit", f"{profit_vol[0]:.1f}%")
+    st.metric("30m Loss", f"{loss_vol[1]:.1f}%")
+    st.metric("30m Profit", f"{profit_vol[1]:.1f}%")
+    st.metric("60m Loss", f"{loss_vol[2]:.1f}%")
+    st.metric("60m Profit", f"{profit_vol[2]:.1f}%")
+    st.metric("Total Avg", f"{total_vol[2]:.1f}%")  # esempio media 60m
 
-fig = px.line(
-    volume_profile_all,
-    x="Timeframe",
-    y=["Total", "Loss", "Profit"],
-    markers=True
-)
+# --- Grafico nella colonna di destra ---
+with col_graph:
+    fig = go.Figure()
+    # Linea Total/Media tratteggiata blu
+    fig.add_trace(go.Scatter(x=timeframes, y=total_vol, mode='lines+markers', name='Total', line=dict(color='blue', dash='dash')))
+    # Linea Loss rossa
+    fig.add_trace(go.Scatter(x=timeframes, y=loss_vol, mode='lines+markers', name='Loss', line=dict(color='red', width=2)))
+    # Linea Profit verde
+    fig.add_trace(go.Scatter(x=timeframes, y=profit_vol, mode='lines+markers', name='Profit', line=dict(color='green', width=2)))
 
-fig.update_layout(
-    height=350,
-    yaxis_title="Volume vs PM (%)",
-    legend_title="Category",
-    margin=dict(l=20, r=20, t=20, b=20)
-)
+    # Layout grafico
+    fig.update_layout(
+        height=350,
+        yaxis_title="Volume vs PM (%)",
+        xaxis_title="Timeframe",
+        legend_title="Category",
+        margin=dict(l=20, r=20, t=20, b=20)
+    )
+    
+    # Linea di riferimento 100%
+    fig.add_hline(y=100, line_dash="dot", line_color="gray")
 
-# Linea di riferimento 100%
-fig.add_hline(
-    y=100,
-    line_dash="dash",
-    line_color="gray"
-)
-
-st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 # endregion
