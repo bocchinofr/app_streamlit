@@ -691,12 +691,12 @@ vol_red_med = df_red["Volume"].median()/1000000
 vol_green = df_green["Volume"].mean()/1000000
 vol_green_med = df_green["Volume"].median()/1000000
 
-volpm_mean = df_all["VolumePM"].mean()
-volpm_median = df_all["VolumePM"].median()
-volpm_red = df_red["VolumePM"].mean()
-volpm_red_med = df_red["VolumePM"].median()
-volpm_green = df_green["VolumePM"].mean()
-volpm_green_med = df_green["VolumePM"].median()
+volpm_mean = df_all["VolumePM"].mean()/1000000
+volpm_median = df_all["VolumePM"].median()/1000000
+volpm_red = df_red["VolumePM"].mean()/1000000
+volpm_red_med = df_red["VolumePM"].median()/1000000
+volpm_green = df_green["VolumePM"].mean()/1000000
+volpm_green_med = df_green["VolumePM"].median()/1000000
 
 df_all["high%"] = ((df_all["High"] - df_all["Open"]) / df_all["Open"]) * 100
 df_red["high%"] = ((df_red["High"] - df_red["Open"]) / df_red["Open"]) * 100
@@ -732,7 +732,7 @@ kpi_list = [
     build_kpi("High%", total=high_mean, red=high_red, green=high_green, total_med=high_median, red_med=high_red_med, green_med=high_green_med),
     build_kpi("Time High Medio", total=seconds_to_hhmm(time_mean_total), red=seconds_to_hhmm(time_red), green=seconds_to_hhmm(time_green), total_med=seconds_to_hhmm(time_median_total), red_med=seconds_to_hhmm(time_red_med), green_med=seconds_to_hhmm(time_green_med), suffix="", show_bar=False),
     build_kpi("Open vs PMH %", total=ovp_mean, red=ovp_red, green=ovp_green, total_med=ovp_median, red_med=ovp_red_med, green_med=ovp_green_med, suffix="%", show_bar=True),
-    build_kpi("Volume PM", total=volpm_mean, red=volpm_red, green=volpm_green, total_med=volpm_median, red_med=volpm_red_med, green_med=volpm_green_med, suffix="M", show_bar=True)
+    build_kpi("Volume PM", total=volpm_mean, red=volpm_red, green=volpm_green, total_med=volpm_median, red_med=volpm_red_med, green_med=volpm_green_med, suffix=" M", show_bar=True)
 ]
 
 
