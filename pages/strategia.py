@@ -771,19 +771,19 @@ col_kpi, col_graph = st.columns([1,2])
 # --- KPI piccoli nella colonna di sinistra ---
 with col_kpi:
     st.markdown("### Volume KPIs")
-    st.metric("5m Loss", f"{loss_vol[0]:.1f}%")
-    st.metric("5m Profit", f"{profit_vol[0]:.1f}%")
-    st.metric("30m Loss", f"{loss_vol[1]:.1f}%")
-    st.metric("30m Profit", f"{profit_vol[1]:.1f}%")
-    st.metric("60m Loss", f"{loss_vol[2]:.1f}%")
-    st.metric("60m Profit", f"{profit_vol[2]:.1f}%")
-    st.metric("Total Avg", f"{total_vol[2]:.1f}%")  # esempio media 60m
+    st.metric("5m Loss", f"{loss_vol[0]:.0f}%")
+    st.metric("5m Profit", f"{profit_vol[0]:.0f}%")
+    st.metric("30m Loss", f"{loss_vol[1]:.0f}%")
+    st.metric("30m Profit", f"{profit_vol[1]:.0f}%")
+    st.metric("60m Loss", f"{loss_vol[2]:.0f}%")
+    st.metric("60m Profit", f"{profit_vol[2]:.0f}%")
+    st.metric("Total Avg", f"{total_vol[2]:.0f}%")  # esempio media 60m
 
 # --- Grafico nella colonna di destra ---
 with col_graph:
     fig = go.Figure()
     # Linea Total/Media tratteggiata blu
-    fig.add_trace(go.Scatter(x=timeframes, y=total_vol, mode='lines+markers', name='Total', line=dict(color='blue', dash='dash')))
+    fig.add_trace(go.Scatter(x=timeframes, y=total_vol, mode='lines+markers', name='Total', line=dict(color='blue', width=2)))
     # Linea Loss rossa
     fig.add_trace(go.Scatter(x=timeframes, y=loss_vol, mode='lines+markers', name='Loss', line=dict(color='red', width=2)))
     # Linea Profit verde
