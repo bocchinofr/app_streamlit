@@ -774,7 +774,7 @@ with col_kpi:
                          ("30m Loss", loss_vol[1]), ("30m Profit", profit_vol[1]),
                          ("60m Loss", loss_vol[2]), ("60m Profit", profit_vol[2]),
                          ("Total Avg", total_vol[2])]:
-        st.markdown(f'<div style="font-size:14px; font-weight:600; margin-bottom:4px;">{label}: {value:.0f}%</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="font-size:16px; font-weight:600; margin-bottom:4px;">{label}: {value:.0f}%</div>', unsafe_allow_html=True)
 
 # --- Grafico nella colonna di destra ---
 with col_graph:
